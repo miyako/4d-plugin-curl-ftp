@@ -22,7 +22,7 @@ Properties of ``options``
 
 [URL](https://curl.haxx.se/libcurl/c/CURLOPT_URL.html) 
 
-ESCAPE apply [curl_easy_escape()](https://curl.haxx.se/libcurl/c/curl_easy_escape.html) to URL
+ESCAPE: pass ``1`` to apply [curl_easy_escape()](https://curl.haxx.se/libcurl/c/curl_easy_escape.html) to URL
 
 [USERNAME](https://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html)
 
