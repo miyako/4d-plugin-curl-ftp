@@ -5,7 +5,7 @@ FTP client based on libcurl
 
 ### List of 4D Internet Commands and replacements
 
-``FTP_Append``  
+``FTP_Append`` :  n/a (use ``APPEND`` option)    
 ``FTP_ChangeDir`` : n/a (sessions are not kept open)  
 ``FTP_Delete`` : ``cURL_FTP_Delete``  
 ``FTP_GetDirList`` : ``cURL_FTP_GetDirList``  
@@ -132,10 +132,19 @@ calls ``SYST``
 
 Properties of ``options``
 
-* Basic
+* General
 
 [URL](https://curl.haxx.se/libcurl/c/CURLOPT_URL.html)   
 [USERNAME](https://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html)  
 [PASSWORD](https://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html)  
 [FTPPORT](https://curl.haxx.se/libcurl/c/CURLOPT_FTPPORT.html)  
+[APPEND](https://curl.haxx.se/libcurl/c/CURLOPT_APPEND.html)
+[ACCOUNT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_ACCOUNT.html)
+
 [PRIVATE](https://curl.haxx.se/libcurl/c/CURLOPT_PRIVATE.html)
+
+* Host Specifc
+
+[EPRT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPRT.html)
+[EPSV](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPSV.html)
+[PRET](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_PRET.html)
