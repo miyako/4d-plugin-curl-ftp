@@ -8,7 +8,7 @@ FTP client based on libcurl
 ``FTP_Append``  
 ``FTP_ChangeDir`` : n/a (sessions are not kept open)  
 ``FTP_Delete`` : ``cURL_FTP_Delete``  
-``FTP_GetDirList``  
+``FTP_GetDirList`` : ``cURL_FTP_GetDirList``  
 ``FTP_GetFileInfo``  
 ``FTP_GetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_GetType`` : n/a (always binary transfer)  
@@ -40,6 +40,19 @@ name|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``DELE``
+
+
+```
+error:=cURL_FTP_GetDirList(options;path)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+name|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
 
 ```
 error:=cURL_FTP_PrintDir(options;path)
