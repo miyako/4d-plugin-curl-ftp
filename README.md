@@ -57,6 +57,8 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
 
+---
+
 Properties of ``options``
 
 * Basic
