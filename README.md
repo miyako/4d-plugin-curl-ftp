@@ -17,10 +17,10 @@ FTP client based on libcurl
 ``FTP_MacBinary`` : n/a (deprecated)  
 ``FTP_MakeDir`` : ``cURL_FTP_MakeDir``  
 ``FTP_PrintDir`` : ``cURL_FTP_PrintDir``  
-``FTP_Receive``  
+``FTP_Receive`` : ``cURL_FTP_Receive``  
 ``FTP_RemoveDir`` : ``cURL_FTP_RemoveDir``    
 ``FTP_Rename`` : ``cURL_FTP_Rename``  
-``FTP_Send``  
+``FTP_Send`` : ``cURL_FTP_Send``  
 ``FTP_SetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_SetType`` : n/a (always binary transfer)   
 ``FTP_System``: ``cURL_FTP_System``  
@@ -90,6 +90,17 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
 
 ```
+error:=cURL_FTP_Receive(options;path;callback)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+path|TEXT|
+callback|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+```
 error:=cURL_FTP_RemoveDir(options;path)
 ```
 
@@ -116,6 +127,18 @@ to|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
+
+
+```
+error:=cURL_FTP_Send(options;path;callback)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+path|TEXT|
+callback|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 ```
 error:=cURL_FTP_System(options)
