@@ -18,12 +18,12 @@ FTP client based on libcurl
 ``FTP_MakeDir``  
 ``FTP_PrintDir``  
 ``FTP_Receive``  
-``FTP_RemoveDir``  
+``FTP_RemoveDir`` : ``cURL_FTP_RemoveDir``    
 ``FTP_Rename`` : ``cURL_FTP_Rename``  
 ``FTP_Send``  
 ``FTP_SetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_SetType`` : n/a (always binary transfer)   
-``FTP_System``  
+``FTP_System``: ``cURL_FTP_System``  
 ``FTP_VerifyID``  
 ``FTP_Progress``  
 
@@ -56,6 +56,17 @@ to|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
+
+```
+error:=cURL_FTP_System(options)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+calls ``SYST``
 
 ---
 
