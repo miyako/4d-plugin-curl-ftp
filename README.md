@@ -98,7 +98,10 @@ Parameter|Type|Description
 options|TEXT|``JSON``
 path|TEXT|
 callback|TEXT|
+wildcard|LONGINT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+[CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcard`` is ``1``
 
 ```
 error:=cURL_FTP_RemoveDir(options;path)
