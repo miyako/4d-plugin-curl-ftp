@@ -63,7 +63,7 @@ options|TEXT|``JSON``
 name|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-uses [CURLOPT_FILETIME](https://curl.haxx.se/libcurl/c/CURLOPT_FILETIME.html) for time and ``Content-Length`` header for size.
+uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html).
 
 ```
 error:=cURL_FTP_MakeDir(options;path)
