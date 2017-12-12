@@ -19,7 +19,7 @@ FTP client based on libcurl
 ``FTP_PrintDir``  
 ``FTP_Receive``  
 ``FTP_RemoveDir``  
-``FTP_Rename`` : ``cURL_FTP_Rename``
+``FTP_Rename`` : ``cURL_FTP_Rename``  
 ``FTP_Send``  
 ``FTP_SetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_SetType`` : n/a (always binary transfer)   
