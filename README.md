@@ -97,7 +97,8 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 path|TEXT|
-callback|TEXT|
+numberOfRetries|LONGINT|
+callbackMethod|TEXT|
 wildcard|LONGINT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
@@ -140,7 +141,8 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 path|TEXT|
-callback|TEXT|
+numberOfRetries|LONGINT|
+callbackMethod|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 ```
