@@ -134,20 +134,39 @@ Properties of ``options``
 
 * General
 
-[URL](https://curl.haxx.se/libcurl/c/CURLOPT_URL.html)   
+[URL](https://curl.haxx.se/libcurl/c/CURLOPT_URL.html)  
 [USERNAME](https://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html)  
 [PASSWORD](https://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html)  
 [FTPPORT](https://curl.haxx.se/libcurl/c/CURLOPT_FTPPORT.html)  
-[APPEND](https://curl.haxx.se/libcurl/c/CURLOPT_APPEND.html)
-[ACCOUNT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_ACCOUNT.html)
-
-[PRIVATE](https://curl.haxx.se/libcurl/c/CURLOPT_PRIVATE.html)
+[APPEND](https://curl.haxx.se/libcurl/c/CURLOPT_APPEND.html)  
+[ACCOUNT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_ACCOUNT.html)  
+[PRIVATE](https://curl.haxx.se/libcurl/c/CURLOPT_PRIVATE.html)  
 
 * RFC 2428
 
-[EPRT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPRT.html)
-[EPSV](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPSV.html)
+[EPRT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPRT.html)  
+[EPSV](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPSV.html)  
 
 * Host Specific
 
-[PRET](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_PRET.html)
+[PRET](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_PRET.html)  
+
+* Connection
+
+[KEEPALIVE]  
+[KEEPIDLE]  
+[KEEPINTVL]  
+
+* Threshold
+
+[RESPONSE_TIMEOUT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_RESPONSE_TIMEOUT.html)  
+[CONNECTTIMEOUT]  
+[TIMEOUT]  
+[LOW_SPEED_TIME]  
+[LOW_SPEED_LIMIT]  
+
+* Verification
+
+[VERIFYHOST]
+[VERIFYPEER]  
+[CAINFO]  
