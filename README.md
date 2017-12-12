@@ -143,8 +143,11 @@ Properties of ``options``
 
 [PRIVATE](https://curl.haxx.se/libcurl/c/CURLOPT_PRIVATE.html)
 
-* Host Specifc
+* RFC 2428
 
 [EPRT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPRT.html)
 [EPSV](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_EPSV.html)
+
+* Host Specific
+
 [PRET](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_PRET.html)
