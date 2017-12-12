@@ -200,3 +200,17 @@ Properties of ``options``
 
 [FTPSSLAUTH](https://curl.haxx.se/libcurl/c/CURLOPT_FTPSSLAUTH.html)
 [FTP_SSL_CCC](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_SSL_CCC.html)
+
+---
+
+Signature of callback method
+
+```
+abort:=method(curlInfo;userInfo)
+```
+
+Parameter|Type|Description
+------------|------------|----
+curlInfo|TEXT|``JSON`` (``curl_easy_getinfo``)
+userInfo|TEXT|the text passed as the ``PRIVATE`` property of ``option``
+abort|BOOLEAN|
