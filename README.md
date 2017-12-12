@@ -16,7 +16,7 @@ FTP client based on libcurl
 ``FTP_Logout``  
 ``FTP_MacBinary``  
 ``FTP_MakeDir``  
-``FTP_PrintDir``  
+``FTP_PrintDir`` : ``cURL_FTP_PrintDir``  
 ``FTP_Receive``  
 ``FTP_RemoveDir`` : ``cURL_FTP_RemoveDir``    
 ``FTP_Rename`` : ``cURL_FTP_Rename``  
@@ -30,13 +30,23 @@ FTP client based on libcurl
 ## Syntax
 
 ```
+error:=cURL_FTP_PrintDir(options;path)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+name|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+```
 error:=cURL_FTP_RemoveDir(options;path)
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-path|TEXT|
+name|TEXT|
 recursive|LONGINT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
