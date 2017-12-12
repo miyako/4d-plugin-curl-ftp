@@ -12,9 +12,9 @@ FTP client based on libcurl
 ``FTP_GetFileInfo``  
 ``FTP_GetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_GetType`` : n/a (always binary transfer)  
-``FTP_Login``  
-``FTP_Logout``  
-``FTP_MacBinary``  
+``FTP_Login`` : n/a (sessions are not kept open)  
+``FTP_Logout`` : n/a (sessions are not kept open)  
+``FTP_MacBinary`` : n/a (deprecated)  
 ``FTP_MakeDir``  
 ``FTP_PrintDir`` : ``cURL_FTP_PrintDir``  
 ``FTP_Receive``  
@@ -24,7 +24,7 @@ FTP client based on libcurl
 ``FTP_SetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_SetType`` : n/a (always binary transfer)   
 ``FTP_System``: ``cURL_FTP_System``  
-``FTP_VerifyID`` n/a (sessions are not kept open)   
+``FTP_VerifyID`` : n/a (sessions are not kept open)   
 ``FTP_Progress`` : n/a (use ``PRIVATE`` option)   
 
 ## Syntax
