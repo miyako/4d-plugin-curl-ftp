@@ -24,8 +24,8 @@ FTP client based on libcurl
 ``FTP_SetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_SetType`` : n/a (always binary transfer)   
 ``FTP_System``: ``cURL_FTP_System``  
-``FTP_VerifyID``  
-``FTP_Progress``  
+``FTP_VerifyID`` n/a (sessions are not kept open)   
+``FTP_Progress`` : n/a (use ``PRIVATE`` option)   
 
 ## Syntax
 
@@ -78,5 +78,4 @@ Properties of ``options``
 [USERNAME](https://curl.haxx.se/libcurl/c/CURLOPT_USERNAME.html)  
 [PASSWORD](https://curl.haxx.se/libcurl/c/CURLOPT_PASSWORD.html)  
 [FTPPORT](https://curl.haxx.se/libcurl/c/CURLOPT_FTPPORT.html)  
-
-use this 
+[PRIVATE](https://curl.haxx.se/libcurl/c/CURLOPT_PRIVATE.html)
