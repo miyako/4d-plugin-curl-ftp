@@ -1,5 +1,5 @@
 # 4d-plugin-curl-ftp
-FTP client based on libcurl
+FTP/SFTP/FTPS client based on libcurl
 
 (draft)
 
