@@ -146,12 +146,13 @@ callbackMethod|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 ```
-error:=cURL_FTP_System(options)
+error:=cURL_FTP_System(options;system)
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
+system|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``SYST``
