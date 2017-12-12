@@ -6,8 +6,8 @@ FTP client based on libcurl
 ### List of 4D Internet Commands and replacements
 
 ``FTP_Append``  
-``FTP_ChangeDir``  
-``FTP_Delete``  
+``FTP_ChangeDir`` : n/a (sessions are not kept open)  
+``FTP_Delete`` : ``cURL_FTP_Delete``  
 ``FTP_GetDirList``  
 ``FTP_GetFileInfo``  
 ``FTP_GetPassive`` : n/a (use ``FTPPORT`` option)  
@@ -28,6 +28,18 @@ FTP client based on libcurl
 ``FTP_Progress`` : n/a (use ``PRIVATE`` option)   
 
 ## Syntax
+
+```
+error:=cURL_FTP_Delete(options;path)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+name|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+calls ``DELE``
 
 ```
 error:=cURL_FTP_PrintDir(options;path)
