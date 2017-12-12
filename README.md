@@ -36,9 +36,9 @@ error:=cURL_FTP_Rename(options;from;to)
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-from|TEXT|
-to|TEXT|
-error|LONGINT|
+from|TEXT|``RNFR``
+to|TEXT|``RNTO``
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 Properties of ``options``
 
