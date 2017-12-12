@@ -15,7 +15,7 @@ FTP client based on libcurl
 ``FTP_Login`` : n/a (sessions are not kept open)  
 ``FTP_Logout`` : n/a (sessions are not kept open)  
 ``FTP_MacBinary`` : n/a (deprecated)  
-``FTP_MakeDir``  
+``FTP_MakeDir`` : ``cURL_FTP_MakeDir``  
 ``FTP_PrintDir`` : ``cURL_FTP_PrintDir``  
 ``FTP_Receive``  
 ``FTP_RemoveDir`` : ``cURL_FTP_RemoveDir``    
@@ -41,7 +41,6 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``DELE``
 
-
 ```
 error:=cURL_FTP_GetDirList(options;path)
 ```
@@ -53,6 +52,18 @@ name|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
+
+```
+error:=cURL_FTP_MakeDir(options;path)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+name|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+calls ``MKD``
 
 ```
 error:=cURL_FTP_PrintDir(options;path)
