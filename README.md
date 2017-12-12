@@ -39,6 +39,8 @@ options|TEXT|``JSON``
 name|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
+calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
+
 ```
 error:=cURL_FTP_RemoveDir(options;path)
 ```
