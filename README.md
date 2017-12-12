@@ -90,7 +90,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
 
 ```
-error:=cURL_FTP_Receive(options;path;callback)
+error:=cURL_FTP_Receive(options;path;numberOfRetries;callbackMethod;wildcardMatch)
 ```
 
 Parameter|Type|Description
@@ -99,10 +99,10 @@ options|TEXT|``JSON``
 path|TEXT|
 numberOfRetries|LONGINT|
 callbackMethod|TEXT|
-wildcard|LONGINT|
+wildcardMatch|LONGINT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-[CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcard`` is ``1``
+[CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcardMatch`` is ``1``
 
 ```
 error:=cURL_FTP_RemoveDir(options;path)
@@ -134,7 +134,7 @@ calls ``RNFR`` followed by ``RNTO``
 
 
 ```
-error:=cURL_FTP_Send(options;path;callback)
+error:=cURL_FTP_Send(options;path;numberOfRetries;callbackMethod)
 ```
 
 Parameter|Type|Description
