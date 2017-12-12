@@ -153,20 +153,20 @@ Properties of ``options``
 
 * Connection
 
-[KEEPALIVE]  
-[KEEPIDLE]  
-[KEEPINTVL]  
+[KEEPALIVE](https://curl.haxx.se/libcurl/c/CURLOPT_TCP_KEEPALIVE.html)  
+[KEEPIDLE](https://curl.haxx.se/libcurl/c/CURLOPT_TCP_KEEPIDLE.html)  
+[KEEPINTVL](https://curl.haxx.se/libcurl/c/CURLOPT_TCP_KEEPINTVL.html)  
 
 * Threshold
 
 [RESPONSE_TIMEOUT](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_RESPONSE_TIMEOUT.html)  
-[CONNECTTIMEOUT]  
-[TIMEOUT]  
-[LOW_SPEED_TIME]  
-[LOW_SPEED_LIMIT]  
+[CONNECTTIMEOUT](https://curl.haxx.se/libcurl/c/CURLOPT_CONNECTTIMEOUT.html)  
+[TIMEOUT](https://curl.haxx.se/libcurl/c/CURLOPT_TIMEOUT.html)  
+[LOW_SPEED_TIME](https://curl.haxx.se/libcurl/c/CURLOPT_LOW_SPEED_TIME.html)  
+[LOW_SPEED_LIMIT](https://curl.haxx.se/libcurl/c/CURLOPT_LOW_SPEED_LIMIT.html)  
 
 * Verification
 
-[VERIFYHOST]
-[VERIFYPEER]  
-[CAINFO]  
+[VERIFYHOST](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html)  
+[VERIFYPEER](https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html)  
+[CAINFO](https://curl.haxx.se/libcurl/c/CURLOPT_CAINFO.html)  
