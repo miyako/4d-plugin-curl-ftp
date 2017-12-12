@@ -9,7 +9,7 @@ FTP client based on libcurl
 ``FTP_ChangeDir`` : n/a (sessions are not kept open)  
 ``FTP_Delete`` : ``cURL_FTP_Delete``  
 ``FTP_GetDirList`` : ``cURL_FTP_GetDirList``  
-``FTP_GetFileInfo``  
+``FTP_GetFileInfo`` : ``cURL_FTP_GetFileInfo``  
 ``FTP_GetPassive`` : n/a (use ``FTPPORT`` option)  
 ``FTP_GetType`` : n/a (always binary transfer)  
 ``FTP_Login`` : n/a (sessions are not kept open)  
@@ -52,6 +52,18 @@ name|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
+
+```
+error:=cURL_FTP_GetFileInfo(options;path)
+```
+
+Parameter|Type|Description
+------------|------------|----
+options|TEXT|``JSON``
+name|TEXT|
+error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+uses [CURLOPT_FILETIME](https://curl.haxx.se/libcurl/c/CURLOPT_FILETIME.html) for time and ``Content-Length`` header for size.
 
 ```
 error:=cURL_FTP_MakeDir(options;path)
