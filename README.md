@@ -96,7 +96,7 @@ error:=cURL_FTP_Receive(options;path;numberOfRetries;callbackMethod;wildcardMatc
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-path|TEXT|
+path|TEXT|local system path
 numberOfRetries|LONGINT|
 callbackMethod|TEXT|
 wildcardMatch|LONGINT|
@@ -140,7 +140,7 @@ error:=cURL_FTP_Send(options;path;numberOfRetries;callbackMethod)
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-path|TEXT|
+path|TEXT|local system path
 numberOfRetries|LONGINT|
 callbackMethod|TEXT|
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
