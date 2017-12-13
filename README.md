@@ -228,7 +228,7 @@ Properties of ``options``
 
 ---
 
-Signature of callback method
+Signature of ``callbackMethod``
 
 ```
 abort:=method(curlInfo;userInfo)
