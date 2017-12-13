@@ -30,46 +30,43 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 ## Syntax
 
 ```
-error:=cURL_FTP_Delete(options;path)
+error:=cURL_FTP_Delete(options{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``DELE``
 
 ```
-error:=cURL_FTP_GetDirList(options;path)
+error:=cURL_FTP_GetDirList(options{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
 
 ```
-error:=cURL_FTP_GetFileInfo(options;path)
+error:=cURL_FTP_GetFileInfo(options{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html).
 
 ```
-error:=cURL_FTP_MakeDir(options;path)
+error:=cURL_FTP_MakeDir(options{;callbackMethod})
 ```
 
 Parameter|Type|Description
@@ -82,7 +79,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``MKD``
 
 ```
-error:=cURL_FTP_PrintDir(options;path)
+error:=cURL_FTP_PrintDir(options;name{;callbackMethod})
 ```
 
 Parameter|Type|Description
@@ -95,7 +92,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
 
 ```
-error:=cURL_FTP_Receive(options;path;numberOfRetries;callbackMethod;wildcardMatch)
+error:=cURL_FTP_Receive(options;path;numberOfRetries{;wildcardMatch{;callbackMethod}})
 ```
 
 Parameter|Type|Description
@@ -110,14 +107,13 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 [CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcardMatch`` is ``1``
 
 ```
-error:=cURL_FTP_RemoveDir(options;path)
+error:=cURL_FTP_RemoveDir(options{;recursive{;callbackMethod}})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-name|TEXT|
-recursive|LONGINT|
+recursive|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
@@ -126,34 +122,32 @@ calls ``RMD``
 if ``recursive`` is ``1``, ``CURLOPT_WILDCARDMATCH `` is activated and ``DELE path/*`` is called beforehand.
 
 ```
-error:=cURL_FTP_Rename(options;from;to)
+error:=cURL_FTP_Rename(options;name{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-from|TEXT|
-to|TEXT|
+name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
 
-
 ```
-error:=cURL_FTP_Send(options;path;numberOfRetries;callbackMethod)
+error:=cURL_FTP_Send(options;path{;numberOfRetries{;callbackMethod}})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 path|TEXT|local system path
-numberOfRetries|LONGINT|
+numberOfRetries|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 ```
-error:=cURL_FTP_System(options;system)
+error:=cURL_FTP_System(options;system{;callbackMethod})
 ```
 
 Parameter|Type|Description
