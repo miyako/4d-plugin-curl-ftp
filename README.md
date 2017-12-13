@@ -37,6 +37,7 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 name|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``DELE``
@@ -49,6 +50,7 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 name|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
@@ -61,6 +63,7 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 name|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html).
@@ -73,6 +76,7 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 name|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``MKD``
@@ -85,6 +89,7 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 name|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
@@ -98,8 +103,8 @@ Parameter|Type|Description
 options|TEXT|``JSON``
 path|TEXT|local system path
 numberOfRetries|LONGINT|
-callbackMethod|TEXT|
 wildcardMatch|LONGINT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 [CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcardMatch`` is ``1``
@@ -113,6 +118,7 @@ Parameter|Type|Description
 options|TEXT|``JSON``
 name|TEXT|
 recursive|LONGINT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RMD``
@@ -128,6 +134,7 @@ Parameter|Type|Description
 options|TEXT|``JSON``
 from|TEXT|
 to|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
@@ -142,7 +149,7 @@ Parameter|Type|Description
 options|TEXT|``JSON``
 path|TEXT|local system path
 numberOfRetries|LONGINT|
-callbackMethod|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 ```
@@ -153,6 +160,7 @@ Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 system|TEXT|
+callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``SYST``
