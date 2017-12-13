@@ -66,26 +66,27 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html).
 
 ```
-error:=cURL_FTP_MakeDir(options{;callbackMethod})
+error:=cURL_FTP_MakeDir(options{;createMissingDir{;callbackMethod}})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-name|TEXT|
+createMissingDir|LONGINT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``MKD``
 
+[CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR `` if ``createMissingDir`` is ``1``
+
 ```
-error:=cURL_FTP_PrintDir(options;name{;callbackMethod})
+error:=cURL_FTP_PrintDir(options{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
@@ -135,7 +136,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``RNFR`` followed by ``RNTO``
 
 ```
-error:=cURL_FTP_Send(options;path{;numberOfRetries{;callbackMethod}})
+error:=cURL_FTP_Send(options;path{;numberOfRetries{;createMissingDir{;callbackMethod}}})
 ```
 
 Parameter|Type|Description
@@ -143,8 +144,11 @@ Parameter|Type|Description
 options|TEXT|``JSON``
 path|TEXT|local system path
 numberOfRetries|LONGINT|optional
+createMissingDir|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
+
+[CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR `` if ``createMissingDir`` is ``1``
 
 ```
 error:=cURL_FTP_System(options;system{;callbackMethod})
