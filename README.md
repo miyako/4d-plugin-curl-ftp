@@ -157,6 +157,8 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``SYST``
 
+[CURLOPT_PREQUOTE](https://github.com/curl/curl/issues/1514) not available for SFTP
+
 ---
 
 Properties of ``options``
