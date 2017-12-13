@@ -231,3 +231,6 @@ Parameter|Type|Description
 curlInfo|TEXT|``JSON`` (``curl_easy_getinfo``)
 userInfo|TEXT|the text passed as the ``PRIVATE`` property of ``option``
 abort|BOOLEAN|
+
+[``CURLMcode``](https://curl.haxx.se/libcurl/c/libcurl-errors.html) is returned in ``error``. exception is when ``True`` is returned from the callback method, in which case
+``CURLE_ABORTED_BY_CALLBACK (42)`` (a ``CURLcode``) is returned. same if the process has been aborted via the runtime explorer. aborting the debugger will not kill the process immediately.
