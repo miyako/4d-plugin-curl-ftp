@@ -96,15 +96,14 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
 
 ```
-error:=cURL_FTP_Receive(options;path;numberOfRetries{;wildcardMatch{;callbackMethod}})
+error:=cURL_FTP_Receive(options;path{;wildcardMatch{;callbackMethod}})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 path|TEXT|local system path
-numberOfRetries|LONGINT|
-wildcardMatch|LONGINT|
+wildcardMatch|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
@@ -139,14 +138,13 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``RNFR`` followed by ``RNTO``
 
 ```
-error:=cURL_FTP_Send(options;path{;numberOfRetries{;createMissingDir{;callbackMethod}}})
+error:=cURL_FTP_Send(options;path{;createMissingDir{;callbackMethod}}})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
 path|TEXT|local system path
-numberOfRetries|LONGINT|optional
 createMissingDir|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
