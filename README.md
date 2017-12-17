@@ -42,24 +42,26 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``DELE``
 
 ```
-error:=cURL_FTP_GetDirList(options{;callbackMethod})
+error:=cURL_FTP_GetDirList(options;list{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
+list|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
 
 ```
-error:=cURL_FTP_GetFileInfo(options{;callbackMethod})
+error:=cURL_FTP_GetFileInfo(options;info{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
+info|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
@@ -81,12 +83,13 @@ calls ``MKD``
 [CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR `` if ``createMissingDir`` is ``1``
 
 ```
-error:=cURL_FTP_PrintDir(options{;callbackMethod})
+error:=cURL_FTP_PrintDir(options;dir{;callbackMethod})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
+dir|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
