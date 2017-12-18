@@ -42,6 +42,17 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``DELE``
 
 ```
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.example.com/a/b/sample.txt";\
+"USERNAME";"user";\
+"PASSWORD";"pass")
+
+$error:=cURL_FTP_Delete (JSON Stringify($options))
+```
+
+```
 error:=cURL_FTP_GetDirList(options;list{;callbackMethod})
 ```
 
