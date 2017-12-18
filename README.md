@@ -113,7 +113,20 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``MKD``
 
-[CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR `` if ``createMissingDir`` is ``1``
+[CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR_RETRY `` if ``createMissingDir`` is ``1``
+
+```
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.example.com/a/b/c";\
+"USERNAME";"user";\
+"PASSWORD";"pass")
+
+$createMissingDir:=1
+
+$error:=cURL_FTP_MakeDir (JSON Stringify($options);$createMissingDir)
+```
 
 ```
 error:=cURL_FTP_PrintDir(options;dir{;callbackMethod})
