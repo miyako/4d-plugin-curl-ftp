@@ -220,6 +220,18 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
 
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.example.com/a/b/c";\
+"USERNAME";"user";\
+"PASSWORD";"pass")
+
+$name:="d"
+
+$error:=cURL_FTP_Rename (JSON Stringify($options);$name)
+```
+
 ```
 error:=cURL_FTP_Send(options;path{;createMissingDir{;callbackMethod}}})
 ```
