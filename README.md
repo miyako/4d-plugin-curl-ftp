@@ -166,6 +166,14 @@ calls ``SYST``
 
 [CURLOPT_PREQUOTE](https://github.com/curl/curl/issues/1514) not available for SFTP
 
+```
+C_OBJECT($options)
+
+OB SET($options;"URL";"ftp://ftp.4d.com/")
+
+$error:=cURL_FTP_System (JSON Stringify($options);$system) //UNIX emulated by FileZilla
+```
+
 ---
 
 Properties of ``options``
