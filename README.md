@@ -239,7 +239,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``SYST``
 
-[CURLOPT_PREQUOTE](https://github.com/curl/curl/issues/1514) is not available for SFTP
+not supported for SFTP because [CURLOPT_PREQUOTE](https://github.com/curl/curl/issues/1514) is unavailable
 
 ```
 C_OBJECT($options)
