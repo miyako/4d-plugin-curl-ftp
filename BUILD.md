@@ -15,3 +15,23 @@
 
 ``#include "ufopen.h"``  
 ``_stati64(fname, stp)`` -> ``ustati64(fname, stp)``  
+
+### windows
+
+```
+Set RTLIBCFG=static
+nmake /f Makefile.vc mode=static VC=14 MACHINE=x86 DEBUG=no WITH_SSL=static WITH_ZLIB=static WITH_SSH2=static
+nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=no WITH_SSL=static WITH_ZLIB=static WITH_SSH2=static
+```
+
+preprocessor
+
+```
+CURL_STATICLIB 
+```
+
+libs
+
+```
+msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;Shell32.lib;
+```
