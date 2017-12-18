@@ -177,12 +177,16 @@ error:=cURL_FTP_Receive(options;path{;wildcardMatch{;callbackMethod}})
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-path|TEXT|local system path
+path|TEXT|local system path (folder or file)
 wildcardMatch|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 [CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcardMatch`` is ``1``
+
+specify a folder in ``path`` when using ``wildcardMatch``
+
+otherwise, specify a file
 
 ```
 error:=cURL_FTP_RemoveDir(options{;callbackMethod}})
