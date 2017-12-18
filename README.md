@@ -83,7 +83,7 @@ info|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html).
+uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html) with [CURLOPT_FILETIME](https://curl.haxx.se/libcurl/c/CURLOPT_FILETIME.html) and [CURLINFO_FILETIME](https://curl.haxx.se/libcurl/c/CURLINFO_FILETIME.html)
 
 ```
 C_OBJECT($options)
