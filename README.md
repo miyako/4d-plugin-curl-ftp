@@ -248,6 +248,21 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 [CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR_RETRY`` if ``createMissingDir`` is ``1``
 
 ```
+$path:=System folder(Desktop)+"test.txt"
+
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.example.com/a/b/c/test.txt";\
+"USERNAME";"user";\
+"PASSWORD";"pass")
+
+$createMissingDir:=1
+
+$error:=cURL_FTP_Send (JSON Stringify($options);$path;$createMissingDir)
+```
+
+```
 error:=cURL_FTP_System(options;system{;callbackMethod})
 ```
 
