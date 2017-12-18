@@ -114,6 +114,24 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
 
 ```
+C_OBJECT($options)
+
+OB SET($options;"URL";"ftp://ftp.4d.com/SAMPLE_DATABASES/4D/4D_v13/demo_dbs/")
+
+$error:=cURL_FTP_PrintDir (JSON Stringify($options);$list)
+```
+
+```
+4DHierarchicalLists.zip
+4DIndexes.zip
+4DListboxes.zip
+4DObjects.zip
+4DPictures.zip
+4DSQL.zip
+4DStaticWebBuilder.zip
+```
+
+```
 error:=cURL_FTP_Receive(options;path{;wildcardMatch{;callbackMethod}})
 ```
 
