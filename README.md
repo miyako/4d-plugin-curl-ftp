@@ -86,6 +86,21 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 uses [curl_easy_getinfo](https://curl.haxx.se/libcurl/c/curl_easy_getinfo.html).
 
 ```
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://test.rebex.net/readme.txt";\
+"USERNAME";"demo";\
+"PASSWORD";"password")
+
+$error:=cURL_FTP_GetFileInfo (JSON Stringify($options);$info)
+```
+
+```
+{"size":"403","date":"2014-04-08T14:09:39Z"}
+```
+
+```
 error:=cURL_FTP_MakeDir(options{;createMissingDir{;callbackMethod}})
 ```
 
