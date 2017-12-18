@@ -1,10 +1,6 @@
 # 4d-plugin-curl-ftp
 FTP/SFTP/FTPS client based on libcurl-7.57.0
 
-**Work In Progress**
-
-Mac version is functional
-
 ### List of 4D Internet Commands and replacements
 
 ``FTP_Append`` :  n/a (use ``APPEND`` option)    
