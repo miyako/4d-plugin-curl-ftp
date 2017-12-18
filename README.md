@@ -197,6 +197,17 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``RMD``
 
 ```
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.example.com/a/b/c";\
+"USERNAME";"user";\
+"PASSWORD";"pass")
+
+$error:=cURL_FTP_RemoveDir (JSON Stringify($options))
+```
+
+```
 error:=cURL_FTP_Rename(options;name{;callbackMethod})
 ```
 
