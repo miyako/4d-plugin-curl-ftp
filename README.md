@@ -29,6 +29,18 @@ Mac version is functional
 ``FTP_VerifyID`` : n/a (sessions are not kept open)   
 ``FTP_Progress`` : n/a (use ``PRIVATE`` option)   
 
+### Points of interest
+
+* Missing directories can be creates with ``_MakeDir`` and ``_Send``
+
+* ``_Receive`` supports [wildcards](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html)
+
+* reduced CPU consumption
+
+* callback method to monitor progress or abort if necessary
+
+---
+
 ## Syntax
 
 ```
