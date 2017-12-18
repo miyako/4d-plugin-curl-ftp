@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "curl_write_function_for_path(void*, unsigned long, unsigned long, std::basic_string&lt;unsigned char, std::char_traits&lt;unsigned char&gt;, std::allocator&lt;unsigned char&gt; &gt;&amp;):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "json_get_curl_option_s(void*, CURLoption, void*, std::basic_string&lt;unsigned char, std::char_traits&lt;unsigned char&gt;, std::allocator&lt;unsigned char&gt; &gt;&amp;):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "cURL_FTP_GetFileInfo(long long*, unsigned char**):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "cURL_FTP_RemoveDir(long long*, unsigned char**):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "last_path_component(std::basic_string&lt;unsigned char, std::char_traits&lt;unsigned char&gt;, std::allocator&lt;unsigned char&gt; &gt;&amp;):4DPlugin.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "path.compare(i, 1, (const uint8_t *)&quot;/&quot;)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "curl_write_function_for_path(void*, unsigned long, unsigned long, path_ctx*):4DPlugin.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

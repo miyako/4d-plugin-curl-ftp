@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<verifylog operation="Compact" name="cURL FTP" structure="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:cURL FTP.4DB" data="" os="Mac OS X (10.11.6)">
+<start_timer time="2017-12-17T15:13:36+09:00"/>
+<step title="メンテナンスモードでデータベースを開く">
+</step>
+<step title="圧縮">
+	<step title="自動シーケンス番号定義を圧縮中">
+	</step>
+	<step title="データテーブルをロード中">
+		<step title="データテーブルヘッダーを圧縮中">
+		</step>
+	</step>
+	<step title="テーブル Resources のBLOBを圧縮中">
+	</step>
+	<step title="テーブル Resources のレコードを圧縮中">
+		<step title="テーブル Resources の削除されたレコードのリストをチェック中">
+		</step>
+	</step>
+	<step title="テーブル [Table#0] のBLOBを圧縮中">
+	</step>
+	<step title="テーブル [Table#0] のレコードを圧縮中">
+	</step>
+	<step title="インデックス定義を圧縮中">
+		<step title="インデックスBツリー インデックス0 on kind (TYPE only)を圧縮中">
+			<step title="Bツリー インデックス0 on kind (TYPE only) のインデックスページアドレスを圧縮中">
+			</step>
+			<step title="Bツリー インデックス0 on kind (TYPE only) のインデックスページを圧縮中">
+			</step>
+		</step>
+		<step title="インデックスBツリー インデックス1 on stamp (stamp)を圧縮中">
+			<step title="Bツリー インデックス1 on stamp (stamp) のインデックスページアドレスを圧縮中">
+			</step>
+			<step title="Bツリー インデックス1 on stamp (stamp) のインデックスページを圧縮中">
+			</step>
+		</step>
+		<step title="インデックスBツリー インデックス2 on kind , id (TYPE and ID)を圧縮中">
+			<step title="Bツリー インデックス2 on kind , id (TYPE and ID) のインデックスページアドレスを圧縮中">
+			</step>
+			<step title="Bツリー インデックス2 on kind , id (TYPE and ID) のインデックスページを圧縮中">
+			</step>
+		</step>
+	</step>
+	<step title="以前のファイルをバックアップに移動">
+<move from="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:cURL FTP.4DB" to="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:Replaced Files (Compacting) 2017-12-17 15-13-36:cURL FTP.4DB">
+</move>	</step>
+	<step title="新しいファイルをデータベースフォルダに作成">
+<move from="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:Replaced Files (Compacting) 2017-12-17 15-13-36:_cURL FTP_compacted.4DB" to="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:cURL FTP.4DB">
+</move>	</step>
+	<step title="以前のインデックスファイルをバックアップに移動">
+<move from="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:cURL FTP.4DIndy" to="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:Replaced Files (Compacting) 2017-12-17 15-13-36:cURL FTP.4DIndy">
+</move>	</step>
+	<step title="新しいインデックスファイルをデータベースフォルダに作成">
+<move from="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:Replaced Files (Compacting) 2017-12-17 15-13-36:_cURL FTP_compacted.4DIndy" to="Macintosh HD:Users:miyako:Documents:GitHub:4d-plugin:cross-platform:4d-plugin-curl-ftp:cURL FTP.4dbase:cURL FTP.4DIndy">
+</move>	</step>
+</step>
+<stop_timer time="2017-12-17T15:13:36+09:00" success="true" user_canceled="false"/>
+</verifylog>
