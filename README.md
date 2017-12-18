@@ -31,7 +31,7 @@ Mac version is functional
 
 ### Points of interest
 
-* Missing directories can be creates with ``_MakeDir`` and ``_Send``
+* Missing directories can be created with ``_MakeDir`` and ``_Send``
 
 * ``_Receive`` supports [wildcards](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html)
 
