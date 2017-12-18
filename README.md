@@ -189,6 +189,28 @@ specify a folder in ``path`` when using ``wildcardMatch``
 otherwise, specify a file
 
 ```
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.4d.com/SAMPLE_DATABASES/4D/4D_v13/demo_dbs/*.zip")
+
+$path:=System folder(Desktop)+"sample_ftp"+Folder separator
+
+$error:=cURL_FTP_Receive (JSON Stringify($options);$path;1)
+```
+
+```
+C_OBJECT($options)
+
+OB SET($options;\
+"URL";"ftp://ftp.4d.com/SAMPLE_DATABASES/4D/4D_v13/demo_dbs/4DIndexes.zip")
+
+$path:=System folder(Desktop)+"sample_ftp"+Folder separator+"sample.zip"
+
+$error:=cURL_FTP_Receive (JSON Stringify($options);$path;0)
+```
+
+```
 error:=cURL_FTP_RemoveDir(options{;callbackMethod}})
 ```
 
