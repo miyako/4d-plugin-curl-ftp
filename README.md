@@ -185,19 +185,16 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 [CURLOPT_WILDCARDMATCH](https://curl.haxx.se/libcurl/c/CURLOPT_WILDCARDMATCH.html) is used if ``wildcardMatch`` is ``1``
 
 ```
-error:=cURL_FTP_RemoveDir(options{;recursive{;callbackMethod}})
+error:=cURL_FTP_RemoveDir(options{;callbackMethod}})
 ```
 
 Parameter|Type|Description
 ------------|------------|----
 options|TEXT|``JSON``
-recursive|LONGINT|optional
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RMD``
-
-if ``recursive`` is ``1``, ``CURLOPT_WILDCARDMATCH `` is activated and ``DELE path/*`` is called beforehand.
 
 ```
 error:=cURL_FTP_Rename(options;name{;callbackMethod})
