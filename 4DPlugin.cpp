@@ -491,8 +491,6 @@ size_t curl_write_function_for_path(void *buffer,
 																		path_ctx *ctx)
 {
 	size_t len = size * nmemb;
-	FILE *f;
-	curl_off_t fileSize;
 
 	if(ctx->useWildCard)
 	{
@@ -596,7 +594,7 @@ void cURL_FTP_Receive(sLONG_PTR *pResult, PackagePtr pParams)
 	remove_trailing_separator(local_path);
 	ctx.path = (const char *)local_path.c_str();
 #else
-	Param2.copyUTF816tring(&local_path);
+	local_path = Param2.getUTF16StringPtr();
 	remove_trailing_separator(local_path);
 	ctx.path = (const wchar_t *)local_path.c_str();
 #endif
@@ -642,7 +640,6 @@ size_t curl_read_function_for_path(void *buffer,
 {
 	size_t len = size * nmemb;
 	FILE *f;
-	curl_off_t fileSize;
 	
 	f = CPathOpen (ctx->path, CPathRead);
 	
@@ -689,7 +686,7 @@ void cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams)
 	Param2.copyPath(&local_path);
 	ctx.path = (const char *)local_path.c_str();
 #else
-	Param2.copyUTF816tring(&local_path);
+	local_path = Param2.getUTF16StringPtr();
 	ctx.path = (const wchar_t *)local_path.c_str();
 #endif
 	

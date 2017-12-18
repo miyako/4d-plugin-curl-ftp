@@ -1,3 +1,5 @@
+#include "ufopen.h"
+
 #ifndef struct_stat
 #  define struct_stat struct stat
 #endif

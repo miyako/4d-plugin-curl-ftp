@@ -31,6 +31,7 @@ void json_set_i_for_key(JSONNODE *n, json_char *key, json_int_t value);
 #define CPathCreate "wb"
 #define CPathRead "rb"
 #else
+#include <Shlobj.h>
 #define CPathString CUTF16String
 #define CPathOpen _wfopen
 #define CPathAppend L"ab"
@@ -79,6 +80,7 @@ void curl_get_info(CURL *curl, CUTF16String& json);
 
 void last_path_component(CUTF8String& path);
 void remove_trailing_separator(CUTF8String& path);
+void remove_trailing_separator(CUTF16String& path);
 void curl_unescape_path(CURL *curl, CUTF8String& path);
 
 // --- FTP
