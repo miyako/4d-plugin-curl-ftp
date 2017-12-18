@@ -55,6 +55,24 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
 
 ```
+C_OBJECT($options)
+
+OB SET($options;"URL";"ftp://ftp.4d.com/SAMPLE_DATABASES/4D/4D_v13/demo_dbs/")
+
+$error:=cURL_FTP_GetDirList (JSON Stringify($options);$list)
+```
+
+```
+-r--r--r-- 1 ftp ftp        2845148 Jul 17  2015 4DHierarchicalLists.zip
+-r--r--r-- 1 ftp ftp       72547498 Jul 17  2015 4DIndexes.zip
+-r--r--r-- 1 ftp ftp        5575780 Jul 17  2015 4DListboxes.zip
+-r--r--r-- 1 ftp ftp        4269584 Jul 17  2015 4DObjects.zip
+-r--r--r-- 1 ftp ftp       98552632 Jul 17  2015 4DPictures.zip
+-r--r--r-- 1 ftp ftp        8482751 Jul 17  2015 4DSQL.zip
+-r--r--r-- 1 ftp ftp        5429818 Jul 17  2015 4DStaticWebBuilder.zip
+```
+
+```
 error:=cURL_FTP_GetFileInfo(options;info{;callbackMethod})
 ```
 
@@ -164,7 +182,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``SYST``
 
-[CURLOPT_PREQUOTE](https://github.com/curl/curl/issues/1514) not available for SFTP
+[CURLOPT_PREQUOTE](https://github.com/curl/curl/issues/1514) is not available for SFTP
 
 ```
 C_OBJECT($options)
@@ -173,8 +191,6 @@ OB SET($options;"URL";"ftp://ftp.4d.com/")
 
 $error:=cURL_FTP_System (JSON Stringify($options);$system)
 ```
-
-result
 
 ```
 UNIX emulated by FileZilla
