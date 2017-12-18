@@ -171,8 +171,15 @@ C_OBJECT($options)
 
 OB SET($options;"URL";"ftp://ftp.4d.com/")
 
-$error:=cURL_FTP_System (JSON Stringify($options);$system) //UNIX emulated by FileZilla
+$error:=cURL_FTP_System (JSON Stringify($options);$system)
 ```
+
+result
+
+```
+UNIX emulated by FileZilla
+```
+
 
 ---
 
