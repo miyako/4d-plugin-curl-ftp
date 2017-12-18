@@ -45,6 +45,8 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 * callback method to monitor progress or abort if necessary
 
+although the API is optimsied for FTP, ``_Send`` and ``_Receive`` actually work with other protocols such as HTTP or TFTP.
+
 ---
 
 ## Syntax
