@@ -220,6 +220,7 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``RNFR`` followed by ``RNTO``
 
+```
 C_OBJECT($options)
 
 OB SET($options;\
