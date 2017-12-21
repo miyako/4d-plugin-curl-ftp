@@ -13,6 +13,8 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
+[1.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.1)
+
 [1.0.0](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.0.0)
 
 ### List of 4D Internet Commands and replacements
