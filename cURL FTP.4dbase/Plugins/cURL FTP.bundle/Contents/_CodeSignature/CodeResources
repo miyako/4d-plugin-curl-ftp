@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bVeGH0Pmn0iR8WOnW35m6MYMNRM=
+			tz4JStMa6jLB73oeiRpR4BAdorU=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -380,11 +380,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bVeGH0Pmn0iR8WOnW35m6MYMNRM=
+			tz4JStMa6jLB73oeiRpR4BAdorU=
 			</data>
 			<key>hash2</key>
 			<data>
-			1Pln++8OQXgtlhOztNgbrrYykQm0z4UFLUFq5eLf06o=
+			x587suJSDg6YJq1DrhzELBbsDOm2xSsGFKpH8XfiO/c=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -404,22 +404,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			8WH79l2tgViHfCYSUBu+HCIQ5Es=
+			/lWHqzsDVIX04YU4AweItu8EKcA=
 			</data>
 			<key>hash2</key>
 			<data>
-			rp5mwPoToTOMBrO5g9ATVRBDkkR1XpJE6MF06FX5mo0=
+			bSk56wZPJ5dMU1RWEVJD/PKLyjlEvOoiyDaJaMGzyJI=
 			</data>
 		</dict>
 		<key>Windows64/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			r1aAHLsl1HqPOxOjnnlVMBT8weQ=
+			RhjT4SVzqSFQ2D8FWzdMKe2XdCg=
 			</data>
 			<key>hash2</key>
 			<data>
-			D81BlAXC8IYBjKsGDu0nx8Zm3OxlDG6/r2pFvj/FY7A=
+			k8XOmK5JjUuoyLh2t4GTKMcU7sWdZZlE1BkCzH5nfFE=
 			</data>
 		</dict>
 		<key>manifest.json</key>

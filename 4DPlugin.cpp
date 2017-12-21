@@ -1217,7 +1217,14 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
 		if (name)
 		{
 			std::wstring s = std::wstring((const wchar_t *)name);
-			
+			if (s.compare(L"VERBOSE") == 0)
+			{
+				v = CURLOPT_VERBOSE;goto json_get_curl_option_exit;
+			}
+			if (s.compare(L"USE_SSL") == 0)
+			{
+				v = CURLOPT_USE_SSL;goto json_get_curl_option_exit;
+			}
 			if (s.compare(L"URL") == 0)
 			{
 				v = CURLOPT_URL;goto json_get_curl_option_exit;
@@ -1481,6 +1488,49 @@ long json_get_curl_option_value(JSONNODE *n)
 		{
 			v = CURLFTPMETHOD_SINGLECWD;goto json_get_curl_option_value_exit;
 		}
+
+		if (s.compare(L"AUTH_DEFAULT") == 0)
+		{
+			v = CURLFTPAUTH_DEFAULT;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"AUTH_SSL") == 0)
+		{
+			v = CURLFTPAUTH_SSL;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"AUTH_TLS") == 0)
+		{
+			v = CURLFTPAUTH_TLS;goto json_get_curl_option_value_exit;
+		}
+
+		if (s.compare(L"CCC_NONE") == 0)
+		{
+			v = CURLFTPSSL_CCC_NONE;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"CCC_PASSIVE") == 0)
+		{
+			v = CURLFTPSSL_CCC_PASSIVE;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"CCC_ACTIVE") == 0)
+		{
+			v = CURLFTPSSL_CCC_ACTIVE;goto json_get_curl_option_value_exit;
+		}
+		
+		if (s.compare(L"USESSL_NONE") == 0)
+		{
+			v = CURLUSESSL_NONE;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"USESSL_TRY") == 0)
+		{
+			v = CURLUSESSL_TRY;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"USESSL_CONTROL") == 0)
+		{
+			v = CURLUSESSL_CONTROL;goto json_get_curl_option_value_exit;
+		}
+		if (s.compare(L"USESSL_ALL") == 0)
+		{
+			v = CURLUSESSL_ALL;goto json_get_curl_option_value_exit;
+		}
 		
 	json_get_curl_option_value_exit:
 		json_free(value);
@@ -1541,6 +1591,7 @@ void curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String&
 						break;
 						
 						/* long */
+					case CURLOPT_VERBOSE:
 					case CURLOPT_APPEND:
 					case CURLOPT_FTP_USE_EPRT:
 					case CURLOPT_FTP_USE_EPSV:
@@ -1555,14 +1606,15 @@ void curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String&
 					case CURLOPT_LOW_SPEED_LIMIT:
 					case CURLOPT_SSL_VERIFYHOST:
 					case CURLOPT_SSL_VERIFYPEER:
-					case CURLOPT_FTPSSLAUTH:
-					case CURLOPT_FTP_SSL_CCC:
 					case CURLOPT_SSH_COMPRESSION:
 						json_get_curl_option_i(curl, curl_option, *i);
 						break;
 						
 						/* constant or long */
 					case CURLOPT_FTP_FILEMETHOD:
+					case CURLOPT_FTPSSLAUTH:
+					case CURLOPT_FTP_SSL_CCC:
+					case CURLOPT_USE_SSL:
 						json_get_curl_option_c(curl, curl_option, *i);
 						break;
 						
