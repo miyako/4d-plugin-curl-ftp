@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			tz4JStMa6jLB73oeiRpR4BAdorU=
+			+EA+Us+3YgomB5qg/KM5zfo+4HM=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -380,11 +380,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			tz4JStMa6jLB73oeiRpR4BAdorU=
+			+EA+Us+3YgomB5qg/KM5zfo+4HM=
 			</data>
 			<key>hash2</key>
 			<data>
-			x587suJSDg6YJq1DrhzELBbsDOm2xSsGFKpH8XfiO/c=
+			3PbXZ7AkoCodRMEi4OGE8oZGd0F2vdCVtQx6ZP9oldU=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -404,22 +404,44 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			/lWHqzsDVIX04YU4AweItu8EKcA=
+			GPtHoq1D2FwoVpO8vD96+aFUbIs=
 			</data>
 			<key>hash2</key>
 			<data>
-			bSk56wZPJ5dMU1RWEVJD/PKLyjlEvOoiyDaJaMGzyJI=
+			by6DpBGrwT7BG4Hv4L5KDEzGbAvADh4e727UhTvBnk0=
+			</data>
+		</dict>
+		<key>Windows/vcruntime140.dll</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			qDpOxwF20NwKx03mv6KIkMGPHSU=
+			</data>
+			<key>hash2</key>
+			<data>
+			LbJKllnn90/lxa10K72DUMj1vkYPmt8cn6EeDztFcb4=
 			</data>
 		</dict>
 		<key>Windows64/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			RhjT4SVzqSFQ2D8FWzdMKe2XdCg=
+			nAnCSGwnR+jh/lqLn5JVmqM+KZg=
 			</data>
 			<key>hash2</key>
 			<data>
-			k8XOmK5JjUuoyLh2t4GTKMcU7sWdZZlE1BkCzH5nfFE=
+			aInZUTnztXnGuWZ1YMUrQFdIyKofsxHzn9d8ettDQO0=
+			</data>
+		</dict>
+		<key>Windows64/vcruntime140.dll</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RPwfL/P6ciT52XBdcgtg819m1E8=
+			</data>
+			<key>hash2</key>
+			<data>
+			OTedDDGKoZ+/s6xN6UqEYAIYzvrjPCu0QSf5lLOQv5A=
 			</data>
 		</dict>
 		<key>manifest.json</key>
