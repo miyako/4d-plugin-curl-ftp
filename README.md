@@ -365,7 +365,9 @@ Properties of ``options``
 
 [FTP_USE_PRET](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_USE_PRET.html)  
 [FTP_ALTERNATIVE_TO_USER](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_ALTERNATIVE_TO_USER.html)  
-[FTP_FILEMETHOD](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html)
+[FTP_FILEMETHOD](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_FILEMETHOD.html)  
+
+values: ``MULTICWD``, ``NOCWD``, ``SINGLECWD``
 
 * Connection
 
@@ -390,7 +392,18 @@ Properties of ``options``
 * Encryption
 
 [FTPSSLAUTH](https://curl.haxx.se/libcurl/c/CURLOPT_FTPSSLAUTH.html)  
+
+values: ``AUTH_DEFAULT``, ``AUTH_SSL``, ``AUTH_TLS``
+
 [FTP_SSL_CCC](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_SSL_CCC.html)  
+
+values: ``CCC_NONE``, ``CCC_PASSIVE``, ``CCC_ACTIVE``
+
+* added in ``1.1``
+
+[USE_SSL](https://curl.haxx.se/libcurl/c/CURLOPT_USE_SSL.html)  
+
+values: ``USESSL_NONE`` ``USESSL_TRY`` ``USESSL_CONTROL`` ``USESSL_ALL``
 
 * SSH
 
