@@ -13,6 +13,8 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
+[1.2](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.2)
+
 [1.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.1)
 
 [1.0](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.0)
@@ -52,6 +54,16 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 * callback method to monitor progress or abort if necessary
 
 although the API is optimsied for FTP, ``_Send`` and ``_Receive`` actually work with other protocols such as HTTP or TFTP.
+
+### Note on FTPS
+
+set the protocol to ``ftps://`` if you want to use **implicit** FTPS
+
+set the protocol to ``ftp://`` and add the option ``USE_SSL`` if you want to use **explicit** FTPS
+
+use the option ``CAINFO`` for server ceritificate verification
+
+to skip verification, set ``SSL_VERIFYPEER`` to ``0``
 
 ---
 
