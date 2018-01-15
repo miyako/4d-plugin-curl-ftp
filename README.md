@@ -13,7 +13,7 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
-[1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3)
+[1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3) performance improvement; return ``curlInfo`` if empty string is passed to ``callbackMethod``
 
 [1.2](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.2)
 
