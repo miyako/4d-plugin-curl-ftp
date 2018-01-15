@@ -47,6 +47,6 @@ int ustati64(const char *path, struct _stati64 *buffer)
     {
         return _wstati64((const wchar_t *)buf, buffer);
     }
-
+	return -1;
 }
 #endif

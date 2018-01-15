@@ -12,6 +12,8 @@
 #include "4DPluginAPI.h"
 #include "4DPlugin.h"
 
+CURLM *gmcurl = NULL;
+
 bool IsProcessOnExit()
 {
 	C_TEXT name;
@@ -25,12 +27,20 @@ bool IsProcessOnExit()
 void OnStartup()
 {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
+	
+	gmcurl = curl_multi_init();
 }
 
 void OnCloseProcess()
 {
 	if(IsProcessOnExit())
 	{
+		if(gmcurl)
+		{
+			curl_multi_cleanup(gmcurl);
+			gmcurl = NULL;
+		}
+		
 		curl_global_cleanup();
 	}
 }
@@ -114,29 +124,16 @@ void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pPara
 
 #pragma mark -
 
-CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo)
+CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo)
 {
+	/* callback argument or return value if method name is empty */
+	CUTF16String info;
 	CURLMcode mc = CURLM_OK; /* not used to abort */
 	CURLcode result = CURLE_OK;
 	
-	curl_multi_add_handle(mcurl, curl);
-	int running_handles = 0;
-	
-	long curl_timeout = 1000;
-	curl_multi_timeout(mcurl, &curl_timeout);
-	curl_timeout = (curl_timeout > 0) ? curl_timeout : 1000;
-	curl_timeout = (curl_timeout > 1000) ? 1000 : curl_timeout;
-	timeval tv;
-	tv.tv_sec = curl_timeout / 1000;
-	tv.tv_usec = (curl_timeout % 1000) * 1000;
-	
-	fd_set fdread;
-	fd_set fdwrite;
-	fd_set fdexcep;
-	
+	/* prepare for callback */
 	PA_Variable	params[4];
-	
-	PA_long32 method_id = PA_GetMethodID((PA_Unichar *)Param3.getUTF16StringPtr());
+	PA_long32 method_id = PA_GetMethodID((PA_Unichar *)Param4.getUTF16StringPtr());
 	
 	if(method_id)
 	{
@@ -153,29 +150,61 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo
 		params[2] = PA_CreateVariable(eVK_Unistring);
 		params[3] = PA_CreateVariable(eVK_Unistring);
 		PA_SetUnistring((&(params[0].uValue.fString)),
-										(PA_Unichar *)Param3.getUTF16StringPtr());
+										(PA_Unichar *)Param4.getUTF16StringPtr());
 		PA_SetUnistring((&(params[3].uValue.fString)),
 										(PA_Unichar *)userInfo.getUTF16StringPtr());
 	}
+	int running_handles = 0;
+	curl_multi_add_handle(mcurl, curl);
+	curl_multi_perform(mcurl, &running_handles);
 	
 	do
 	{
+		PA_YieldAbsolute();
+		
+		struct timeval tv;
+		int rc = 0;
+		
+		fd_set fdread;
+		fd_set fdwrite;
+		fd_set fdexcep;
+		
+		int maxfd = -1;
+		long curl_timeout = -1;
 		
 		FD_ZERO(&fdread);
 		FD_ZERO(&fdwrite);
 		FD_ZERO(&fdexcep);
 		
-		int maxfd = -1;
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+		
+		curl_multi_timeout(mcurl, &curl_timeout);
+		
+		if(curl_timeout >= 0)
+		{
+			tv.tv_sec = curl_timeout / 1000;
+			if(tv.tv_sec > 1)
+				tv.tv_sec = 1;
+			else
+				tv.tv_usec = (curl_timeout % 1000) * 1000;
+		}
+		
 		mc = curl_multi_fdset(mcurl, &fdread, &fdwrite, &fdexcep, &maxfd);
-		int rc = 0;
+		
+		if(mc != CURLM_OK)
+		{
+			break;
+		}
+		
 		if(maxfd == -1)
 		{
-			PA_PutProcessToSleep(PA_GetCurrentProcessNumber(), 6);
+			/* https://curl.haxx.se/libcurl/c/multi-post.html */
+			PA_PutProcessToSleep(PA_GetCurrentProcessNumber(), 6);//100ms
 			rc = 0;
 		}
 		else
 		{
-			PA_YieldAbsolute();
 			rc = select(maxfd+1, &fdread, &fdwrite, &fdexcep, &tv);
 		}
 		switch(rc) {
@@ -188,12 +217,10 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo
 				mc = curl_multi_perform(mcurl, &running_handles);
 				/* callback method */
 			{
+				curl_get_info(curl, info);
 				
-				if(Param3.getUTF16Length())
+				if(Param4.getUTF16Length())
 				{
-					CUTF16String info;
-					curl_get_info(curl, info);
-					
 					if(method_id)
 					{
 						PA_SetUnistring((&(params[0].uValue.fString)),
@@ -223,6 +250,7 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo
 							goto curl_abort_transfer;
 						}
 					}
+					
 				}
 				
 				if(PA_IsProcessDying())
@@ -236,7 +264,7 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo
 				break;
 		}
 		
-	}while((running_handles != 0));
+	}while((running_handles));
 	
 curl_abort_transfer:
 	
@@ -253,6 +281,12 @@ curl_abort_transfer:
 		result = m->data.result;
 	}
 	
+	if(!Param4.getUTF16Length())
+	{
+		curl_get_info(curl, info);
+		Param4.setUTF16String(&info);
+	}
+	
 	curl_multi_remove_handle(mcurl, curl);
 	
 	return result;
@@ -265,12 +299,12 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
 	C_TEXT Param1;
 	C_TEXT Param2;
 	C_LONGINT returnValue;
-
+	
 	Param1.fromParamAtIndex(pParams, 1);
 	Param2.fromParamAtIndex(pParams, 2);
 
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -297,8 +331,9 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_slist_free_all(h);
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
-
+//	curl_multi_cleanup(mcurl);
+	
+	Param2.toParamAtIndex(pParams, 2);
 	returnValue.setReturn(pResult);
 }
 
@@ -314,7 +349,7 @@ void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams)
 	Param3.fromParamAtIndex(pParams, 3);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -344,8 +379,9 @@ void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_slist_free_all(h);
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
+	Param3.toParamAtIndex(pParams, 3);
 	returnValue.setReturn(pResult);
 }
 
@@ -359,7 +395,7 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
 	Param2.fromParamAtIndex(pParams, 2);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -386,8 +422,9 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_slist_free_all(h);
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
+	Param2.toParamAtIndex(pParams, 2);
 	returnValue.setReturn(pResult);
 }
 
@@ -403,7 +440,7 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
 	Param3.fromParamAtIndex(pParams, 3);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -438,8 +475,9 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_slist_free_all(h);
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
+	Param3.toParamAtIndex(pParams, 3);
 	returnValue.setReturn(pResult);
 }
 
@@ -573,7 +611,7 @@ void cURL_FTP_Receive(sLONG_PTR *pResult, PackagePtr pParams)
 	Param4.fromParamAtIndex(pParams, 4);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -622,12 +660,13 @@ void cURL_FTP_Receive(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ctx);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_function_for_path);
 
-	CURLcode result = curl_perform(mcurl, curl, Param4, userInfo);
-
-	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+	returnValue.setIntValue(curl_perform(mcurl, curl, Param4, userInfo));
 	
-	returnValue.setIntValue(result);
+	curl_easy_cleanup(curl);
+//	curl_multi_cleanup(mcurl);
+	
+	Param4.toParamAtIndex(pParams, 4);
+	
 	returnValue.setReturn(pResult);
 }
 
@@ -671,7 +710,7 @@ void cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams)
 	Param4.fromParamAtIndex(pParams, 4);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -722,8 +761,9 @@ void cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams)
 	}
 
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
+	Param4.toParamAtIndex(pParams, 4);
 	returnValue.setReturn(pResult);
 }
 
@@ -754,7 +794,7 @@ void cURL_FTP_GetDirList(sLONG_PTR *pResult, PackagePtr pParams)
 	Param3.fromParamAtIndex(pParams, 3);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -771,15 +811,15 @@ void cURL_FTP_GetDirList(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_function_for_text);
 	curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "LIST");
 	
-	CURLcode result = curl_perform(mcurl, curl, Param3, userInfo);
+	returnValue.setIntValue(curl_perform(mcurl, curl, Param3, userInfo));
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
 	Param2.setUTF8String(&dirlist);
 	Param2.toParamAtIndex(pParams, 2);
+	Param3.toParamAtIndex(pParams, 3);
 	
-	returnValue.setIntValue(result);
 	returnValue.setReturn(pResult);
 }
 
@@ -794,7 +834,7 @@ void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams)
 	Param3.fromParamAtIndex(pParams, 3);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -811,15 +851,14 @@ void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_function_for_text);	
 	curl_easy_setopt(curl, CURLOPT_DIRLISTONLY, 1L);
 	
-	CURLcode result = curl_perform(mcurl, curl, Param3, userInfo);
-	
+	returnValue.setIntValue(curl_perform(mcurl, curl, Param3, userInfo));
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
 	Param2.setUTF8String(&dirlist);
 	Param2.toParamAtIndex(pParams, 2);
+	Param3.toParamAtIndex(pParams, 3);
 	
-	returnValue.setIntValue(result);
 	returnValue.setReturn(pResult);
 }
 
@@ -870,7 +909,7 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
 	Param3.fromParamAtIndex(pParams, 3);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -913,10 +952,11 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
 	}
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
 	Param2.setUTF16String(&fileInfo);
 	Param2.toParamAtIndex(pParams, 2);
+	Param3.toParamAtIndex(pParams, 3);
 	
 	returnValue.setIntValue(result);
 	returnValue.setReturn(pResult);
@@ -970,7 +1010,7 @@ void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)
 	Param3.fromParamAtIndex(pParams, 3);
 	
 	CURL *curl = curl_easy_init();
-	CURLM *mcurl = curl_multi_init();
+	CURLM *mcurl = gmcurl;//curl_multi_init();
 	
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
@@ -996,10 +1036,11 @@ void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)
 	curl_slist_free_all(h);
 	
 	curl_easy_cleanup(curl);
-	curl_multi_cleanup(mcurl);
+//	curl_multi_cleanup(mcurl);
 	
 	Param2.setUTF8String(&system);
 	Param2.toParamAtIndex(pParams, 2);
+	Param3.toParamAtIndex(pParams, 3);
 	
 	returnValue.setReturn(pResult);
 }
