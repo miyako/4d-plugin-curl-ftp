@@ -13,7 +13,9 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
-[1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3)
+[1.4](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.4) send ``RM`` instead of ``DELE`` if protocol is ``SFTP``
+
+[1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3) performance improvement; return ``curlInfo`` if empty string is passed to ``callbackMethod``
 
 [1.2](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.2)
 
