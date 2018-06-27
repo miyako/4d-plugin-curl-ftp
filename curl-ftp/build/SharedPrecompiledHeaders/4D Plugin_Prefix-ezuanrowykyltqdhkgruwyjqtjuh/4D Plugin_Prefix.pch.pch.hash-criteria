@@ -1,0 +1,23 @@
+-x
+objective-c++
+-arch
+x86_64
+-fpascal-strings
+-Os
+-fno-common
+-DOBJC_OLD_DISPATCH_PROTOTYPES=0
+-isysroot
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
+-fasm-blocks
+-mmacosx-version-min=10.8
+-fvisibility=hidden
+-fvisibility-inlines-hidden
+-Iinclude/curl
+-Iinclude/libjson
+-Iinclude
+-I/Users/miyako/Documents/GitHub/4d-plugin/cross-platform/4d-plugin-curl-ftp/curl-ftp/cURL FTP.4dbase/Plugins/include
+-F/Users/miyako/Documents/GitHub/4d-plugin/cross-platform/4d-plugin-curl-ftp/curl-ftp/cURL FTP.4dbase/Plugins
+x86_64-apple-darwin15.6.0
+"4.2.1 Compatible Apple LLVM 8.0.0 (clang-800.0.42.1)"
+SDK_PRODUCT_BUILD_VERSION=12A264
+12A264
