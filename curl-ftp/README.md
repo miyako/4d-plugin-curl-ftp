@@ -166,7 +166,7 @@ createMissingDir|LONGINT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``MKD``
+calls ``MKD`` or ``mkdir`` (``sftp:``)
 
 [CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR_RETRY `` if ``createMissingDir`` is ``1``
 
