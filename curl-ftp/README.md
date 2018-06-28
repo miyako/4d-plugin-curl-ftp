@@ -13,7 +13,7 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
-[1.4](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.4) send ``RM`` instead of ``DELE`` if protocol is ``SFTP``
+[1.5](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.5) send ``rm`` ``rmdir`` ``mkdir`` if protocol is ``sftp:``
 
 [1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3) performance improvement; return ``curlInfo`` if empty string is passed to ``callbackMethod``
 
@@ -83,7 +83,7 @@ options|TEXT|``JSON``
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``DELE``
+calls ``DELE`` or ``rm`` `sftp:``)
 
 ```
 C_OBJECT($options)
@@ -166,7 +166,7 @@ createMissingDir|LONGINT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``MKD``
+calls ``MKD`` or ``mkdir`` (``sftp:``)
 
 [CURLOPT_FTP_CREATE_MISSING_DIRS](https://curl.haxx.se/libcurl/c/CURLOPT_FTP_CREATE_MISSING_DIRS.html) is ``CURLFTP_CREATE_DIR_RETRY `` if ``createMissingDir`` is ``1``
 
@@ -264,7 +264,7 @@ options|TEXT|``JSON``
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``RMD``
+calls ``RMD`` or ``rmdir`` (``sftp:``)
 
 ```
 C_OBJECT($options)
@@ -288,7 +288,7 @@ name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``RNFR`` followed by ``RNTO``
+calls ``RNFR`` followed by ``RNTO`` or ``rename`` (``sftp:``)
 
 ```
 C_OBJECT($options)
