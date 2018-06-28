@@ -264,7 +264,7 @@ options|TEXT|``JSON``
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``RMD``
+calls ``RMD`` or ``rmdir`` (``sftp:``)
 
 ```
 C_OBJECT($options)
@@ -288,7 +288,7 @@ name|TEXT|
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``RNFR`` followed by ``RNTO``
+calls ``RNFR`` followed by ``RNTO`` or ``rename`` (``sftp:``)
 
 ```
 C_OBJECT($options)
