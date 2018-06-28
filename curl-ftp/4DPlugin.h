@@ -70,7 +70,8 @@ typedef enum
 {
 	PROTOCOL_TYPE_FTP = 0,
 	PROTOCOL_TYPE_SFTP = 1,
-	PROTOCOL_TYPE_FTPS = 2
+	PROTOCOL_TYPE_FTPS = 2,
+	PROTOCOL_TYPE_UNKNOWN = -1
 }protocol_type_t;
 
 CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo);
@@ -82,7 +83,7 @@ void json_get_curl_option_i(CURL *curl, CURLoption option, JSONNODE *n);
 void json_get_curl_option_p(CURL *curl, CURLoption option, JSONNODE *n);
 void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n);
 long json_get_curl_option_value(JSONNODE *n);
-void curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path);
+protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path);
 void curl_get_info(CURL *curl, CUTF16String& json);
 
 void last_path_component(CUTF8String& path);

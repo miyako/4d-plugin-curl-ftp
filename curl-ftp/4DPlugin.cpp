@@ -309,19 +309,7 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
 	
-	curl_set_options(curl, Param1, userInfo, path);
-	
-	protocol_type_t protocol = PROTOCOL_TYPE_FTP;
-	
-	if(0 == path.find((const uint8_t *)"sftp:"))
-	{
-		protocol = PROTOCOL_TYPE_SFTP;
-	}
-	
-	if(0 == path.find((const uint8_t *)"ftps:"))
-	{
-		protocol = PROTOCOL_TYPE_FTPS;
-	}
+	protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
 	
 	curl_unescape_path(curl, path);
 	
@@ -337,7 +325,7 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	switch (protocol) {
   case PROTOCOL_TYPE_SFTP:
-			quote = CUTF8String((const uint8_t *)"RM ").append(path);
+			quote = CUTF8String((const uint8_t *)"rm ").append(path);
 			break;
 			
   default:
@@ -377,7 +365,7 @@ void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams)
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
 	
-	curl_set_options(curl, Param1, userInfo, path);
+	protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
 	
 	curl_unescape_path(curl, path);
 	
@@ -392,8 +380,19 @@ void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams)
 		curl_easy_setopt(curl, CURLOPT_FTP_CREATE_MISSING_DIRS, CURLFTP_CREATE_DIR_RETRY);
 	}
 	
-	CUTF8String quote = CUTF8String((const uint8_t *)"MKD ").append(path);
-	h = curl_slist_append(h, (const char *)quote.c_str());
+	CUTF8String quote;
+	
+	switch (protocol) {
+  case PROTOCOL_TYPE_SFTP:
+			quote = CUTF8String((const uint8_t *)"mkdir ").append(path);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			break;
+			
+  default:
+			quote = CUTF8String((const uint8_t *)"MKD ").append(path);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			break;
+	}
 	
 	curl_easy_setopt(curl, CURLOPT_QUOTE, h);
 	
@@ -423,7 +422,7 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
 	
-	curl_set_options(curl, Param1, userInfo, path);
+	protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
 	
 	curl_unescape_path(curl, path);
 	
@@ -435,8 +434,20 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
 
 	last_path_component(path);/* because we CURLOPT_POSTQUOTE */
 	
-	CUTF8String quote = CUTF8String((const uint8_t *)"RMD ").append(path);
-	h = curl_slist_append(h, (const char *)quote.c_str());
+	CUTF8String quote;
+	
+	switch (protocol) {
+  case PROTOCOL_TYPE_SFTP:
+			quote = CUTF8String((const uint8_t *)"rmdir ").append(path);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+
+			break;
+			
+  default:
+			quote = CUTF8String((const uint8_t *)"RMD ").append(path);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			break;
+	}
 	
 	curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
 	
@@ -468,7 +479,7 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
 	C_TEXT userInfo; /* PRIVATE */
 	CUTF8String path;
 	
-	curl_set_options(curl, Param1, userInfo, path);
+	protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
 	
 	curl_unescape_path(curl, path);
 	
@@ -485,11 +496,25 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
 	CUTF8String name;
 	Param2.copyUTF8String(&name);
 	
-	CUTF8String quote = CUTF8String((const uint8_t *)"RNFR ").append(path);
-	h = curl_slist_append(h, (const char *)quote.c_str());
+	CUTF8String quote;
 	
-	quote = CUTF8String((const uint8_t *)"RNTO ").append(name);
-	h = curl_slist_append(h, (const char *)quote.c_str());
+	switch (protocol) {
+  case PROTOCOL_TYPE_SFTP:
+			quote = CUTF8String((const uint8_t *)"rename ").append(path);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			
+			quote = CUTF8String((const uint8_t *)" ").append(name);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			break;
+			
+  default:
+			quote = CUTF8String((const uint8_t *)"RNFR ").append(path);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			
+			quote = CUTF8String((const uint8_t *)"RNTO ").append(name);
+			h = curl_slist_append(h, (const char *)quote.c_str());
+			break;
+	}
 	
 	curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
 	
@@ -1605,8 +1630,10 @@ long json_get_curl_option_value(JSONNODE *n)
 
 #pragma mark -
 
-void curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path)
+protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path)
 {
+	protocol_type_t protocol = PROTOCOL_TYPE_UNKNOWN;
+	
 	CUTF8String Param1_u8;
 	Param1.copyUTF8String(&Param1_u8);
 	std::wstring Param1_option;
@@ -1644,6 +1671,25 @@ void curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String&
 					case CURLOPT_FTP_ALTERNATIVE_TO_USER:
 					case CURLOPT_SSH_HOST_PUBLIC_KEY_MD5:
 						json_get_curl_option_s(curl, curl_option, *i, path);
+						if(curl_option == CURLOPT_URL)
+						{
+							json_char *value = json_as_string(*i);
+							if(value)
+							{
+								CUTF8String u;
+								json_wconv(value, &u);
+								if(0 == u.find((const uint8_t *)"sftp:"))
+								{
+									protocol = PROTOCOL_TYPE_SFTP;
+								}
+								
+								if(0 == u.find((const uint8_t *)"ftps:"))
+								{
+									protocol = PROTOCOL_TYPE_FTPS;
+								}
+								json_free(value);
+							}
+						}
 						break;
 						
 						/* path */
@@ -1698,6 +1744,7 @@ void curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String&
 		json_delete(option);
 	}
 
+	return protocol;
 }
 
 void curl_get_info(CURL *curl, CUTF16String& json)
