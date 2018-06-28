@@ -13,7 +13,7 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
-[1.4](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.4) send ``RM`` instead of ``DELE`` if protocol is ``sftp:``
+[1.4](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.4) send ``rm`` instead of ``DELE`` if protocol is ``sftp:``
 
 [1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3) performance improvement; return ``curlInfo`` if empty string is passed to ``callbackMethod``
 
@@ -83,7 +83,7 @@ options|TEXT|``JSON``
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``DELE`` or ``RM`` `sftp:``)
+calls ``DELE`` or ``rm`` `sftp:``)
 
 ```
 C_OBJECT($options)
