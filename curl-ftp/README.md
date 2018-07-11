@@ -109,6 +109,8 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
 
+the url must end with a delimiter (``/``)
+
 ```
 C_OBJECT($options)
 
@@ -195,6 +197,8 @@ callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
+
+the url must end with a delimiter (``/``)
 
 ```
 C_OBJECT($options)
