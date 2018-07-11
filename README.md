@@ -77,7 +77,7 @@ options|TEXT|``JSON``
 callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
-calls ``DELE`` or ``rm`` `sftp:``)
+calls ``DELE`` or ``rm`` (``sftp:``)
 
 ```
 C_OBJECT($options)
