@@ -9,21 +9,13 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Version
 
-<img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" />
+<img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" /> <img src="https://user-images.githubusercontent.com/1725068/41266195-ddf767b2-6e30-11e8-9d6b-2adf6a9f57a5.png" width="32" height="32" />
 
 ### Releases
 
 SFTP [CURLOPT_QUOTE](https://curl.haxx.se/libcurl/c/CURLOPT_QUOTE.html)
 
-[1.5](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.5) send ``rm`` ``rmdir`` ``mkdir`` if protocol is ``sftp:``
-
-[1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3) performance improvement; return ``curlInfo`` if empty string is passed to ``callbackMethod``
-
-[1.2](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.2)
-
-[1.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.1)
-
-[1.0](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.0)
+[2.0](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.0) fixed ``sftp:`` now ``threadSafe`` (v17)
 
 ### List of 4D Internet Commands and replacements
 
