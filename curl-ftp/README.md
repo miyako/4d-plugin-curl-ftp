@@ -13,6 +13,8 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
+SFTP [CURLOPT_QUOTE](https://curl.haxx.se/libcurl/c/CURLOPT_QUOTE.html)
+
 [1.5](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.5) send ``rm`` ``rmdir`` ``mkdir`` if protocol is ``sftp:``
 
 [1.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/1.3) performance improvement; return ``curlInfo`` if empty string is passed to ``callbackMethod``
@@ -109,6 +111,8 @@ error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``LIST`` via [CURLOPT_CUSTOMREQUEST](https://curl.haxx.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html)
 
+the url must end with a delimiter (``/``)
+
 ```
 C_OBJECT($options)
 
@@ -195,6 +199,8 @@ callbackMethod|TEXT|optional
 error|LONGINT|[Error code](https://curl.haxx.se/libcurl/c/libcurl-errors.html)
 
 calls ``NLST`` via [CURLOPT_DIRLISTONLY](https://curl.haxx.se/libcurl/c/CURLOPT_DIRLISTONLY.html)
+
+the url must end with a delimiter (``/``)
 
 ```
 C_OBJECT($options)
