@@ -313,6 +313,8 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	curl_unescape_path(curl, path);
 	
+	CUTF8String fullpath = path;
+	
 	curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 	curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
@@ -325,7 +327,7 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	switch (protocol) {
   case PROTOCOL_TYPE_SFTP:
-			quote = CUTF8String((const uint8_t *)"rm ").append(path);
+			quote = CUTF8String((const uint8_t *)"rm ").append(fullpath);
 			break;
 			
   default:
@@ -426,6 +428,8 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	curl_unescape_path(curl, path);
 	
+	CUTF8String fullpath = path;
+	
 	curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 	curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
@@ -438,7 +442,7 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	switch (protocol) {
   case PROTOCOL_TYPE_SFTP:
-			quote = CUTF8String((const uint8_t *)"rmdir ").append(path);
+			quote = CUTF8String((const uint8_t *)"rmdir ").append(fullpath + (const uint8_t *)"/");
 			h = curl_slist_append(h, (const char *)quote.c_str());
 
 			break;
@@ -483,6 +487,8 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	curl_unescape_path(curl, path);
 	
+	CUTF8String fullpath = path;
+	
 	curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
 	curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
@@ -495,15 +501,15 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
 	
 	CUTF8String name;
 	Param2.copyUTF8String(&name);
-	
+		
 	CUTF8String quote;
 	
 	switch (protocol) {
   case PROTOCOL_TYPE_SFTP:
-			quote = CUTF8String((const uint8_t *)"rename ").append(path);
-			h = curl_slist_append(h, (const char *)quote.c_str());
-			
-			quote = CUTF8String((const uint8_t *)" ").append(name);
+			quote = CUTF8String((const uint8_t *)"rename ")
+			.append(fullpath)
+			.append((const uint8_t *)" ")
+			.append(name);
 			h = curl_slist_append(h, (const char *)quote.c_str());
 			break;
 			
