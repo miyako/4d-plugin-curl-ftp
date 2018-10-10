@@ -15,7 +15,7 @@ FTP/SFTP/FTPS client based on libcurl-7.57.0
 
 ### Releases
 
-[2.0](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.0) fixed ``sftp:`` now ``threadSafe`` (v17)
+[2.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.1) fixed ``sftp:`` now ``threadSafe`` (v17)
 
 ### List of 4D Internet Commands and replacements
 
