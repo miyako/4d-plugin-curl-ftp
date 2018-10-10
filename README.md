@@ -123,6 +123,31 @@ $error:=cURL_FTP_GetDirList (JSON Stringify($options);$list)
 -r--r--r-- 1 ftp ftp        5429818 Jul 17  2015 4DStaticWebBuilder.zip
 ```
 
+example of splitting elements
+
+```
+$error:=cURL_FTP_GetDirList (JSON Stringify($options);$dir)
+
+If ($error=0)
+  ARRAY LONGINT($pos;0)
+  ARRAY LONGINT($len;0)
+  $i:=1
+
+  While (Match regex("(?m)^(\\S+)\\s+(\\d+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+([:L:]{3}\\s+\\d+)\\s+(\\d+:\\d+)\\s+(.+)$";$dir;$i;$pos;$len))
+    $f1:=Substring($dir;$pos{1};$len{1})
+    $f2:=Num(Substring($dir;$pos{2};$len{2}))
+    $f3:=Substring($dir;$pos{3};$len{3})
+    $f4:=Substring($dir;$pos{4};$len{4})
+    $f5:=Num(Substring($dir;$pos{5};$len{5}))
+    $f6:=Substring($dir;$pos{6};$len{6})
+    $f7:=Time(Substring($dir;$pos{7};$len{7}))
+    $f8:=Substring($dir;$pos{8};$len{8})
+    $i:=$pos{Size of array($pos)}+$len{Size of array($len)}
+  End while 
+
+End if
+```
+
 ```
 error:=cURL_FTP_GetFileInfo(options;info{;callbackMethod})
 ```
