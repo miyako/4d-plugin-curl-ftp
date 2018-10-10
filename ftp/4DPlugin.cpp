@@ -192,9 +192,7 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
     }
 	
 	do
-	{
-		PA_YieldAbsolute2();
-		
+	{		
 		struct timeval tv;
 		int rc = 0;
 		
