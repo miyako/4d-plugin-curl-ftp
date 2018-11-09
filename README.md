@@ -1,5 +1,5 @@
 # 4d-plugin-curl-ftp
-FTP/SFTP/FTPS client based on libcurl-7.57.0
+HTTP client based on ~~libcurl-7.57.0~~ libcurl-7.61.1
 
 ### Platform
 
