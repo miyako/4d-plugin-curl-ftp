@@ -12,14 +12,6 @@ PA_long32 PA_GetCurrentProcessNumber2()
     return PA_GetLongintVariable(PA_ExecuteCommandByID(CMD_Current_process, &params, 0));
 }
 
-void PA_YieldAbsolute2()
-{
-//    IDLE from preemtive thread is blocking the main thread?
-//    PA_Variable params;
-//    PA_ExecuteCommandByID(CMD_IDLE, &params, 0);
-    PA_PutProcessToSleep2(PA_GetCurrentProcessNumber2(), 0);
-}
-
 void PA_PutProcessToSleep2(PA_long32 process, double delay)
 {
     PA_Variable params[2];

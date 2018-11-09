@@ -68,6 +68,8 @@
 		D182B3881FE070070004C2E3 /* ufopen.h in Headers */ = {isa = PBXBuildFile; fileRef = D182B3861FE070070004C2E3 /* ufopen.h */; };
 		D182B3A41FE08BDE0004C2E3 /* libidn2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D182B3A31FE08BDE0004C2E3 /* libidn2.a */; };
 		D182B3A61FE08BFE0004C2E3 /* libiconv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D182B3A51FE08BFE0004C2E3 /* libiconv.a */; };
+		D1CB0F1E219513D60037BE89 /* libnghttp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CB0F1C219513D60037BE89 /* libnghttp2.a */; };
+		D1CB0F1F219513D60037BE89 /* libunistring.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CB0F1D219513D60037BE89 /* libunistring.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -148,6 +150,8 @@
 		D182B3861FE070070004C2E3 /* ufopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ufopen.h; sourceTree = "<group>"; };
 		D182B3A31FE08BDE0004C2E3 /* libidn2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libidn2.a; path = a/libidn2.a; sourceTree = "<group>"; };
 		D182B3A51FE08BFE0004C2E3 /* libiconv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libiconv.a; path = a/libiconv.a; sourceTree = "<group>"; };
+		D1CB0F1C219513D60037BE89 /* libnghttp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnghttp2.a; path = a/libnghttp2.a; sourceTree = "<group>"; };
+		D1CB0F1D219513D60037BE89 /* libunistring.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libunistring.a; path = a/libunistring.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +159,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1CB0F1E219513D60037BE89 /* libnghttp2.a in Frameworks */,
+				D1CB0F1F219513D60037BE89 /* libunistring.a in Frameworks */,
 				D182B3781FE06AEC0004C2E3 /* libcurl.a in Frameworks */,
 				D182B37A1FE06AEC0004C2E3 /* libjson.a in Frameworks */,
 				D182B3711FE06AE10004C2E3 /* libssl.a in Frameworks */,
@@ -185,6 +191,7 @@
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
 				189286360695AD8900B05D6E /* Products */,
+				D1CB0F1B219513D50037BE89 /* Frameworks */,
 			);
 			name = "cURL FTP";
 			sourceTree = "<group>";
@@ -346,6 +353,15 @@
 				D13116D01A03BBA100DE1322 /* C */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		D1CB0F1B219513D50037BE89 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D1CB0F1C219513D60037BE89 /* libnghttp2.a */,
+				D1CB0F1D219513D60037BE89 /* libunistring.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

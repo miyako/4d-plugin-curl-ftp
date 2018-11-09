@@ -17,18 +17,6 @@ std::mutex mutexJson;
 
 CURLM *gmcurl = NULL;
 
-/*
-bool IsProcessOnExit()
-{
-	C_TEXT name;
-	PA_long32 state, time;
-	PA_GetProcessInfo(PA_GetCurrentProcessNumber(), name, &state, &time);
-	CUTF16String procName(name.getUTF16StringPtr());
-	CUTF16String exitProcName((PA_Unichar *)"$\0x\0x\0\0\0");
-	return (!procName.compare(exitProcName));
-}
-*/
-
 void OnStartup()
 {
 	curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -53,16 +41,6 @@ void OnExit()
     
     curl_global_cleanup();
 }
-
-/*
-void OnCloseProcess()
-{
- if(IsProcessOnExit())
- {
- OnExit();
- }
-}
-*/
 
 #pragma mark -
 
