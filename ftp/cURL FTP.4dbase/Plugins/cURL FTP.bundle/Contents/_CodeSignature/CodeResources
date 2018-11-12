@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			nPBKr5oHpgCKrnMeCaOYVaGSb0c=
+			Bp2C6e286DVgV7jPsP58iMoC3dI=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -380,11 +380,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			nPBKr5oHpgCKrnMeCaOYVaGSb0c=
+			Bp2C6e286DVgV7jPsP58iMoC3dI=
 			</data>
 			<key>hash2</key>
 			<data>
-			vCGKXJ2BiuJcr+pRM+K85Ik2QklMkv1n38Dk/f8H20o=
+			SrXHHjEknM5SP4JWvguO9sauH9/NzCDfx4yO9kS4CQw=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -404,55 +404,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			5gjqTKIBHQ7i4Y1aV6wCFGIJeZk=
+			lnTCn0zZWN1jVERi0EfyBsPeCmE=
 			</data>
 			<key>hash2</key>
 			<data>
-			6EPLfID/4p5iZOYhpvaNa8nbqUJxk5Wot9Uo9KPCo+4=
-			</data>
-		</dict>
-		<key>Windows/cURL FTP.exp</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			dTrQOpGVSNW0NtyWjb8O1IGlSVU=
-			</data>
-			<key>hash2</key>
-			<data>
-			8rTTGxx4GbIWsMB4kLEBSm5gBqbd9H+p/e8BBnwt5eo=
-			</data>
-		</dict>
-		<key>Windows/cURL FTP.iobj</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			PxAOMMNbqqWyjz5KbjJotdlPI9U=
-			</data>
-			<key>hash2</key>
-			<data>
-			AYiBzHNZONpATHYk+3JotlYZ+fdTkM2AvOGZbSmOCE0=
-			</data>
-		</dict>
-		<key>Windows/cURL FTP.ipdb</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			6l2rLFlA/FFivEj4Xx5GkyFaY9I=
-			</data>
-			<key>hash2</key>
-			<data>
-			DebILSQrPcoyW0y1++YtXJaGTZDUEx3Lbr6/LMv+Jmg=
-			</data>
-		</dict>
-		<key>Windows/cURL FTP.lib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			OzCT968Po3qGb8Lh9xMJvUNSoVQ=
-			</data>
-			<key>hash2</key>
-			<data>
-			Ym+0i9UvT6/g5V6i48SwaJ/h7OIUgy1mDqqyZI4lSRE=
+			OoBEOOckH1fZpvqr7TUN+5D7P9hcaJxJojU2OEWpXPk=
 			</data>
 		</dict>
 		<key>Windows/vcruntime140.dll</key>
@@ -470,55 +426,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ssmyRrr81ce5NlmzSwV6m1tpfnY=
+			ahSrdTRta2MSamPamB3gT4x866s=
 			</data>
 			<key>hash2</key>
 			<data>
-			Ep0HiUa14zeE6TClVYhqb0vJoCoULCACkCN5GQJEveM=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.exp</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			j2R2Bh4en2YUDaN3mLeYvdbjAO8=
-			</data>
-			<key>hash2</key>
-			<data>
-			XGk4xctBIzGgs3XoB6WA/564PI2T9gq1g4cM/UKII/U=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.iobj</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Qls2Wt/tq44uQYxAiUFFbzfzk0E=
-			</data>
-			<key>hash2</key>
-			<data>
-			5RfD7Mgj4JTeRnl//Op2KTgKxvfxk800aw291Z08Mpw=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.ipdb</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			6A+Tl6eqqnea2wZrendIuc0OcZE=
-			</data>
-			<key>hash2</key>
-			<data>
-			NGpEFDZYTfPgwL84Rnqhyi9MhUHSADcR92LCygCj3o0=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.lib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			xSvBUqWPIc8+FZLvLxsF+HrlKlY=
-			</data>
-			<key>hash2</key>
-			<data>
-			7z29hCDvHt3KAzUOZUGo8H2sGD6R9JsEj5PmbiW0/zc=
+			6wSY23SRXFk5AsBuk9gCaEA+6horZQKkPYIA9qRS18M=
 			</data>
 		</dict>
 		<key>Windows64/vcruntime140.dll</key>

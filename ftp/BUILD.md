@@ -35,9 +35,3 @@ libs
 ```
 msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;Shell32.lib;
 ```
-
-for debug, add
-
-```
-msvcrtd.lib;vcruntimed.lib;ucrtd.lib;
-```

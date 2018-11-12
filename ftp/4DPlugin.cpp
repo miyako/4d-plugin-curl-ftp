@@ -134,7 +134,7 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
 	CURLMcode mc = CURLM_OK; /* not used to abort */
 	CURLcode result = CURLE_OK;
 	
-    PA_long32 currentProcessNumber = PA_GetCurrentProcessNumber2();
+    PA_long32 currentProcessNumber = PA_GetCurrentProcessNumber();
     
 	/* prepare for callback */
 	PA_Variable	params[4];
@@ -214,7 +214,7 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
 		if(maxfd == -1)
 		{
 			/* https://curl.haxx.se/libcurl/c/multi-post.html */
-			PA_PutProcessToSleep2(PA_GetCurrentProcessNumber(), 6);//100ms
+			PA_PutProcessToSleep2(currentProcessNumber, 6);//100ms
 			rc = 0;
 		}
 		else
