@@ -15,7 +15,7 @@ HTTP client based on ~~libcurl-7.57.0~~ libcurl-7.61.1
 
 ### Releases
 
-[2.2](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.2) updated ``libcurl``
+[2.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.3) updated ``libcurl``
 
 [2.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.1) fixed ``sftp:`` now ``threadSafe`` (v17)
 
