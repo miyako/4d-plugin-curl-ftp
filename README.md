@@ -17,7 +17,7 @@ __Mac version is now 64-bit only!__
 
 ### Releases
 
-[2.7](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.7) updated ``libcurl``
+[3.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/3.1) updated ``libcurl``
 
 ### List of 4D Internet Commands and replacements
 
