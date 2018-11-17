@@ -122,7 +122,6 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="4DPlugin.cpp" />
-    <ClCompile Include="include\libjson_methods.cpp" />
     <ClCompile Include="preemptive\preemptive_methods.cpp" />
     <ClCompile Include="ufopen.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
@@ -151,7 +150,6 @@
     <ClInclude Include="4D Plugin API\PrivateTypes.h" />
     <ClInclude Include="4D Plugin API\PublicTypes.h" />
     <ClInclude Include="4DPlugin.h" />
-    <ClInclude Include="include\libjson_methods.h" />
     <ClInclude Include="preemptive\preemptive_methods.h" />
     <ClInclude Include="ufopen.h" />
   </ItemGroup>

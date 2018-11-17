@@ -74,7 +74,6 @@
     </ClCompile>
     <ClCompile Include="ufopen.c" />
     <ClCompile Include="preemptive\preemptive_methods.cpp" />
-    <ClCompile Include="include\libjson_methods.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="4DPlugin.h">
@@ -145,7 +144,6 @@
     </ClInclude>
     <ClInclude Include="ufopen.h" />
     <ClInclude Include="preemptive\preemptive_methods.h" />
-    <ClInclude Include="include\libjson_methods.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="4D Plugin API\4DPluginAPI.def">

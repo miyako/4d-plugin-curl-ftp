@@ -53,8 +53,6 @@
 		D13116F41A03C7AF00DE1322 /* ARRAY_DATE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D13116F21A03C7AF00DE1322 /* ARRAY_DATE.cpp */; };
 		D13116F51A03C7AF00DE1322 /* ARRAY_DATE.h in Headers */ = {isa = PBXBuildFile; fileRef = D13116F31A03C7AF00DE1322 /* ARRAY_DATE.h */; };
 		D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = D134D4A91A030B06008D14EF /* manifest.json */; };
-		D167F2FF20F5D77A00639776 /* libjson_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D167F2FD20F5D77A00639776 /* libjson_methods.cpp */; };
-		D167F30020F5D77A00639776 /* libjson_methods.h in Headers */ = {isa = PBXBuildFile; fileRef = D167F2FE20F5D77A00639776 /* libjson_methods.h */; };
 		D167F30420F5D7C000639776 /* preemptive_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D167F30220F5D7C000639776 /* preemptive_methods.cpp */; };
 		D167F30520F5D7C000639776 /* preemptive_methods.h in Headers */ = {isa = PBXBuildFile; fileRef = D167F30320F5D7C000639776 /* preemptive_methods.h */; };
 		D175D9CD1A02E8DD0006B569 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */; };
@@ -135,8 +133,6 @@
 		D13116F31A03C7AF00DE1322 /* ARRAY_DATE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARRAY_DATE.h; path = Classes/ARRAY_DATE.h; sourceTree = "<group>"; };
 		D134D4A91A030B06008D14EF /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
 		D14D10DD1A03A8A5008B3411 /* constants.xlf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = constants.xlf; sourceTree = "<group>"; };
-		D167F2FD20F5D77A00639776 /* libjson_methods.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = libjson_methods.cpp; path = include/libjson_methods.cpp; sourceTree = SOURCE_ROOT; };
-		D167F2FE20F5D77A00639776 /* libjson_methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libjson_methods.h; path = include/libjson_methods.h; sourceTree = SOURCE_ROOT; };
 		D167F30220F5D7C000639776 /* preemptive_methods.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = preemptive_methods.cpp; sourceTree = "<group>"; };
 		D167F30320F5D7C000639776 /* preemptive_methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = preemptive_methods.h; sourceTree = "<group>"; };
 		D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -183,7 +179,6 @@
 			isa = PBXGroup;
 			children = (
 				D167F30120F5D79E00639776 /* preemptive */,
-				D167F2FC20F5D76900639776 /* libjson */,
 				D182B37B1FE06D890004C2E3 /* dylib */,
 				D182B36E1FE06AD40004C2E3 /* a */,
 				D108BD7A1A03D1E6001F1B90 /* Manifest */,
@@ -306,15 +301,6 @@
 			name = ARRAY;
 			sourceTree = "<group>";
 		};
-		D167F2FC20F5D76900639776 /* libjson */ = {
-			isa = PBXGroup;
-			children = (
-				D167F2FD20F5D77A00639776 /* libjson_methods.cpp */,
-				D167F2FE20F5D77A00639776 /* libjson_methods.h */,
-			);
-			path = libjson;
-			sourceTree = "<group>";
-		};
 		D167F30120F5D79E00639776 /* preemptive */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,7 +368,6 @@
 				18B684F906944F2000CC6A1E /* Flags.h in Headers */,
 				D13116E31A03BC1100DE1322 /* ARRAY_BOOLEAN.h in Headers */,
 				D13116B11A03B33D00DE1322 /* C_INTEGER.h in Headers */,
-				D167F30020F5D77A00639776 /* libjson_methods.h in Headers */,
 				18B684FA06944F2000CC6A1E /* PrivateTypes.h in Headers */,
 				18B684FB06944F2000CC6A1E /* PublicTypes.h in Headers */,
 				D13116E91A03BC1100DE1322 /* ARRAY_REAL.h in Headers */,
@@ -483,7 +468,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D167F2FF20F5D77A00639776 /* libjson_methods.cpp in Sources */,
 				D13116AC1A03B10800DE1322 /* C_LONGINT.cpp in Sources */,
 				D13116E81A03BC1100DE1322 /* ARRAY_REAL.cpp in Sources */,
 				18B684FF06944F8800CC6A1E /* 4DPlugin.cpp in Sources */,
