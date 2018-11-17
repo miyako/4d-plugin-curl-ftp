@@ -1,5 +1,5 @@
 # 4d-plugin-curl-ftp
-HTTP client based on ~~libcurl-7.57.0~~ libcurl-7.61.1
+HTTP client based on libcurl-7.62.0
 
 ### Platform
 
@@ -15,9 +15,7 @@ HTTP client based on ~~libcurl-7.57.0~~ libcurl-7.61.1
 
 ### Releases
 
-[2.3](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.3) updated ``libcurl``
-
-[2.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.1) fixed ``sftp:`` now ``threadSafe`` (v17)
+[2.5](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.5) updated ``libcurl``
 
 ### List of 4D Internet Commands and replacements
 
@@ -456,6 +454,18 @@ values: ``USESSL_NONE`` ``USESSL_TRY`` ``USESSL_CONTROL`` ``USESSL_ALL``
 [SSH_PUBLIC_KEYFILE](https://curl.haxx.se/libcurl/c/CURLOPT_SSH_PUBLIC_KEYFILE.html)  
 [SSH_PRIVATE_KEYFILE](https://curl.haxx.se/libcurl/c/CURLOPT_SSH_PRIVATE_KEYFILE.html)  
 [SSH_KNOWNHOSTS](https://curl.haxx.se/libcurl/c/CURLOPT_SSH_KNOWNHOSTS.html)
+
+* added in ``2.5``
+
+[CURLOPT_TLS13_CIPHERS](https://curl.haxx.se/libcurl/c/CURLOPT_TLS13_CIPHERS.html)
+[CURLOPT_PROXY_TLS13_CIPHERS](https://curl.haxx.se/libcurl/c/CURLOPT_PROXY_TLS13_CIPHERS.html)
+[CURLOPT_DISALLOW_USERNAME_IN_URL](https://curl.haxx.se/libcurl/c/CURLOPT_DISALLOW_USERNAME_IN_URL.html)
+[CURLOPT_UPLOAD_BUFFERSIZE](https://curl.haxx.se/libcurl/c/CURLOPT_UPLOAD_BUFFERSIZE.html)
+[CURLOPT_UPKEEP_INTERVAL_MS](https://curl.haxx.se/libcurl/c/CURLOPT_UPKEEP_INTERVAL_MS.html)
+[CURLOPT_HAPROXYPROTOCOL](https://curl.haxx.se/libcurl/c/CURLOPT_HAPROXYPROTOCOL.html)
+[CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS](https://curl.haxx.se/libcurl/c/CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS.html)
+[CURLOPT_DNS_SHUFFLE_ADDRESSES](https://curl.haxx.se/libcurl/c/CURLOPT_DNS_SHUFFLE_ADDRESSES.html)
+[CURLOPT_DOH_URL](https://curl.haxx.se/libcurl/c/CURLOPT_DOH_URL.html)
 
 ---
 
