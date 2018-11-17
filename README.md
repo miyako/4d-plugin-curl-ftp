@@ -15,7 +15,7 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
-[2.5](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.5) updated ``libcurl``
+[2.7](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.7) updated ``libcurl``
 
 ### List of 4D Internet Commands and replacements
 
