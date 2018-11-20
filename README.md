@@ -15,7 +15,7 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
-[2.8.with-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.8.with-carbon) updated ``libcurl``
+[2.8-carbon](ttps://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.8-carbon) updated ``libcurl``
 
 ### List of 4D Internet Commands and replacements
 
