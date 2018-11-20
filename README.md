@@ -7,7 +7,9 @@ HTTP client based on libcurl-7.62.0
 |:------:|:-----:|:---------:|:---------:|
 ||<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|
 
-__Mac version is now 64-bit only!__ c.f. [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch
+__Mac version is now 64-bit only!__ 
+
+goto [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch for 32-bit support
 
 ### Version
 
@@ -17,7 +19,7 @@ __Mac version is now 64-bit only!__ c.f. [carbon](https://github.com/miyako/4d-p
 
 ### Releases
 
-[3.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/3.1) updated ``libcurl``
+[2.8](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.8) updated ``libcurl``
 
 ### List of 4D Internet Commands and replacements
 
