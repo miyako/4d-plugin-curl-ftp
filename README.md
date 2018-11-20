@@ -9,7 +9,7 @@ HTTP client based on libcurl-7.62.0
 
 __Mac version is now 64-bit only!__ 
 
-goto [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch for 32-bit support
+use [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch for 32-bit support
 
 ### Version
 
