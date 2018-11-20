@@ -1502,7 +1502,7 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
             {
                 v = CURLOPT_HAPROXYPROTOCOL; goto json_get_curl_option_exit;
             }
-#if VERSIONWIN
+//#if VERSIONWIN
             if (s.compare(L"DOH_URL") == 0)
             {
                 v = CURLOPT_DOH_URL; goto json_get_curl_option_exit;
@@ -1515,7 +1515,7 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
             {
                 v = CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS; goto json_get_curl_option_exit;
             }
-#endif
+//#endif
         json_get_curl_option_exit:
             json_free(name);
         }
