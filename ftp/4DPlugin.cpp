@@ -1130,7 +1130,6 @@ void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)
     returnValue.setReturn(pResult);
 }
 
-
 #pragma mark JSON
 
 void json_wconv(const wchar_t *value, CUTF16String *u16)
@@ -1502,7 +1501,6 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
             {
                 v = CURLOPT_HAPROXYPROTOCOL; goto json_get_curl_option_exit;
             }
-//#if VERSIONWIN
             if (s.compare(L"DOH_URL") == 0)
             {
                 v = CURLOPT_DOH_URL; goto json_get_curl_option_exit;
@@ -1515,7 +1513,7 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
             {
                 v = CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS; goto json_get_curl_option_exit;
             }
-//#endif
+
         json_get_curl_option_exit:
             json_free(name);
         }
