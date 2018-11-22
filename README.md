@@ -19,7 +19,7 @@ use [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch fo
 
 ### Releases
 
-[2.8](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.8) updated ``libcurl``
+[2.9](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.9) updated ``libcurl``
 
 ### List of 4D Internet Commands and replacements
 
