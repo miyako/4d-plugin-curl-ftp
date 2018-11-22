@@ -1130,6 +1130,7 @@ void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)
     returnValue.setReturn(pResult);
 }
 
+
 #pragma mark JSON
 
 void json_wconv(const wchar_t *value, CUTF16String *u16)
@@ -1330,8 +1331,6 @@ void json_stringify(JSONNODE *json, CUTF16String &t, BOOL pretty)
 
 CURLoption json_get_curl_option_name(JSONNODE *n)
 {
-    std::lock_guard<std::mutex> lock(mutexJson);
-    
     CURLoption v = (CURLoption)0;
     
     if(n)
@@ -1475,8 +1474,6 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
             {
                 v = CURLOPT_SSH_KNOWNHOSTS;goto json_get_curl_option_exit;
             }
-            /* added in 2.x */
-
             if (s.compare(L"UPKEEP_INTERVAL_MS") == 0)
             {
                 v = CURLOPT_UPKEEP_INTERVAL_MS; goto json_get_curl_option_exit;
@@ -1513,7 +1510,7 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
             {
                 v = CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS; goto json_get_curl_option_exit;
             }
-
+            
         json_get_curl_option_exit:
             json_free(name);
         }
@@ -1713,12 +1710,16 @@ protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, C
     Param1.copyUTF8String(&Param1_u8);
     std::wstring Param1_option;
     json_wconv((const char *)Param1_u8.c_str(), Param1_option);
+    
+    std::lock_guard<std::mutex> lock(mutexJson);
+    
     JSONNODE *option = json_parse(Param1_option.c_str());
     if(option)
     {
         if (json_type(option) == JSON_NODE)
         {
             JSONNODE_ITERATOR i = json_begin(option);
+
             while (i != json_end(option))
             {
                 CURLoption curl_option = json_get_curl_option_name(*i);
