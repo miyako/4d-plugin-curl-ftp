@@ -237,15 +237,15 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
                 }
                 
             {
-                if(1)
-                {
-                    std::lock_guard<std::mutex> lock(mutexMcurl);
-                    
-                    curl_get_info(curl, info);
-                }
-                
                 if(Param4.getUTF16Length())
                 {
+                    if(1)
+                    {
+                        std::lock_guard<std::mutex> lock(mutexMcurl);
+                        
+                        curl_get_info(curl, info);
+                    }
+                    
                     if(method_id)
                     {
                         PA_SetUnistring((&(params[0].uValue.fString)),
@@ -340,7 +340,7 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, TRUE);
     
     curl_unescape_path(curl, path);
     
@@ -358,17 +358,27 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
     
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
-            quote = CUTF8String((const uint8_t *)"rm ").append(fullpath);
+            quote = CUTF8String((const uint8_t *)"rm /").append(fullpath);/* rm takes an absolute path */
             break;
             
         default:
-            quote = CUTF8String((const uint8_t *)"DELE ").append(path);
+            quote = CUTF8String((const uint8_t *)"DELE ").append(path);/* the file name has been removed from the url in curl_set_options */
             break;
     }
     
+    NSLog(@"%s", quote.c_str());
+    
     h = curl_slist_append(h, (const char *)quote.c_str());
     
-    curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+    switch (protocol) {
+        case PROTOCOL_TYPE_SFTP:
+            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
+            break;
+            
+        default:
+            curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+            break;
+    }
     
     returnValue.setIntValue(curl_perform(mcurl, curl, Param2, userInfo));
     
@@ -1599,7 +1609,7 @@ void json_get_curl_option_p(CURL *curl, CURLoption option, JSONNODE *n)
     }
 }
 
-void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, CUTF8String& path)
+void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, CUTF8String& path, BOOL removeFileName)
 {
     if(n)
     {
@@ -1607,22 +1617,37 @@ void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, CUTF8Str
         
         if(value)
         {
-            CUTF8String u;
+            CUTF8String u, u2;
             json_wconv(value, &u);
-            curl_easy_setopt(curl, option, u.c_str());
+            u2 = u;
+            
+//            curl_easy_setopt(curl, option, u.c_str());
             if(option == CURLOPT_URL)
             {
                 size_t pos = u.find((const uint8_t *)"://");
                 if(pos != std::string::npos)
                 {
-                    u = u.substr(pos + 4);//strlen("://")++
+                    /* skip protocol */
+                    u2 = u.substr(pos + 4);
                 }
-                pos = u.find((const uint8_t *)"/");
+                pos = u2.find((const uint8_t *)"/");
                 if(pos != std::string::npos)
                 {
-                    path = u.substr(pos + 1);//++
+                    /* path: skip host */
+                    path = u2.substr(pos + 1);
                 }
-            }
+                if(removeFileName)
+                {
+                   std::size_t pos = u.find_last_of((const uint8_t *)"/");
+                    if((pos < u.length()) && (pos != std::string::npos))
+                    {
+                        u = u.substr(0, pos + 1);
+                    }
+                }
+            }/* CURLOPT_URL */
+            
+            curl_easy_setopt(curl, option, u.c_str());
+
             json_free(value);
         }
     }
@@ -1702,7 +1727,7 @@ long json_get_curl_option_value(JSONNODE *n)
 
 #pragma mark -
 
-protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path)
+protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path, BOOL removeFileName)
 {
     protocol_type_t protocol = PROTOCOL_TYPE_UNKNOWN;
     
@@ -1749,7 +1774,7 @@ protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, C
                     case CURLOPT_PROXY_TLS13_CIPHERS:
                     case CURLOPT_TLS13_CIPHERS:
                     case CURLOPT_DOH_URL:
-                        json_get_curl_option_s(curl, curl_option, *i, path);
+                        json_get_curl_option_s(curl, curl_option, *i, path, removeFileName);
                         if(curl_option == CURLOPT_URL)
                         {
                             json_char *value = json_as_string(*i);

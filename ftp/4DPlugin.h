@@ -85,9 +85,9 @@ void json_get_curl_option_m(CURL *curl, CURLoption option, JSONNODE *n);
 void json_get_curl_option_c(CURL *curl, CURLoption option, JSONNODE *n);
 void json_get_curl_option_i(CURL *curl, CURLoption option, JSONNODE *n);
 void json_get_curl_option_p(CURL *curl, CURLoption option, JSONNODE *n);
-void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n);
+void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, BOOL removeFileName = TRUE);
 long json_get_curl_option_value(JSONNODE *n);
-protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path);
+protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path, BOOL removeFileName = TRUE);
 void curl_get_info(CURL *curl, CUTF16String& json);
 
 void last_path_component(CUTF8String& path);
