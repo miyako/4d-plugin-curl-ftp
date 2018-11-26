@@ -1,5 +1,5 @@
 /* Localized versions of Info.plist keys */
 
 CFBundleName = "cURL FTP";
-CFBundleShortVersionString = "2.10";
-CFBundleGetInfoString = "cURL FTP version 2.10, Copyright 2018 miyako.";
+CFBundleShortVersionString = "2.11";
+CFBundleGetInfoString = "cURL FTP version 2.11, Copyright 2018 miyako.";
