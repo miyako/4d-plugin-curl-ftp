@@ -19,7 +19,7 @@ use [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch fo
 
 ### Releases
 
-[2.10](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.10) fix ``rm`` ``DELE``
+[2.11](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.11) fix ``rm`` ``DELE``
 
 [2.9](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.9) updated ``libcurl``
 
