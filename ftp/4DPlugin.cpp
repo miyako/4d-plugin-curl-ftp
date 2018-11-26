@@ -365,9 +365,7 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
             quote = CUTF8String((const uint8_t *)"DELE ").append(path);/* the file name has been removed from the url in curl_set_options */
             break;
     }
-    
-    NSLog(@"%s", quote.c_str());
-    
+        
     h = curl_slist_append(h, (const char *)quote.c_str());
     
     switch (protocol) {
