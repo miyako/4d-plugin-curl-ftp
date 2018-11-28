@@ -418,7 +418,8 @@
 				LastUpgradeCheck = 0940;
 				TargetAttributes = {
 					8D01CCC60486CAD60068D4B7 = {
-						ProvisioningStyle = Manual;
+						DevelopmentTeam = Y69CWUC25B;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -509,12 +510,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_LINK_OBJC_RUNTIME = NO;
-				CODE_SIGN_IDENTITY = "Developer ID Application: keisuke miyako (Y69CWUC25B)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Y69CWUC25B;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -540,6 +542,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.4D.curl-ftp";
 				PRODUCT_NAME = "cURL FTP";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SECTORDER_FLAGS = "";
 				USER_HEADER_SEARCH_PATHS = "include/curl include/libjson include";
 				WARNING_CFLAGS = (
@@ -556,11 +559,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_LINK_OBJC_RUNTIME = NO;
-				CODE_SIGN_IDENTITY = "Developer ID Application: keisuke miyako (Y69CWUC25B)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Y69CWUC25B;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_TRIGRAPHS = NO;
@@ -584,6 +588,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.4D.curl-ftp";
 				PRODUCT_NAME = "cURL FTP";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SECTORDER_FLAGS = "";
 				USER_HEADER_SEARCH_PATHS = "include/curl include/libjson include";
 				WARNING_CFLAGS = (
@@ -600,10 +605,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_LINK_OBJC_RUNTIME = NO;
-				CODE_SIGN_IDENTITY = "Developer ID Application: keisuke miyako (Y69CWUC25B)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Y69CWUC25B;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_TRIGRAPHS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -630,6 +636,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.4D.curl-ftp";
 				PRODUCT_NAME = "cURL FTP";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SECTORDER_FLAGS = "";
 				USER_HEADER_SEARCH_PATHS = "include/curl include/libjson include";
 				WARNING_CFLAGS = (
