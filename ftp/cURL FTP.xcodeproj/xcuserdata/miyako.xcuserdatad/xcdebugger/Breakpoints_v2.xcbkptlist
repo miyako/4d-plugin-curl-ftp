@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "4DPlugin.cpp"
-            timestampString = "564936253.791315"
+            timestampString = "570962426.538568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "813"
             endingLineNumber = "813"
-            landmarkName = "cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams)"
+            landmarkName = "curl_read_function_for_path(void *buffer, size_t size, size_t nmemb, path_ctx *ctx)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "4DPlugin.cpp"
-            timestampString = "564936329.795544"
+            timestampString = "570962426.539587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1777"
-            endingLineNumber = "1777"
-            landmarkName = "curl_set_options(CURL *curl, C_TEXT&amp; Param1, C_TEXT&amp; userInfo, CUTF8String&amp; path, BOOL removeFileName)"
+            startingLineNumber = "1144"
+            endingLineNumber = "1144"
+            landmarkName = "cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

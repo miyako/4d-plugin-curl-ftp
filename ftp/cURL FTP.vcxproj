@@ -276,7 +276,7 @@
       <ModuleDefinitionFile>.\4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>ucrtd.lib;vcruntimed.lib;msvcrtd.lib;libjson.lib;nghttp2.lib;Crypt32.lib;zlib.lib;libssh2.lib;Wldap32.lib;ssleay32.lib;libeay32.lib;msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;Shell32.lib;libcurl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ucrtd.lib;vcruntimed.lib;msvcrtd.lib;jsoncpp.lib;nghttp2.lib;Crypt32.lib;zlib.lib;libssh2.lib;Wldap32.lib;msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;Shell32.lib;libcurl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib\64;C:\Users\miyako\Documents\vcpkg\vcpkg-master\installed\x64-windows-static\debug\lib</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -304,7 +304,7 @@
       <EntryPointSymbol>
       </EntryPointSymbol>
       <AdditionalLibraryDirectories>lib\32;C:\Users\miyako\Documents\vcpkg\vcpkg-master\installed\x86-windows-static\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nghttp2.lib;Crypt32.lib;zlib.lib;libssh2.lib;Wldap32.lib;ssleay32.lib;libeay32.lib;msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;libjson.lib;Shell32.lib;libcurl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nghttp2.lib;libcrypto.lib;libssl.lib;Crypt32.lib;zlib.lib;libssh2.lib;Wldap32.lib;msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;jsoncpp.lib;Shell32.lib;libcurl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
@@ -330,7 +330,7 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>nghttp2.lib;Crypt32.lib;zlib.lib;libssh2.lib;Wldap32.lib;ssleay32.lib;libeay32.lib;msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;libjson.lib;Shell32.lib;libcurl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nghttp2.lib;libcrypto.lib;libssl.lib;Crypt32.lib;zlib.lib;libssh2.lib;Wldap32.lib;msvcrt.lib;libcmt.lib;Ws2_32.lib;legacy_stdio_definitions.lib;jsoncpp.lib;Shell32.lib;libcurl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib\64;C:\Users\miyako\Documents\vcpkg\vcpkg-master\installed\x64-windows-static\lib</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>

@@ -13,7 +13,11 @@
 #include "4DPlugin.h"
 
 std::mutex mutexMcurl;
+
+#if USE_JSONCPP
+#else
 std::mutex mutexJson;
+#endif
 
 CURLM *gmcurl = NULL;
 
@@ -138,7 +142,19 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
     
     /* prepare for callback */
     PA_Variable    params[4];
-    PA_long32 method_id = 0;//PA_GetMethodID((PA_Unichar *)Param4.getUTF16StringPtr());
+#if USE_PA_EXECUTE_METHOD_BY_ID
+    PA_long32 method_id = PA_GetMethodID((PA_Unichar *)Param4.getUTF16StringPtr());
+#else
+    PA_long32 method_id = 0;
+#endif
+    
+#if LESS_CALLBACK
+    time_t startTime = time(0);
+#define YIELD_FACTOR 0x0100
+    unsigned int yield_counter = 0;
+#endif
+    
+    bool isCallbackSet = Param4.getUTF16Length();
     
     if(method_id)
     {
@@ -237,47 +253,61 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
                 }
                 
             {
-                if(Param4.getUTF16Length())
+                if(isCallbackSet)
                 {
-                    if(1)
+#if LESS_CALLBACK
+                    time_t now = time(0);
+                    time_t elapsedTime = abs(startTime - now);
+                    if(elapsedTime > 0)
                     {
-                        std::lock_guard<std::mutex> lock(mutexMcurl);
-                        
-                        curl_get_info(curl, info);
-                    }
-                    
-                    if(method_id)
-                    {
-                        PA_SetUnistring((&(params[0].uValue.fString)),
-                                        (PA_Unichar *)info.c_str());
-                        
-                        PA_Variable statusCode = PA_ExecuteMethodByID(method_id, params, 2);
-                        if(PA_GetVariableKind(statusCode) == eVK_Boolean)
+                        startTime = now;
+#endif
+                        if(1)
                         {
-                            if(PA_GetBooleanVariable(statusCode))
+                            std::lock_guard<std::mutex> lock(mutexMcurl);
+                            
+                            curl_get_info(curl, info);
+                        }
+                        if(method_id)
+                        {
+                            PA_SetUnistring((&(params[0].uValue.fString)),
+                                            (PA_Unichar *)info.c_str());
+                            
+                            PA_Variable statusCode = PA_ExecuteMethodByID(method_id, params, 2);
+                            if(PA_GetVariableKind(statusCode) == eVK_Boolean)
+                            {
+                                if(PA_GetBooleanVariable(statusCode))
+                                {
+                                    /* abort */
+                                    result = CURLE_ABORTED_BY_CALLBACK;
+                                    goto curl_abort_transfer;
+                                }
+                            }
+                        }else
+                        {
+                            PA_SetUnistring((&(params[2].uValue.fString)),
+                                            (PA_Unichar *)info.c_str());
+                            
+                            PA_SetBooleanVariable(&params[1], false);
+                            PA_ExecuteCommandByID(1007, params, 4);
+                            if(PA_GetBooleanVariable(params[1]))
                             {
                                 /* abort */
                                 result = CURLE_ABORTED_BY_CALLBACK;
                                 goto curl_abort_transfer;
                             }
                         }
-                    }else
-                    {
-                        PA_SetUnistring((&(params[2].uValue.fString)),
-                                        (PA_Unichar *)info.c_str());
-                        
-                        PA_SetBooleanVariable(&params[1], false);
-                        PA_ExecuteCommandByID(1007, params, 4);
-                        if(PA_GetBooleanVariable(params[1]))
-                        {
-                            /* abort */
-                            result = CURLE_ABORTED_BY_CALLBACK;
-                            goto curl_abort_transfer;
-                        }
+#if LESS_CALLBACK
                     }
-                    
+#endif
+                }else
+                {
+                    /* no callback */
+#if YIELD_NO_CALLBACK
+                    PA_PutProcessToSleep2(currentProcessNumber, 6);//100ms
+#endif
                 }
-                
+
                 if(PA_IsProcessDying2())
                 {
                     /* abort (runtime explorer, not debugger) */
@@ -1024,11 +1054,19 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
     
     CUTF16String fileInfo;
     
+#if USE_JSONCPP
+    Json::Value info;
+#else
     JSONNODE *info = json_new(JSON_NODE);
-    
+#endif
+
     if(result == CURLE_OK)
     {
+#if USE_JSONCPP
+        info["size"] = fileSize.c_str();
+#else
         json_set_s_for_key(info, L"size", (const char *)fileSize.c_str());
+#endif
         
         long _fileTime;
         if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_FILETIME, &_fileTime))
@@ -1037,11 +1075,23 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
             time_t fileTime = (time_t)_fileTime;
             struct tm ts = *gmtime(&fileTime);
             strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%SZ", &ts);
+            
+#if USE_JSONCPP
+            info["date"] = (const char *)buf;
+#else
             json_set_s_for_key(info, L"date", (const char *)buf);
+#endif
         }
+        
+#if USE_JSONCPP
+        Json::StyledWriter writer;
+        std::string options = writer.write(info);
+        convertFromString(options, fileInfo);
+#else
         json_stringify(info, fileInfo, FALSE);
         
         json_delete(info);
+#endif
     }
     
     curl_easy_cleanup(curl);
@@ -1205,7 +1255,8 @@ void json_wconv(const char *value, std::wstring &u32)
     }
     
 }
-
+#if USE_JSONCPP
+#else
 void json_push_back_s(JSONNODE *n, const char *value)
 {
     if (n)
@@ -1315,6 +1366,22 @@ void json_set_i_for_key(JSONNODE *n, json_char *key, json_int_t value)
     }
 }
 
+void json_set_f_for_key(JSONNODE *n, json_char *key, json_number value)
+{
+    if (n)
+    {
+        JSONNODE *e = json_get(n, key);
+        if (e)
+        {
+            json_set_f(e, value);//over-write existing value
+        }
+        else
+        {
+            json_push_back(n, json_new_f(key, value));
+        }
+    }
+}
+
 void json_stringify(JSONNODE *json, CUTF16String &t, BOOL pretty)
 {
     json_char *json_string = pretty ? json_write_formatted(json) : json_write(json);
@@ -1334,198 +1401,365 @@ void json_stringify(JSONNODE *json, CUTF16String &t, BOOL pretty)
 #endif
     json_free(json_string);
 }
+#endif
 
 #pragma mark JSON cURL
 
+#if USE_JSONCPP
+CURLoption json_get_curl_option_name(Json::Value::const_iterator n)
+#else
 CURLoption json_get_curl_option_name(JSONNODE *n)
+#endif
 {
     CURLoption v = (CURLoption)0;
     
+#if USE_JSONCPP
+#else
     if(n)
     {
-        v = (CURLoption)json_as_int(n);
+#endif
         
+#if USE_JSONCPP
+        JSONCPP_STRING s = n.name();
+#else
         json_char *name = json_name(n);
+#endif
         
-        if (name)
-        {
-            std::wstring s = std::wstring((const wchar_t *)name);
-            if (s.compare(L"VERBOSE") == 0)
+#if USE_JSONCPP
+        if (s.length())
+#else
+            if (name)
+#endif
             {
-                v = CURLOPT_VERBOSE;goto json_get_curl_option_exit;
+                
+#if USE_JSONCPP
+#define CHECK_CURLOPT(__a,__b) if(s==__a){v=(CURLoption)__b;goto json_get_curl_option_exit;}
+#else
+                std::wstring s = std::wstring((const wchar_t *)name);
+#define CHECK_CURLOPT(__a,__b) if(s.compare(L__a)==0){v=__b;goto json_get_curl_option_exit;}
+#endif
+
+                /* special string */
+                CHECK_CURLOPT("URL",CURLOPT_URL)
+                CHECK_CURLOPT("READDATA",CURLOPT_READDATA)
+                CHECK_CURLOPT("WRITEDATA",CURLOPT_WRITEDATA)
+                CHECK_CURLOPT("AUTOPROXY",CURLOPT_AUTOPROXY)
+                CHECK_CURLOPT("PRIVATE",CURLOPT_PRIVATE)
+                CHECK_CURLOPT("ATOMIC",CURLOPT_ATOMIC)
+                CHECK_CURLOPT("DEBUG",CURLOPT_VERBOSE)
+                
+                /* string */
+                CHECK_CURLOPT("PROXY",CURLOPT_PROXY)
+                CHECK_CURLOPT("USERPWD",CURLOPT_USERPWD)
+                CHECK_CURLOPT("PROXYUSERPWD",CURLOPT_PROXYUSERPWD)
+                CHECK_CURLOPT("RANGE",CURLOPT_RANGE)
+                CHECK_CURLOPT("REFERER",CURLOPT_REFERER)
+                CHECK_CURLOPT("FTPPORT",CURLOPT_FTPPORT)
+                CHECK_CURLOPT("USERAGENT",CURLOPT_USERAGENT)
+                CHECK_CURLOPT("COOKIE",CURLOPT_COOKIE)
+                CHECK_CURLOPT("KEYPASSWD",CURLOPT_KEYPASSWD)
+                CHECK_CURLOPT("CUSTOMREQUEST",CURLOPT_CUSTOMREQUEST)
+                CHECK_CURLOPT("INTERFACE",CURLOPT_INTERFACE)
+                CHECK_CURLOPT("KRBLEVEL",CURLOPT_KRBLEVEL)
+                CHECK_CURLOPT("RANDOM_FILE",CURLOPT_RANDOM_FILE)
+                CHECK_CURLOPT("EGDSOCKET",CURLOPT_EGDSOCKET)
+                CHECK_CURLOPT("SSL_CIPHER_LIST",CURLOPT_SSL_CIPHER_LIST)
+                CHECK_CURLOPT("SSLCERTTYPE",CURLOPT_SSLCERTTYPE)
+                CHECK_CURLOPT("SSLKEYTYPE",CURLOPT_SSLKEYTYPE)
+                CHECK_CURLOPT("ACCEPT_ENCODING",CURLOPT_ACCEPT_ENCODING)
+                CHECK_CURLOPT("FTP_ACCOUNT",CURLOPT_FTP_ACCOUNT)
+                CHECK_CURLOPT("COOKIELIST",CURLOPT_COOKIELIST)
+                CHECK_CURLOPT("FTP_ALTERNATIVE_TO_USER",CURLOPT_FTP_ALTERNATIVE_TO_USER)
+                CHECK_CURLOPT("SSH_HOST_PUBLIC_KEY_MD5",CURLOPT_SSH_HOST_PUBLIC_KEY_MD5)
+                CHECK_CURLOPT("USERNAME",CURLOPT_USERNAME)
+                CHECK_CURLOPT("PASSWORD",CURLOPT_PASSWORD)
+                CHECK_CURLOPT("PROXYUSERNAME",CURLOPT_PROXYUSERNAME)
+                CHECK_CURLOPT("PROXYPASSWORD",CURLOPT_PROXYPASSWORD)
+                CHECK_CURLOPT("NOPROXY",CURLOPT_NOPROXY)
+                CHECK_CURLOPT("SSH_KNOWNHOSTS",CURLOPT_SSH_KNOWNHOSTS)
+                CHECK_CURLOPT("RTSP_SESSION_ID",CURLOPT_RTSP_SESSION_ID)
+                CHECK_CURLOPT("RTSP_STREAM_URI",CURLOPT_RTSP_STREAM_URI)
+                CHECK_CURLOPT("RTSP_TRANSPORT",CURLOPT_RTSP_TRANSPORT)
+                CHECK_CURLOPT("TLSAUTH_USERNAME",CURLOPT_TLSAUTH_USERNAME)
+                CHECK_CURLOPT("TLSAUTH_PASSWORD",CURLOPT_TLSAUTH_PASSWORD)
+                CHECK_CURLOPT("TLSAUTH_TYPE",CURLOPT_TLSAUTH_TYPE)
+                CHECK_CURLOPT("DNS_SERVERS",CURLOPT_DNS_SERVERS)
+                CHECK_CURLOPT("MAIL_AUTH",CURLOPT_MAIL_AUTH)
+                CHECK_CURLOPT("XOAUTH2_BEARER",CURLOPT_XOAUTH2_BEARER)
+                CHECK_CURLOPT("DNS_INTERFACE",CURLOPT_DNS_INTERFACE)
+                CHECK_CURLOPT("DNS_LOCAL_IP4",CURLOPT_DNS_LOCAL_IP4)
+                CHECK_CURLOPT("DNS_LOCAL_IP6",CURLOPT_DNS_LOCAL_IP6)
+                CHECK_CURLOPT("LOGIN_OPTIONS",CURLOPT_LOGIN_OPTIONS)
+                CHECK_CURLOPT("PROXY_SERVICE_NAME",CURLOPT_PROXY_SERVICE_NAME)
+                CHECK_CURLOPT("SERVICE_NAME",CURLOPT_SERVICE_NAME)
+                CHECK_CURLOPT("DEFAULT_PROTOCOL",CURLOPT_DEFAULT_PROTOCOL)
+                CHECK_CURLOPT("PROXY_TLSAUTH_USERNAME",CURLOPT_PROXY_TLSAUTH_USERNAME)
+                CHECK_CURLOPT("PROXY_TLSAUTH_PASSWORD",CURLOPT_PROXY_TLSAUTH_PASSWORD)
+                CHECK_CURLOPT("PROXY_TLSAUTH_TYPE",CURLOPT_PROXY_TLSAUTH_TYPE)
+                CHECK_CURLOPT("PROXY_SSLCERTTYPE",CURLOPT_PROXY_SSLCERTTYPE)
+                CHECK_CURLOPT("PROXY_SSLKEYTYPE",CURLOPT_PROXY_SSLKEYTYPE)
+                CHECK_CURLOPT("PROXY_KEYPASSWD",CURLOPT_PROXY_KEYPASSWD)
+                CHECK_CURLOPT("PROXY_SSL_CIPHER_LIST",CURLOPT_PROXY_SSL_CIPHER_LIST)
+                CHECK_CURLOPT("PRE_PROXY",CURLOPT_PRE_PROXY)
+                CHECK_CURLOPT("PROXY_PINNEDPUBLICKEY",CURLOPT_PROXY_PINNEDPUBLICKEY)
+                CHECK_CURLOPT("REQUEST_TARGET",CURLOPT_REQUEST_TARGET)
+                CHECK_CURLOPT("TLS13_CIPHERS",CURLOPT_TLS13_CIPHERS)
+                CHECK_CURLOPT("PROXY_TLS13_CIPHERS",CURLOPT_PROXY_TLS13_CIPHERS)
+                CHECK_CURLOPT("DOH_URL",CURLOPT_DOH_URL)
+                
+                /* path */
+                CHECK_CURLOPT("SSLCERT",CURLOPT_SSLCERT)
+                CHECK_CURLOPT("COOKIEFILE",CURLOPT_COOKIEFILE)
+                CHECK_CURLOPT("CAINFO",CURLOPT_CAINFO)
+                CHECK_CURLOPT("COOKIEJAR",CURLOPT_COOKIEJAR)
+                CHECK_CURLOPT("SSLKEY",CURLOPT_SSLKEY)
+                CHECK_CURLOPT("CAPATH",CURLOPT_CAPATH)
+                CHECK_CURLOPT("NETRC_FILE",CURLOPT_NETRC_FILE)
+                CHECK_CURLOPT("SSH_PUBLIC_KEYFILE",CURLOPT_SSH_PUBLIC_KEYFILE)
+                CHECK_CURLOPT("SSH_PRIVATE_KEYFILE",CURLOPT_SSH_PRIVATE_KEYFILE)
+                CHECK_CURLOPT("CRLFILE",CURLOPT_CRLFILE)
+                CHECK_CURLOPT("ISSUERCERT",CURLOPT_ISSUERCERT)
+                CHECK_CURLOPT("PROXY_CAINFO",CURLOPT_PROXY_CAINFO)
+                CHECK_CURLOPT("PROXY_CAPATH",CURLOPT_PROXY_CAPATH)
+                CHECK_CURLOPT("PROXY_SSLCERT",CURLOPT_PROXY_SSLCERT)
+                CHECK_CURLOPT("PROXY_SSLKEY",CURLOPT_PROXY_SSLKEY)
+                CHECK_CURLOPT("PROXY_CRLFILE",CURLOPT_PROXY_CRLFILE)
+                
+                /* path or value */
+                CHECK_CURLOPT("PINNEDPUBLICKEY",CURLOPT_PINNEDPUBLICKEY)
+                
+                /* longint */
+                CHECK_CURLOPT("PORT",CURLOPT_PORT)
+                CHECK_CURLOPT("TIMEOUT",CURLOPT_TIMEOUT)
+                CHECK_CURLOPT("LOW_SPEED_LIMIT",CURLOPT_LOW_SPEED_LIMIT)
+                CHECK_CURLOPT("LOW_SPEED_TIME",CURLOPT_LOW_SPEED_TIME)
+                CHECK_CURLOPT("RESUME_FROM",CURLOPT_RESUME_FROM)
+                CHECK_CURLOPT("CRLF",CURLOPT_CRLF)
+                CHECK_CURLOPT("TIMEVALUE",CURLOPT_TIMEVALUE)
+                CHECK_CURLOPT("HEADER",CURLOPT_HEADER)
+                CHECK_CURLOPT("NOBODY",CURLOPT_NOBODY)
+                CHECK_CURLOPT("FAILONERROR",CURLOPT_FAILONERROR)
+                CHECK_CURLOPT("UPLOAD",CURLOPT_UPLOAD)
+                CHECK_CURLOPT("POST",CURLOPT_POST)
+                CHECK_CURLOPT("DIRLISTONLY",CURLOPT_DIRLISTONLY)
+                CHECK_CURLOPT("APPEND",CURLOPT_APPEND)
+                CHECK_CURLOPT("NETRC",CURLOPT_NETRC)
+                CHECK_CURLOPT("FOLLOWLOCATION",CURLOPT_FOLLOWLOCATION)
+                CHECK_CURLOPT("PUT",CURLOPT_PUT)
+                CHECK_CURLOPT("AUTOREFERER",CURLOPT_AUTOREFERER)
+                CHECK_CURLOPT("PROXYPORT",CURLOPT_PROXYPORT)
+                CHECK_CURLOPT("HTTPPROXYTUNNEL",CURLOPT_HTTPPROXYTUNNEL)
+                CHECK_CURLOPT("SSL_VERIFYPEER",CURLOPT_SSL_VERIFYPEER)
+                CHECK_CURLOPT("MAXREDIRS",CURLOPT_MAXREDIRS)
+                CHECK_CURLOPT("FILETIME",CURLOPT_FILETIME)
+                CHECK_CURLOPT("MAXCONNECTS",CURLOPT_MAXCONNECTS)
+                CHECK_CURLOPT("FRESH_CONNECT",CURLOPT_FRESH_CONNECT)
+                CHECK_CURLOPT("FORBID_REUSE",CURLOPT_FORBID_REUSE)
+                CHECK_CURLOPT("CONNECTTIMEOUT",CURLOPT_CONNECTTIMEOUT)
+                CHECK_CURLOPT("HTTPGET",CURLOPT_HTTPGET)
+                CHECK_CURLOPT("SSL_VERIFYHOST",CURLOPT_SSL_VERIFYHOST)
+                CHECK_CURLOPT("FTP_USE_EPSV",CURLOPT_FTP_USE_EPSV)
+                CHECK_CURLOPT("DNS_CACHE_TIMEOUT",CURLOPT_DNS_CACHE_TIMEOUT)
+                CHECK_CURLOPT("COOKIESESSION",CURLOPT_COOKIESESSION)
+                CHECK_CURLOPT("BUFFERSIZE",CURLOPT_BUFFERSIZE)
+                CHECK_CURLOPT("UNRESTRICTED_AUTH",CURLOPT_UNRESTRICTED_AUTH)
+                CHECK_CURLOPT("FTP_USE_EPRT",CURLOPT_FTP_USE_EPRT)
+                CHECK_CURLOPT("HTTPAUTH",CURLOPT_HTTPAUTH)
+                CHECK_CURLOPT("FTP_CREATE_MISSING_DIRS",CURLOPT_FTP_CREATE_MISSING_DIRS)
+                CHECK_CURLOPT("PROXYAUTH",CURLOPT_PROXYAUTH)
+                CHECK_CURLOPT("FTP_RESPONSE_TIMEOUT",CURLOPT_FTP_RESPONSE_TIMEOUT)
+                CHECK_CURLOPT("IPRESOLVE",CURLOPT_IPRESOLVE)
+                CHECK_CURLOPT("MAXFILESIZE",CURLOPT_MAXFILESIZE)
+                CHECK_CURLOPT("IGNORE_CONTENT_LENGTH",CURLOPT_IGNORE_CONTENT_LENGTH)
+                CHECK_CURLOPT("FTP_SKIP_PASV_IP",CURLOPT_FTP_SKIP_PASV_IP)
+                CHECK_CURLOPT("FTP_FILEMETHOD",CURLOPT_FTP_FILEMETHOD)
+                CHECK_CURLOPT("LOCALPORT",CURLOPT_LOCALPORT)
+                CHECK_CURLOPT("LOCALPORTRANGE",CURLOPT_LOCALPORTRANGE)
+                CHECK_CURLOPT("CONNECT_ONLY",CURLOPT_CONNECT_ONLY)
+                CHECK_CURLOPT("SSL_SESSIONID_CACHE",CURLOPT_SSL_SESSIONID_CACHE)
+                CHECK_CURLOPT("SSH_AUTH_TYPES",CURLOPT_SSH_AUTH_TYPES)
+                CHECK_CURLOPT("FTP_SSL_CCC",CURLOPT_FTP_SSL_CCC)
+                CHECK_CURLOPT("TIMEOUT_MS",CURLOPT_TIMEOUT_MS)
+                CHECK_CURLOPT("CONNECTTIMEOUT_MS",CURLOPT_CONNECTTIMEOUT_MS)
+                CHECK_CURLOPT("HTTP_TRANSFER_DECODING",CURLOPT_HTTP_TRANSFER_DECODING)
+                CHECK_CURLOPT("HTTP_CONTENT_DECODING",CURLOPT_HTTP_CONTENT_DECODING)
+                CHECK_CURLOPT("NEW_FILE_PERMS",CURLOPT_NEW_FILE_PERMS)
+                CHECK_CURLOPT("NEW_DIRECTORY_PERMS",CURLOPT_NEW_DIRECTORY_PERMS)
+                CHECK_CURLOPT("POSTREDIR",CURLOPT_POSTREDIR)
+                CHECK_CURLOPT("PROXY_TRANSFER_MODE",CURLOPT_PROXY_TRANSFER_MODE)
+                CHECK_CURLOPT("ADDRESS_SCOPE",CURLOPT_ADDRESS_SCOPE)
+                CHECK_CURLOPT("CERTINFO",CURLOPT_CERTINFO)
+                CHECK_CURLOPT("TFTP_BLKSIZE",CURLOPT_TFTP_BLKSIZE)
+                CHECK_CURLOPT("PROTOCOLS",CURLOPT_PROTOCOLS)
+                CHECK_CURLOPT("REDIR_PROTOCOLS",CURLOPT_REDIR_PROTOCOLS)
+                CHECK_CURLOPT("FTP_USE_PRET",CURLOPT_FTP_USE_PRET)
+                CHECK_CURLOPT("RTSP_REQUEST",CURLOPT_RTSP_REQUEST)
+                CHECK_CURLOPT("RTSP_CLIENT_CSEQ",CURLOPT_RTSP_CLIENT_CSEQ)
+                CHECK_CURLOPT("RTSP_SERVER_CSEQ",CURLOPT_RTSP_SERVER_CSEQ)
+                CHECK_CURLOPT("WILDCARDMATCH",CURLOPT_WILDCARDMATCH)
+                CHECK_CURLOPT("TRANSFER_ENCODING",CURLOPT_TRANSFER_ENCODING)
+                CHECK_CURLOPT("ACCEPTTIMEOUT_MS",CURLOPT_ACCEPTTIMEOUT_MS)
+                CHECK_CURLOPT("TCP_KEEPALIVE",CURLOPT_TCP_KEEPALIVE)
+                CHECK_CURLOPT("TCP_KEEPIDLE",CURLOPT_TCP_KEEPIDLE)
+                CHECK_CURLOPT("TCP_KEEPINTVL",CURLOPT_TCP_KEEPINTVL)
+                CHECK_CURLOPT("SASL_IR",CURLOPT_SASL_IR)
+                CHECK_CURLOPT("SSL_ENABLE_NPN",CURLOPT_SSL_ENABLE_NPN)
+                CHECK_CURLOPT("SSL_ENABLE_ALPN",CURLOPT_SSL_ENABLE_ALPN)
+                CHECK_CURLOPT("EXPECT_100_TIMEOUT_MS",CURLOPT_EXPECT_100_TIMEOUT_MS)
+                CHECK_CURLOPT("HEADEROPT",CURLOPT_HEADEROPT)
+                CHECK_CURLOPT("SSL_VERIFYSTATUS",CURLOPT_SSL_VERIFYSTATUS)
+                CHECK_CURLOPT("SSL_FALSESTART",CURLOPT_SSL_FALSESTART)
+                CHECK_CURLOPT("PATH_AS_IS",CURLOPT_PATH_AS_IS)
+                CHECK_CURLOPT("PIPEWAIT",CURLOPT_PIPEWAIT)
+                CHECK_CURLOPT("STREAM_WEIGHT",CURLOPT_STREAM_WEIGHT)
+                CHECK_CURLOPT("TFTP_NO_OPTIONS",CURLOPT_TFTP_NO_OPTIONS)
+                CHECK_CURLOPT("TCP_FASTOPEN",CURLOPT_TCP_FASTOPEN)
+                CHECK_CURLOPT("KEEP_SENDING_ON_ERROR",CURLOPT_KEEP_SENDING_ON_ERROR)
+                CHECK_CURLOPT("PROXY_SSL_VERIFYPEER",CURLOPT_PROXY_SSL_VERIFYPEER)
+                CHECK_CURLOPT("PROXY_SSL_VERIFYHOST",CURLOPT_PROXY_SSL_VERIFYHOST)
+                CHECK_CURLOPT("PROXY_SSL_OPTIONS",CURLOPT_PROXY_SSL_OPTIONS)
+                CHECK_CURLOPT("SUPPRESS_CONNECT_HEADERS",CURLOPT_SUPPRESS_CONNECT_HEADERS)
+                CHECK_CURLOPT("SOCKS5_AUTH",CURLOPT_SOCKS5_AUTH)
+                CHECK_CURLOPT("SSH_COMPRESSION",CURLOPT_SSH_COMPRESSION)
+                CHECK_CURLOPT("HAPPY_EYEBALLS_TIMEOUT_MS",CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS)
+                CHECK_CURLOPT("HAPROXYPROTOCOL",CURLOPT_HAPROXYPROTOCOL)
+                CHECK_CURLOPT("DNS_SHUFFLE_ADDRESSES",CURLOPT_DNS_SHUFFLE_ADDRESSES)
+                CHECK_CURLOPT("DISALLOW_USERNAME_IN_URL",CURLOPT_DISALLOW_USERNAME_IN_URL)
+                CHECK_CURLOPT("UPLOAD_BUFFERSIZE",CURLOPT_UPLOAD_BUFFERSIZE)
+                CHECK_CURLOPT("UPKEEP_INTERVAL_MS",CURLOPT_UPKEEP_INTERVAL_MS)
+                
+                /* constant or long */
+                CHECK_CURLOPT("USE_SSL",CURLOPT_USE_SSL)
+                CHECK_CURLOPT("SSLVERSION",CURLOPT_SSLVERSION)
+                CHECK_CURLOPT("HTTP_VERSION",CURLOPT_HTTP_VERSION)
+                CHECK_CURLOPT("PROXY_SSLVERSION",CURLOPT_PROXY_SSLVERSION)
+                CHECK_CURLOPT("TIMECONDITION",CURLOPT_TIMECONDITION)
+                CHECK_CURLOPT("PROXYTYPE",CURLOPT_PROXYTYPE)
+                CHECK_CURLOPT("FTPSSLAUTH",CURLOPT_FTPSSLAUTH)
+                
+                /* array string */
+                CHECK_CURLOPT("CONNECT_TO",CURLOPT_CONNECT_TO)
+                CHECK_CURLOPT("PROXYHEADER",CURLOPT_PROXYHEADER)
+                CHECK_CURLOPT("HTTPHEADER",CURLOPT_HTTPHEADER)
+                CHECK_CURLOPT("HTTP200ALIASES",CURLOPT_HTTP200ALIASES)
+                CHECK_CURLOPT("RESOLVE",CURLOPT_RESOLVE)
+                CHECK_CURLOPT("MAIL_RCPT",CURLOPT_MAIL_RCPT)
+                CHECK_CURLOPT("MAIL_FROM",CURLOPT_MAIL_FROM)
+                CHECK_CURLOPT("PREQUOTE",CURLOPT_PREQUOTE)
+                CHECK_CURLOPT("POSTQUOTE",CURLOPT_POSTQUOTE)
+                CHECK_CURLOPT("QUOTE",CURLOPT_QUOTE)
+                CHECK_CURLOPT("TELNETOPTIONS",CURLOPT_TELNETOPTIONS)
+                
+                /* compatibility */
+                CHECK_CURLOPT("VERBOSE",CURLOPT_VERBOSE)
+                CHECK_CURLOPT("USE_SSL",CURLOPT_USE_SSL)
+                CHECK_CURLOPT("URL",CURLOPT_URL)
+                CHECK_CURLOPT("USERNAME",CURLOPT_USERNAME)
+                CHECK_CURLOPT("PASSWORD",CURLOPT_PASSWORD)
+                CHECK_CURLOPT("FTPPORT",CURLOPT_FTPPORT)
+                CHECK_CURLOPT("APPEND",CURLOPT_APPEND)
+                CHECK_CURLOPT("FTP_ACCOUNT",CURLOPT_FTP_ACCOUNT)
+                CHECK_CURLOPT("PRIVATE",CURLOPT_PRIVATE)
+                CHECK_CURLOPT("FTP_USE_EPRT",CURLOPT_FTP_USE_EPRT)
+                CHECK_CURLOPT("FTP_USE_EPSV",CURLOPT_FTP_USE_EPSV)
+                CHECK_CURLOPT("FTP_USE_PRET",CURLOPT_FTP_USE_PRET)
+                CHECK_CURLOPT("FTP_ALTERNATIVE_TO_USER",CURLOPT_FTP_ALTERNATIVE_TO_USER)
+                CHECK_CURLOPT("FTP_FILEMETHOD",CURLOPT_FTP_FILEMETHOD)
+                CHECK_CURLOPT("TCP_KEEPALIVE",CURLOPT_TCP_KEEPALIVE)
+                CHECK_CURLOPT("TCP_KEEPIDLE",CURLOPT_TCP_KEEPIDLE)
+                CHECK_CURLOPT("TCP_KEEPINTVL",CURLOPT_TCP_KEEPINTVL)
+                CHECK_CURLOPT("FTP_RESPONSE_TIMEOUT",CURLOPT_FTP_RESPONSE_TIMEOUT)
+                CHECK_CURLOPT("CONNECTTIMEOUT",CURLOPT_CONNECTTIMEOUT)
+                CHECK_CURLOPT("TIMEOUT",CURLOPT_TIMEOUT)
+                CHECK_CURLOPT("LOW_SPEED_TIME",CURLOPT_LOW_SPEED_TIME)
+                CHECK_CURLOPT("LOW_SPEED_LIMIT",CURLOPT_LOW_SPEED_LIMIT)
+                CHECK_CURLOPT("SSL_VERIFYHOST",CURLOPT_SSL_VERIFYHOST)
+                CHECK_CURLOPT("SSL_VERIFYPEER",CURLOPT_SSL_VERIFYPEER)
+                CHECK_CURLOPT("CAINFO",CURLOPT_CAINFO)
+                CHECK_CURLOPT("FTPSSLAUTH",CURLOPT_FTPSSLAUTH)
+                CHECK_CURLOPT("FTP_SSL_CCC",CURLOPT_FTP_SSL_CCC)
+                CHECK_CURLOPT("SSH_AUTH_TYPES",CURLOPT_SSH_AUTH_TYPES)
+                CHECK_CURLOPT("SSH_COMPRESSION",CURLOPT_SSH_COMPRESSION)
+                CHECK_CURLOPT("SSH_HOST_PUBLIC_KEY_MD5",CURLOPT_SSH_HOST_PUBLIC_KEY_MD5)
+                CHECK_CURLOPT("SSH_PUBLIC_KEYFILE",CURLOPT_SSH_PUBLIC_KEYFILE)
+                CHECK_CURLOPT("SSH_PRIVATE_KEYFILE",CURLOPT_SSH_PRIVATE_KEYFILE)
+                CHECK_CURLOPT("SSH_KNOWNHOSTS",CURLOPT_SSH_KNOWNHOSTS)
+                CHECK_CURLOPT("UPKEEP_INTERVAL_MS",CURLOPT_UPKEEP_INTERVAL_MS)
+                CHECK_CURLOPT("DISALLOW_USERNAME_IN_URL",CURLOPT_DISALLOW_USERNAME_IN_URL)
+                CHECK_CURLOPT("PROXY_TLS13_CIPHERS",CURLOPT_PROXY_TLS13_CIPHERS)
+                CHECK_CURLOPT("TLS13_CIPHERS",CURLOPT_TLS13_CIPHERS)
+                CHECK_CURLOPT("DNS_SHUFFLE_ADDRESSES",CURLOPT_DNS_SHUFFLE_ADDRESSES)
+                CHECK_CURLOPT("HAPROXYPROTOCOL",CURLOPT_HAPROXYPROTOCOL)
+                CHECK_CURLOPT("DOH_URL",CURLOPT_DOH_URL)
+                CHECK_CURLOPT("UPLOAD_BUFFERSIZE",CURLOPT_UPLOAD_BUFFERSIZE)
+                CHECK_CURLOPT("HAPPY_EYEBALLS_TIMEOUT_MS",CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS)
+                
+            json_get_curl_option_exit:
+#if USE_JSONCPP
+                (void)0;
+#else
+                json_free(name);
+#endif
             }
-            if (s.compare(L"USE_SSL") == 0)
-            {
-                v = CURLOPT_USE_SSL;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"URL") == 0)
-            {
-                v = CURLOPT_URL;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"USERNAME") == 0)
-            {
-                v = CURLOPT_USERNAME;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"PASSWORD") == 0)
-            {
-                v = CURLOPT_PASSWORD;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTPPORT") == 0)
-            {
-                v = CURLOPT_FTPPORT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"APPEND") == 0)
-            {
-                v = CURLOPT_APPEND;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_ACCOUNT") == 0)
-            {
-                v = CURLOPT_FTP_ACCOUNT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"PRIVATE") == 0)
-            {
-                v = CURLOPT_PRIVATE;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_USE_EPRT") == 0)
-            {
-                v = CURLOPT_FTP_USE_EPRT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_USE_EPSV") == 0)
-            {
-                v = CURLOPT_FTP_USE_EPSV;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_USE_PRET") == 0)
-            {
-                v = CURLOPT_FTP_USE_PRET;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_ALTERNATIVE_TO_USER") == 0)
-            {
-                v = CURLOPT_FTP_ALTERNATIVE_TO_USER;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_FILEMETHOD") == 0)
-            {
-                v = CURLOPT_FTP_FILEMETHOD;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"TCP_KEEPALIVE") == 0)
-            {
-                v = CURLOPT_TCP_KEEPALIVE;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"TCP_KEEPIDLE") == 0)
-            {
-                v = CURLOPT_TCP_KEEPIDLE;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"TCP_KEEPINTVL") == 0)
-            {
-                v = CURLOPT_TCP_KEEPINTVL;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_RESPONSE_TIMEOUT") == 0)
-            {
-                v = CURLOPT_FTP_RESPONSE_TIMEOUT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"CONNECTTIMEOUT") == 0)
-            {
-                v = CURLOPT_CONNECTTIMEOUT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"TIMEOUT") == 0)
-            {
-                v = CURLOPT_TIMEOUT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"LOW_SPEED_TIME") == 0)
-            {
-                v = CURLOPT_LOW_SPEED_TIME;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"LOW_SPEED_LIMIT") == 0)
-            {
-                v = CURLOPT_LOW_SPEED_LIMIT;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSL_VERIFYHOST") == 0)
-            {
-                v = CURLOPT_SSL_VERIFYHOST;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSL_VERIFYPEER") == 0)
-            {
-                v = CURLOPT_SSL_VERIFYPEER;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"CAINFO") == 0)
-            {
-                v = CURLOPT_CAINFO;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTPSSLAUTH") == 0)
-            {
-                v = CURLOPT_FTPSSLAUTH;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"FTP_SSL_CCC") == 0)
-            {
-                v = CURLOPT_FTP_SSL_CCC;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSH_AUTH_TYPES") == 0)
-            {
-                v = CURLOPT_SSH_AUTH_TYPES;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSH_COMPRESSION") == 0)
-            {
-                v = CURLOPT_SSH_COMPRESSION;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSH_HOST_PUBLIC_KEY_MD5") == 0)
-            {
-                v = CURLOPT_SSH_HOST_PUBLIC_KEY_MD5;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSH_PUBLIC_KEYFILE") == 0)
-            {
-                v = CURLOPT_SSH_PUBLIC_KEYFILE;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSH_PRIVATE_KEYFILE") == 0)
-            {
-                v = CURLOPT_SSH_PRIVATE_KEYFILE;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"SSH_KNOWNHOSTS") == 0)
-            {
-                v = CURLOPT_SSH_KNOWNHOSTS;goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"UPKEEP_INTERVAL_MS") == 0)
-            {
-                v = CURLOPT_UPKEEP_INTERVAL_MS; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"DISALLOW_USERNAME_IN_URL") == 0)
-            {
-                v = CURLOPT_DISALLOW_USERNAME_IN_URL; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"PROXY_TLS13_CIPHERS") == 0)
-            {
-                v = CURLOPT_PROXY_TLS13_CIPHERS; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"TLS13_CIPHERS") == 0)
-            {
-                v = CURLOPT_TLS13_CIPHERS; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"DNS_SHUFFLE_ADDRESSES") == 0)
-            {
-                v = CURLOPT_DNS_SHUFFLE_ADDRESSES; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"HAPROXYPROTOCOL") == 0)
-            {
-                v = CURLOPT_HAPROXYPROTOCOL; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"DOH_URL") == 0)
-            {
-                v = CURLOPT_DOH_URL; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"UPLOAD_BUFFERSIZE") == 0)
-            {
-                v = CURLOPT_UPLOAD_BUFFERSIZE; goto json_get_curl_option_exit;
-            }
-            if (s.compare(L"HAPPY_EYEBALLS_TIMEOUT_MS") == 0)
-            {
-                v = CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS; goto json_get_curl_option_exit;
-            }
-            
-        json_get_curl_option_exit:
-            json_free(name);
-        }
+#if USE_JSONCPP
+#else
     }
+#endif
     
     return v;
 }
+
+#if USE_JSONCPP
+void json_get_curl_option_v(CURL *curl, CURLoption option, Json::Value::const_iterator n, struct curl_slist *list)
+{
+    if(n->isArray())
+    {
+        BOOL hasValue = false;
+        for(Json::Value::const_iterator it = n->begin() ; it != n->end() ; it++)
+        {
+            if(it->isString())
+            {
+                JSONCPP_STRING value = it->asString();
+                list = curl_slist_append(list, value.c_str());
+                hasValue = true;
+            }
+        }
+        if(hasValue) curl_easy_setopt(curl, option, list);
+    }else if(n->isString())
+    {
+        JSONCPP_STRING value = n->asString();
+        list = curl_slist_append(list, value.c_str());
+        curl_easy_setopt(curl, option, list);
+    }
+}
+#else
+void json_get_curl_option_v(CURL *curl, CURLoption option, JSONNODE *n, struct curl_slist *list)
+{
+    if(n)
+    {
+        if (json_type(n) == JSON_ARRAY)
+        {
+            JSONNODE_ITERATOR i = json_begin(n);
+            
+            while (i != json_end(n))
+            {
+                json_char *value = json_as_string(*i);
+                if(value)
+                {
+                    CUTF8String u;
+                    json_wconv(value, &u);
+                    list = curl_slist_append(list, (const char *)u.c_str());
+                    json_free(value);
+                }
+                ++i;
+            }
+            if(list)
+                curl_easy_setopt(curl, option, list);
+        }
+    }
+}
+
+
 
 void json_get_curl_option_m(CURL *curl, CURLoption option, JSONNODE *n)
 {
@@ -1619,7 +1853,7 @@ void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, CUTF8Str
             json_wconv(value, &u);
             u2 = u;
             
-//            curl_easy_setopt(curl, option, u.c_str());
+            //            curl_easy_setopt(curl, option, u.c_str());
             if(option == CURLOPT_URL)
             {
                 size_t pos = u.find((const uint8_t *)"://");
@@ -1636,7 +1870,7 @@ void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, CUTF8Str
                 }
                 if(removeFileName)
                 {
-                   std::size_t pos = u.find_last_of((const uint8_t *)"/");
+                    std::size_t pos = u.find_last_of((const uint8_t *)"/");
                     if((pos < u.length()) && (pos != std::string::npos))
                     {
                         u = u.substr(0, pos + 1);
@@ -1645,80 +1879,109 @@ void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, CUTF8Str
             }/* CURLOPT_URL */
             
             curl_easy_setopt(curl, option, u.c_str());
-
+            
             json_free(value);
         }
     }
 }
+#endif
 
+#if USE_JSONCPP
+long json_get_curl_option_value(Json::Value::const_iterator n)
+#else
 long json_get_curl_option_value(JSONNODE *n)
+#endif
 {
-    long v = json_as_int(n);
-    
+    long v = 0;
+#if USE_JSONCPP
+    JSONCPP_STRING s = n->asString();
+#else
     json_char *value = json_as_string(n);
+#endif
     
-    if(value)
-    {
-        std::wstring s = std::wstring((const wchar_t *)value);
-        if (s.compare(L"MULTICWD") == 0)
+#if USE_JSONCPP
+    if(s.length())
+#else
+        if(value)
+#endif
         {
-            v = CURLFTPMETHOD_MULTICWD;goto json_get_curl_option_value_exit;
+#if USE_JSONCPP
+#define CHECK_CURLOPT_VALUE(__a,__b) if(s==__a){v=(CURLoption)__b;goto json_get_curl_option_value_exit;}
+#else
+            std::wstring s = std::wstring((const wchar_t *)value);
+#define CHECK_CURLOPT_VALUE(__a,__b) if(s.compare(L__a)==0){v=__b;goto json_get_curl_option_value_exit;}
+#endif
+            
+            /* USE_SSL */
+            CHECK_CURLOPT_VALUE("USESSL_NONE",CURLUSESSL_NONE)
+            CHECK_CURLOPT_VALUE("USESSL_TRY",CURLUSESSL_TRY)
+            CHECK_CURLOPT_VALUE("USESSL_CONTROL",CURLUSESSL_CONTROL)
+            CHECK_CURLOPT_VALUE("USESSL_ALL",CURLUSESSL_ALL)
+            
+            /* SSLVERSION, PROXY_SSLVERSION */
+            CHECK_CURLOPT_VALUE("SSLVERSION_DEFAULT",CURL_SSLVERSION_DEFAULT)
+            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1",CURL_SSLVERSION_TLSv1)
+            CHECK_CURLOPT_VALUE("SSLVERSION_SSLv2",CURL_SSLVERSION_SSLv2)
+            CHECK_CURLOPT_VALUE("SSLVERSION_SSLv3",CURL_SSLVERSION_SSLv3)
+            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_0",CURL_SSLVERSION_TLSv1_0)
+            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_1",CURL_SSLVERSION_TLSv1_1)
+            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_2",CURL_SSLVERSION_TLSv1_2)
+            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_3",CURL_SSLVERSION_TLSv1_3)
+            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_DEFAULT",CURL_SSLVERSION_MAX_DEFAULT)
+            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_0",CURL_SSLVERSION_MAX_TLSv1_0)
+            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_1",CURL_SSLVERSION_MAX_TLSv1_1)
+            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_2",CURL_SSLVERSION_MAX_TLSv1_2)
+            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_3",CURL_SSLVERSION_MAX_TLSv1_3)
+            
+            /* HEADEROPT */
+            CHECK_CURLOPT_VALUE("HEADER_UNIFIED",CURLHEADER_UNIFIED)
+            CHECK_CURLOPT_VALUE("HEADER_SEPARATE",CURLHEADER_SEPARATE)
+            
+            /* HTTP_VERSION */
+            CHECK_CURLOPT_VALUE("HTTP_VERSION_NONE",CURL_HTTP_VERSION_NONE)
+            CHECK_CURLOPT_VALUE("HTTP_VERSION_1_0",CURL_HTTP_VERSION_1_0)
+            CHECK_CURLOPT_VALUE("HTTP_VERSION_1_1",CURL_HTTP_VERSION_1_1)
+            CHECK_CURLOPT_VALUE("HTTP_VERSION_2",CURL_HTTP_VERSION_2)
+            CHECK_CURLOPT_VALUE("HTTP_VERSION_2TLS",CURL_HTTP_VERSION_2TLS)
+            CHECK_CURLOPT_VALUE("HTTP_VERSION_2_PRIOR_KNOWLEDGE",CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE)
+            
+            /* TIMECONDITION */
+            CHECK_CURLOPT_VALUE("TIMECOND_IFMODSINCE",CURL_TIMECOND_IFMODSINCE)
+            CHECK_CURLOPT_VALUE("TIMECOND_IFUNMODSINCE",CURL_TIMECOND_IFUNMODSINCE)
+            CHECK_CURLOPT_VALUE("TIMECOND_LASTMOD",CURL_TIMECOND_LASTMOD)
+            
+            /* PROXYTYPE */
+            CHECK_CURLOPT_VALUE("PROXY_HTTPS",CURLPROXY_HTTPS)
+            CHECK_CURLOPT_VALUE("PROXY_SOCKS4",CURLPROXY_SOCKS4)
+            CHECK_CURLOPT_VALUE("PROXY_SOCKS4A",CURLPROXY_SOCKS4A)
+            CHECK_CURLOPT_VALUE("PROXY_SOCKS5",CURLPROXY_SOCKS5)
+            
+            /* FTPSSLAUTH */
+            CHECK_CURLOPT_VALUE("FTPAUTH_SSL",CURLFTPAUTH_SSL)
+            CHECK_CURLOPT_VALUE("FTPAUTH_TLS",CURLFTPAUTH_TLS)
+            
+            /* compatibility */
+            CHECK_CURLOPT_VALUE("MULTICWD",CURLFTPMETHOD_MULTICWD)
+            CHECK_CURLOPT_VALUE("NOCWD",CURLFTPMETHOD_NOCWD)
+            CHECK_CURLOPT_VALUE("SINGLECWD",CURLFTPMETHOD_SINGLECWD)
+            CHECK_CURLOPT_VALUE("AUTH_DEFAULT",CURLFTPAUTH_DEFAULT)
+            CHECK_CURLOPT_VALUE("AUTH_SSL",CURLFTPAUTH_SSL)
+            CHECK_CURLOPT_VALUE("AUTH_TLS",CURLFTPAUTH_TLS)
+            CHECK_CURLOPT_VALUE("CCC_NONE",CURLFTPSSL_CCC_NONE)
+            CHECK_CURLOPT_VALUE("CCC_PASSIVE",CURLFTPSSL_CCC_PASSIVE)
+            CHECK_CURLOPT_VALUE("CCC_ACTIVE",CURLFTPSSL_CCC_ACTIVE)
+            CHECK_CURLOPT_VALUE("USESSL_NONE",CURLUSESSL_NONE)
+            CHECK_CURLOPT_VALUE("USESSL_TRY",CURLUSESSL_TRY)
+            CHECK_CURLOPT_VALUE("USESSL_CONTROL",CURLUSESSL_CONTROL)
+            CHECK_CURLOPT_VALUE("USESSL_ALL",CURLUSESSL_ALL)
+            
+         json_get_curl_option_value_exit:
+#if USE_JSONCPP
+            (void)0;
+#else
+            json_free(value);
+#endif
         }
-        if (s.compare(L"NOCWD") == 0)
-        {
-            v = CURLFTPMETHOD_NOCWD;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"SINGLECWD") == 0)
-        {
-            v = CURLFTPMETHOD_SINGLECWD;goto json_get_curl_option_value_exit;
-        }
-        
-        if (s.compare(L"AUTH_DEFAULT") == 0)
-        {
-            v = CURLFTPAUTH_DEFAULT;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"AUTH_SSL") == 0)
-        {
-            v = CURLFTPAUTH_SSL;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"AUTH_TLS") == 0)
-        {
-            v = CURLFTPAUTH_TLS;goto json_get_curl_option_value_exit;
-        }
-        
-        if (s.compare(L"CCC_NONE") == 0)
-        {
-            v = CURLFTPSSL_CCC_NONE;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"CCC_PASSIVE") == 0)
-        {
-            v = CURLFTPSSL_CCC_PASSIVE;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"CCC_ACTIVE") == 0)
-        {
-            v = CURLFTPSSL_CCC_ACTIVE;goto json_get_curl_option_value_exit;
-        }
-        
-        if (s.compare(L"USESSL_NONE") == 0)
-        {
-            v = CURLUSESSL_NONE;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"USESSL_TRY") == 0)
-        {
-            v = CURLUSESSL_TRY;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"USESSL_CONTROL") == 0)
-        {
-            v = CURLUSESSL_CONTROL;goto json_get_curl_option_value_exit;
-        }
-        if (s.compare(L"USESSL_ALL") == 0)
-        {
-            v = CURLUSESSL_ALL;goto json_get_curl_option_value_exit;
-        }
-        
-    json_get_curl_option_value_exit:
-        json_free(value);
-    }
     
     return v;
 }
@@ -1731,6 +1994,342 @@ protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, C
     
     CUTF8String Param1_u8;
     Param1.copyUTF8String(&Param1_u8);
+    
+#if USE_JSONCPP
+    Json::Value root;
+    Json::CharReaderBuilder builder;
+    std::string errors;
+    
+    Json::CharReader *reader = builder.newCharReader();
+    bool parse = reader->parse((const char *)Param1_u8.c_str(),
+                               (const char *)Param1_u8.c_str() + Param1_u8.size(),
+                               &root,
+                               &errors);
+    delete reader;
+    
+    if(parse)
+    {
+        if(root.isObject())
+        {
+            for(Json::Value::const_iterator it = root.begin() ; it != root.end() ; it++)
+            {
+                Json::Value key = it.key();
+                JSONCPP_STRING name = it.name();
+                
+                CURLoption curl_option = json_get_curl_option_name(it);
+                
+                switch (curl_option)
+                {
+                    case CURLOPT_PRIVATE:
+                    {
+                        JSONCPP_STRING value = it->asString();
+                        userInfo.setUTF8String((const uint8_t *)value.c_str(), value.length());
+                    }
+                        break;
+                        /* string */
+                    case CURLOPT_PROXY:
+                    case CURLOPT_USERPWD:
+                    case CURLOPT_PROXYUSERPWD:
+                    case CURLOPT_RANGE:
+                    case CURLOPT_REFERER:
+                    case CURLOPT_FTPPORT:
+                    case CURLOPT_USERAGENT:
+                    case CURLOPT_COOKIE:
+                    case CURLOPT_KEYPASSWD:
+                    case CURLOPT_CUSTOMREQUEST:
+                    case CURLOPT_INTERFACE:
+                    case CURLOPT_KRBLEVEL:
+                    case CURLOPT_RANDOM_FILE:
+                    case CURLOPT_EGDSOCKET:
+                    case CURLOPT_SSL_CIPHER_LIST:
+                    case CURLOPT_SSLCERTTYPE:
+                    case CURLOPT_SSLKEYTYPE:
+                    case CURLOPT_ACCEPT_ENCODING:
+                    case CURLOPT_FTP_ACCOUNT:
+                    case CURLOPT_COOKIELIST:
+                    case CURLOPT_FTP_ALTERNATIVE_TO_USER:
+                    case CURLOPT_SSH_HOST_PUBLIC_KEY_MD5:
+                    case CURLOPT_USERNAME:
+                    case CURLOPT_PASSWORD:
+                    case CURLOPT_PROXYUSERNAME:
+                    case CURLOPT_PROXYPASSWORD:
+                    case CURLOPT_NOPROXY:
+                    case CURLOPT_SSH_KNOWNHOSTS:
+                    case CURLOPT_RTSP_SESSION_ID:
+                    case CURLOPT_RTSP_STREAM_URI:
+                    case CURLOPT_RTSP_TRANSPORT:
+                    case CURLOPT_TLSAUTH_USERNAME:
+                    case CURLOPT_TLSAUTH_PASSWORD:
+                    case CURLOPT_TLSAUTH_TYPE:
+                    case CURLOPT_DNS_SERVERS:
+                    case CURLOPT_MAIL_AUTH:
+                    case CURLOPT_XOAUTH2_BEARER:
+                    case CURLOPT_DNS_INTERFACE:
+                    case CURLOPT_DNS_LOCAL_IP4:
+                    case CURLOPT_DNS_LOCAL_IP6:
+                    case CURLOPT_LOGIN_OPTIONS:
+                    case CURLOPT_PROXY_SERVICE_NAME:
+                    case CURLOPT_SERVICE_NAME:
+                    case CURLOPT_DEFAULT_PROTOCOL:
+                    case CURLOPT_PROXY_TLSAUTH_USERNAME:
+                    case CURLOPT_PROXY_TLSAUTH_PASSWORD:
+                    case CURLOPT_PROXY_TLSAUTH_TYPE:
+                    case CURLOPT_PROXY_SSLCERTTYPE:
+                    case CURLOPT_PROXY_SSLKEYTYPE:
+                    case CURLOPT_PROXY_KEYPASSWD:
+                    case CURLOPT_PROXY_SSL_CIPHER_LIST:
+                    case CURLOPT_PRE_PROXY:
+                    case CURLOPT_PROXY_PINNEDPUBLICKEY:
+                    case CURLOPT_REQUEST_TARGET:
+                    case CURLOPT_TLS13_CIPHERS:
+                    case CURLOPT_PROXY_TLS13_CIPHERS:
+                    case CURLOPT_DOH_URL:
+                    case CURLOPT_MAIL_FROM:
+                    case CURLOPT_URL:
+                    {
+                        JSONCPP_STRING value = it->asString();
+                        JSONCPP_STRING url;
+                        JSONCPP_STRING path;
+                        if(curl_option == CURLOPT_URL)
+                        {
+                            size_t pos = value.find((const char *)"://");
+                            if(pos != std::string::npos)
+                            {
+                                /* skip protocol */
+                                url = value.substr(pos + 4);
+                            }
+                            pos = url.find((const char *)"/");
+                            if(pos != std::string::npos)
+                            {
+                                /* path: skip host */
+                                path = url.substr(pos + 1);
+                            }
+                            if(removeFileName)
+                            {
+                                std::size_t pos = value.find_last_of((const char *)"/");
+                                if((pos < value.length()) && (pos != std::string::npos))
+                                {
+                                    value = value.substr(0, pos + 1);
+                                }
+                            }
+
+                            if(0 == value.find((const char *)"sftp:"))
+                            {
+                                protocol = PROTOCOL_TYPE_SFTP;
+                            }
+                            
+                            if(0 == value.find((const char *)"ftps:"))
+                            {
+                                protocol = PROTOCOL_TYPE_FTPS;
+                            }
+                        }
+                        curl_easy_setopt(curl, curl_option, value.c_str());
+                    }
+                        break;
+                        /* path */
+                    case CURLOPT_SSLCERT:
+                    case CURLOPT_COOKIEFILE:
+                    case CURLOPT_CAINFO:
+                    case CURLOPT_COOKIEJAR:
+                    case CURLOPT_SSLKEY:
+                    case CURLOPT_CAPATH:
+                    case CURLOPT_NETRC_FILE:
+                    case CURLOPT_SSH_PUBLIC_KEYFILE:
+                    case CURLOPT_SSH_PRIVATE_KEYFILE:
+                    case CURLOPT_CRLFILE:
+                    case CURLOPT_ISSUERCERT:
+                    case CURLOPT_PROXY_CAINFO:
+                    case CURLOPT_PROXY_CAPATH:
+                    case CURLOPT_PROXY_SSLCERT:
+                    case CURLOPT_PROXY_SSLKEY:
+                    case CURLOPT_PROXY_CRLFILE:
+                    {
+                        JSONCPP_STRING value = it->asString();
+#if VERSIONMAC
+                        /* hfs to posix */
+                        C_TEXT t;
+                        t.setUTF8String((const uint8_t *)value.c_str(), value.length());
+                        CUTF8String u;
+                        t.copyPath(&u);
+                        curl_easy_setopt(curl, curl_option, (const char *)u.c_str());
+#else
+                        curl_easy_setopt(curl, curl_option, value.c_str());
+#endif
+                    }
+                        break;
+                        /* path or value */
+                    case CURLOPT_PINNEDPUBLICKEY:
+                    {
+                        JSONCPP_STRING value = it->asString();
+                        if (value.find_first_of("sha256//") == std::string::npos)
+                        {
+#if VERSIONMAC
+                            /* hfs to posix */
+                            C_TEXT t;
+                            t.setUTF8String((const uint8_t *)value.c_str(), value.length());
+                            CUTF8String u;
+                            t.copyPath(&u);
+                            curl_easy_setopt(curl, curl_option, (const char *)u.c_str());
+#else
+                            curl_easy_setopt(curl, curl_option, value.c_str());
+#endif
+                        }else
+                        {
+                            curl_easy_setopt(curl, curl_option, value.c_str());
+                        }
+                    }
+                        break;
+                        /* longint */
+                    case CURLOPT_PORT:
+                    case CURLOPT_TIMEOUT:
+                    case CURLOPT_LOW_SPEED_LIMIT:
+                    case CURLOPT_LOW_SPEED_TIME:
+                    case CURLOPT_RESUME_FROM:
+                    case CURLOPT_CRLF:
+                    case CURLOPT_TIMEVALUE:
+                    case CURLOPT_HEADER:
+                    case CURLOPT_NOBODY:
+                    case CURLOPT_FAILONERROR:
+                    case CURLOPT_UPLOAD:
+                    case CURLOPT_POST:
+                    case CURLOPT_DIRLISTONLY:
+                    case CURLOPT_APPEND:
+                    case CURLOPT_NETRC:
+                    case CURLOPT_FOLLOWLOCATION:
+                    case CURLOPT_PUT:
+                    case CURLOPT_AUTOREFERER:
+                    case CURLOPT_PROXYPORT:
+                    case CURLOPT_HTTPPROXYTUNNEL:
+                    case CURLOPT_SSL_VERIFYPEER:
+                    case CURLOPT_MAXREDIRS:
+                    case CURLOPT_FILETIME:
+                    case CURLOPT_MAXCONNECTS:
+                    case CURLOPT_FRESH_CONNECT:
+                    case CURLOPT_FORBID_REUSE:
+                    case CURLOPT_CONNECTTIMEOUT:
+                    case CURLOPT_HTTPGET:
+                    case CURLOPT_SSL_VERIFYHOST:
+                    case CURLOPT_FTP_USE_EPSV:
+                    case CURLOPT_DNS_CACHE_TIMEOUT:
+                    case CURLOPT_COOKIESESSION:
+                    case CURLOPT_BUFFERSIZE:
+                    case CURLOPT_UNRESTRICTED_AUTH:
+                    case CURLOPT_FTP_USE_EPRT:
+                    case CURLOPT_HTTPAUTH:
+                    case CURLOPT_FTP_CREATE_MISSING_DIRS:
+                    case CURLOPT_PROXYAUTH:
+                    case CURLOPT_FTP_RESPONSE_TIMEOUT:
+                    case CURLOPT_IPRESOLVE:
+                    case CURLOPT_MAXFILESIZE:
+                    case CURLOPT_IGNORE_CONTENT_LENGTH:
+                    case CURLOPT_FTP_SKIP_PASV_IP:
+                    case CURLOPT_FTP_FILEMETHOD:
+                    case CURLOPT_LOCALPORT:
+                    case CURLOPT_LOCALPORTRANGE:
+                    case CURLOPT_CONNECT_ONLY:
+                    case CURLOPT_SSL_SESSIONID_CACHE:
+                    case CURLOPT_SSH_AUTH_TYPES:
+                    case CURLOPT_FTP_SSL_CCC:
+                    case CURLOPT_TIMEOUT_MS:
+                    case CURLOPT_CONNECTTIMEOUT_MS:
+                    case CURLOPT_HTTP_TRANSFER_DECODING:
+                    case CURLOPT_HTTP_CONTENT_DECODING:
+                    case CURLOPT_NEW_FILE_PERMS:
+                    case CURLOPT_NEW_DIRECTORY_PERMS:
+                    case CURLOPT_POSTREDIR:
+                    case CURLOPT_PROXY_TRANSFER_MODE:
+                    case CURLOPT_ADDRESS_SCOPE:
+                    case CURLOPT_CERTINFO:
+                    case CURLOPT_TFTP_BLKSIZE:
+                    case CURLOPT_PROTOCOLS:
+                    case CURLOPT_REDIR_PROTOCOLS:
+                    case CURLOPT_FTP_USE_PRET:
+                    case CURLOPT_RTSP_REQUEST:
+                    case CURLOPT_RTSP_CLIENT_CSEQ:
+                    case CURLOPT_RTSP_SERVER_CSEQ:
+                    case CURLOPT_WILDCARDMATCH:
+                    case CURLOPT_TRANSFER_ENCODING:
+                    case CURLOPT_ACCEPTTIMEOUT_MS:
+                    case CURLOPT_TCP_KEEPALIVE:
+                    case CURLOPT_TCP_KEEPIDLE:
+                    case CURLOPT_TCP_KEEPINTVL:
+                    case CURLOPT_SASL_IR:
+                    case CURLOPT_SSL_ENABLE_NPN:
+                    case CURLOPT_SSL_ENABLE_ALPN:
+                    case CURLOPT_EXPECT_100_TIMEOUT_MS:
+                    case CURLOPT_SSL_VERIFYSTATUS:
+                    case CURLOPT_SSL_FALSESTART:
+                    case CURLOPT_PATH_AS_IS:
+                    case CURLOPT_PIPEWAIT:
+                    case CURLOPT_STREAM_WEIGHT:
+                    case CURLOPT_TFTP_NO_OPTIONS:
+                    case CURLOPT_TCP_FASTOPEN:
+                    case CURLOPT_KEEP_SENDING_ON_ERROR:
+                    case CURLOPT_PROXY_SSL_VERIFYPEER:
+                    case CURLOPT_PROXY_SSL_VERIFYHOST:
+                    case CURLOPT_PROXY_SSL_OPTIONS:
+                    case CURLOPT_SUPPRESS_CONNECT_HEADERS:
+                    case CURLOPT_SOCKS5_AUTH:
+                    case CURLOPT_SSH_COMPRESSION:
+                    case CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS:
+                    case CURLOPT_HAPROXYPROTOCOL:
+                    case CURLOPT_DNS_SHUFFLE_ADDRESSES:
+                    case CURLOPT_DISALLOW_USERNAME_IN_URL:
+                    case CURLOPT_UPLOAD_BUFFERSIZE:
+                    case CURLOPT_UPKEEP_INTERVAL_MS:
+                        curl_easy_setopt(curl, curl_option, it->asInt());
+                        break;
+                        /* constant or long */
+                    case CURLOPT_USE_SSL:
+                    case CURLOPT_SSLVERSION:
+                    case CURLOPT_HTTP_VERSION:
+                    case CURLOPT_PROXY_SSLVERSION:
+                    case CURLOPT_TIMECONDITION:
+                    case CURLOPT_PROXYTYPE:
+                    case CURLOPT_FTPSSLAUTH:
+                    case CURLOPT_HEADEROPT:
+                    {
+                        curl_easy_setopt(curl, curl_option, json_get_curl_option_value(it));
+                    }
+                        break;
+                        /* array string */
+                    case CURLOPT_CONNECT_TO:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_connect_to);
+                        break;
+                    case CURLOPT_PROXYHEADER:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_proxy_header);
+                        break;
+                    case CURLOPT_HTTPHEADER:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_http_header);
+                        break;
+                    case CURLOPT_HTTP200ALIASES:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_http_200_aliases);
+                        break;
+                    case CURLOPT_RESOLVE:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_resolve);
+                        break;
+                    case CURLOPT_MAIL_RCPT:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_mail_rcpt);
+                        break;
+                    case CURLOPT_PREQUOTE:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_prequote);
+                        break;
+                    case CURLOPT_POSTQUOTE:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_postquote);
+                        break;
+                    case CURLOPT_QUOTE:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_quote);
+                        break;
+                    case CURLOPT_TELNETOPTIONS:
+//                        json_get_curl_option_v(curl, curl_option, it, curl_slist_telnet_options);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+#else
     std::wstring Param1_option;
     json_wconv((const char *)Param1_u8.c_str(), Param1_option);
     
@@ -1742,7 +2341,7 @@ protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, C
         if (json_type(option) == JSON_NODE)
         {
             JSONNODE_ITERATOR i = json_begin(option);
-
+            
             while (i != json_end(option))
             {
                 CURLoption curl_option = json_get_curl_option_name(*i);
@@ -1851,9 +2450,37 @@ protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, C
         }
         json_delete(option);
     }
-    
+#endif
+
     return protocol;
 }
+
+#if USE_JSONCPP
+void convertFromString(std::string &fromString, CUTF16String &toString)
+{
+#ifdef _WIN32
+    int len = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)fromString.c_str(), fromString.length(), NULL, 0);
+    
+    if(len){
+        std::vector<uint8_t> buf((len + 1) * sizeof(PA_Unichar));
+        if(MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)fromString.c_str(), fromString.length(), (LPWSTR)&buf[0], len)){
+            toString = CUTF16String((const PA_Unichar *)&buf[0]);
+        }
+    }else{
+        toString = CUTF16String((const PA_Unichar *)L"\0\0");
+    }
+#else
+    CFStringRef str = CFStringCreateWithBytes(kCFAllocatorDefault, (const UInt8 *)fromString.c_str(), fromString.length(), kCFStringEncodingUTF8, true);
+    if(str){
+        int len = CFStringGetLength(str);
+        std::vector<uint8_t> buf((len+1) * sizeof(PA_Unichar));
+        CFStringGetCharacters(str, CFRangeMake(0, len), (UniChar *)&buf[0]);
+        toString = CUTF16String((const PA_Unichar *)&buf[0]);
+        CFRelease(str);
+    }
+#endif
+}
+#endif
 
 void curl_get_info(CURL *curl, CUTF16String& json)
 {
@@ -1870,6 +2497,162 @@ void curl_get_info(CURL *curl, CUTF16String& json)
     char *primaryIp = NULL;
     char *rtspSessionId = NULL;
     
+    curl_off_t speedUploadT, speedDownloadT, sizeUploadT, sizeDownloadT, contentLengthDownloadT, contentLengthUploadT;
+    
+#if USE_JSONCPP
+#define JSONCPP_STRING_VALUE(s) s ? s : ""
+    
+    Json::Value info;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &conditionUnmet))
+        info["conditionUnmet"] = (Json::Int64)conditionUnmet;
+    
+    /*
+     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_UPLOAD, &contentLengthUpload))
+     info["contentLengthUpload"] = contentLengthUpload;
+     */
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_UPLOAD_T, &contentLengthUploadT))
+        info["contentLengthUpload"] = (Json::Int64)contentLengthUploadT;
+    
+    /*
+     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &contentLengthDownload))
+     info["contentLengthDownload"] = contentLengthDownload;
+     */
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &contentLengthDownloadT))
+        info["contentLengthDownload"] = (Json::Int64)contentLengthDownloadT;
+    
+    /*
+     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_UPLOAD, &speedUpload))
+     info["speedUpload"] = speedUpload;
+     */
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_UPLOAD_T, &speedUploadT))
+        info["speedUpload"] = (Json::UInt64)speedUploadT;
+    
+    /*
+     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_DOWNLOAD, &speedDownload))
+     info["speedDownload"] = speedDownload;
+     */
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_DOWNLOAD_T, &speedDownloadT))
+        info["speedDownload"] = (Json::UInt64)speedDownloadT;
+    
+    /*
+     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &sizeDownload))
+     info["sizeDownload"] = sizeDownload;
+     */
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD_T, &sizeDownloadT))
+        info["sizeDownload"] = (Json::UInt64)sizeDownloadT;
+    
+    /*
+     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SIZE_UPLOAD, &sizeUpload))
+     info["sizeUpload"] = sizeUpload;
+     */
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SIZE_UPLOAD_T, &sizeUploadT))
+        info["sizeUpload"] = (Json::UInt64)sizeUploadT;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_RTSP_CLIENT_CSEQ, &rtspClientCseq))
+        info["rtspClientCseq"] = (Json::Int64)rtspClientCseq;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_RTSP_SERVER_CSEQ, &rtspServerCseq))
+        info["rtspServerCseq"] = (Json::Int64)rtspServerCseq;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_RTSP_CSEQ_RECV, &rtspCseqRecv))
+        info["rtspCseqRecv"] = (Json::Int64)rtspCseqRecv;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_LASTSOCKET, &lastSocket))
+        info["lastSocket"] = (Json::Int64)lastSocket;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_PRIMARY_PORT, &primaryPort))
+        info["primaryPort"] = (Json::Int64)primaryPort;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_LOCAL_PORT, &localPort))
+        info["localPort"] = (Json::Int64)localPort;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_HTTP_CONNECTCODE, &connectCode))
+        info["connectCode"] = (Json::Int64)connectCode;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_FILETIME, &fileTime))
+        info["fileTime"] = (Json::Int64)fileTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &totalTime))
+        info["totalTime"] = totalTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_REQUEST_SIZE , &requestSize))
+        info["requestSize"] = (Json::Int64)requestSize;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_HEADER_SIZE, &headerSize))
+        info["headerSize"] = (Json::Int64)headerSize;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_HTTPAUTH_AVAIL, &httpAuthAvail))
+        info["httpAuthAvail"] = (Json::Int64)httpAuthAvail;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_PROXYAUTH_AVAIL, &proxyAuthAvail))
+        info["proxyAuthAvail"] = (Json::Int64)proxyAuthAvail;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_OS_ERRNO, &osErrNo))
+        info["osErrNo"] = (Json::Int64)osErrNo;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_NUM_CONNECTS, &numConnects))
+        info["numConnects"] = (Json::Int64)numConnects;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &responseCode))
+        info["responseCode"] = (Json::Int64)responseCode;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_NAMELOOKUP_TIME, &nameLookupTime))
+        info["nameLookupTime"] = nameLookupTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONNECT_TIME, &connectTime))
+        info["connectTime"] = connectTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_APPCONNECT_TIME, &appConnectTime))
+        info["appConnectTime"] = appConnectTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_PRETRANSFER_TIME, &preTransferTime))
+        info["preTransferTime"] = preTransferTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_STARTTRANSFER_TIME, &startTransferTime))
+        info["startTransferTime"] = startTransferTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_REDIRECT_TIME, &redirectTime))
+        info["redirectTime"] = redirectTime;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SSL_VERIFYRESULT , &sslVerifyResult))
+        info["sslVerifyResult"] = (Json::Int64)sslVerifyResult;
+    
+    if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_REDIRECT_COUNT, &redirectCount))
+        info["redirectCount"] = (Json::Int64)redirectCount;
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effectiveUrl)))
+        info["effectiveUrl"] = JSONCPP_STRING_VALUE(effectiveUrl);
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_LOCAL_IP, &localIp)))
+        info["localIp"] = JSONCPP_STRING_VALUE(localIp);
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &contentType)))
+        info["contentType"] = JSONCPP_STRING_VALUE(contentType);
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &primaryIp)))
+        info["primaryIp"] = JSONCPP_STRING_VALUE(primaryIp);
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_REDIRECT_URL, &redirectUrl)))
+        info["redirectUrl"] = JSONCPP_STRING_VALUE(redirectUrl);
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_FTP_ENTRY_PATH, &ftpEntryPath)))
+        info["ftpEntryPath"] = JSONCPP_STRING_VALUE(ftpEntryPath);
+    
+    if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_RTSP_SESSION_ID, &rtspSessionId)))
+        info["rtspSessionId"] = JSONCPP_STRING_VALUE(rtspSessionId);
+    
+    Json::StyledWriter writer;
+    std::string options = writer.write(info);
+    convertFromString(options, json);
+#else
+    
     std::lock_guard<std::mutex> lock(mutexJson);
     
     JSONNODE *info = json_new(JSON_NODE);
@@ -1878,7 +2661,7 @@ void curl_get_info(CURL *curl, CUTF16String& json)
         json_set_i_for_key(info, L"conditionUnmet", conditionUnmet);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_UPLOAD, &contentLengthUpload))
-        json_set_i_for_key(info, L"contentLengthUpload", contentLengthUpload);
+        json_set_f_for_key(info, L"contentLengthUpload", (json_number)contentLengthUpload);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_RTSP_CLIENT_CSEQ, &rtspClientCseq))
         json_set_i_for_key(info, L"rtspClientCseq", rtspClientCseq);
@@ -1899,7 +2682,7 @@ void curl_get_info(CURL *curl, CUTF16String& json)
         json_set_i_for_key(info, L"localPort", localPort);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &contentLengthDownload))
-        json_set_i_for_key(info, L"contentLengthDownload", contentLengthDownload);
+        json_set_f_for_key(info, L"contentLengthDownload", (json_number)contentLengthDownload);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_HTTP_CONNECTCODE, &connectCode))
         json_set_i_for_key(info, L"connectCode", connectCode);
@@ -1908,7 +2691,7 @@ void curl_get_info(CURL *curl, CUTF16String& json)
         json_set_i_for_key(info, L"fileTime", fileTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &totalTime))
-        json_set_i_for_key(info, L"totalTime", totalTime);
+        json_set_f_for_key(info, L"totalTime", (json_number)totalTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_REQUEST_SIZE , &requestSize))
         json_set_i_for_key(info, L"requestSize", requestSize);
@@ -1917,16 +2700,16 @@ void curl_get_info(CURL *curl, CUTF16String& json)
         json_set_i_for_key(info, L"headerSize", headerSize);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_UPLOAD, &speedUpload))
-        json_set_i_for_key(info, L"speedUpload", speedUpload);
+        json_set_f_for_key(info, L"speedUpload", (json_number)speedUpload);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_DOWNLOAD, &speedDownload))
-        json_set_i_for_key(info, L"speedDownload", speedDownload);
+        json_set_f_for_key(info, L"speedDownload", (json_number)speedDownload);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SIZE_DOWNLOAD, &sizeDownload))
-        json_set_i_for_key(info, L"sizeDownload", sizeDownload);
+        json_set_f_for_key(info, L"sizeDownload", (json_number)sizeDownload);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SIZE_UPLOAD, &sizeUpload))
-        json_set_i_for_key(info, L"sizeUpload", sizeUpload);
+        json_set_f_for_key(info, L"sizeUpload", (json_number)sizeUpload);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_HTTPAUTH_AVAIL, &httpAuthAvail))
         json_set_i_for_key(info, L"httpAuthAvail", httpAuthAvail);
@@ -1944,22 +2727,22 @@ void curl_get_info(CURL *curl, CUTF16String& json)
         json_set_i_for_key(info, L"responseCode", responseCode);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_NAMELOOKUP_TIME, &nameLookupTime))
-        json_set_i_for_key(info, L"nameLookupTime", nameLookupTime);
+        json_set_f_for_key(info, L"nameLookupTime", (json_number)nameLookupTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONNECT_TIME, &connectTime))
-        json_set_i_for_key(info, L"connectTime", connectTime);
+        json_set_f_for_key(info, L"connectTime", (json_number)connectTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_APPCONNECT_TIME, &appConnectTime))
-        json_set_i_for_key(info, L"appConnectTime", appConnectTime);
+        json_set_f_for_key(info, L"appConnectTime", (json_number)appConnectTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_PRETRANSFER_TIME, &preTransferTime))
-        json_set_i_for_key(info, L"preTransferTime", preTransferTime);
+        json_set_f_for_key(info, L"preTransferTime", (json_number)preTransferTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_STARTTRANSFER_TIME, &startTransferTime))
-        json_set_i_for_key(info, L"startTransferTime", startTransferTime);
+        json_set_f_for_key(info, L"startTransferTime", (json_number)startTransferTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_REDIRECT_TIME, &redirectTime))
-        json_set_i_for_key(info, L"redirectTime", redirectTime);
+        json_set_f_for_key(info, L"redirectTime", (json_number)redirectTime);
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SSL_VERIFYRESULT , &sslVerifyResult))
         json_set_i_for_key(info, L"sslVerifyResult", sslVerifyResult);
@@ -1991,6 +2774,8 @@ void curl_get_info(CURL *curl, CUTF16String& json)
     json_stringify(info, json, FALSE);
     
     json_delete(info);
+    
+#endif
 }
 
 void last_path_component(CUTF8String& path)

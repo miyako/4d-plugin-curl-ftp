@@ -56,6 +56,7 @@
 		D167F30420F5D7C000639776 /* preemptive_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D167F30220F5D7C000639776 /* preemptive_methods.cpp */; };
 		D167F30520F5D7C000639776 /* preemptive_methods.h in Headers */ = {isa = PBXBuildFile; fileRef = D167F30320F5D7C000639776 /* preemptive_methods.h */; };
 		D175D9CD1A02E8DD0006B569 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */; };
+		D17A487222082D7600F884DB /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D17A487122082D7600F884DB /* libjsoncpp.a */; };
 		D182B3711FE06AE10004C2E3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D182B36F1FE06AE10004C2E3 /* libssl.a */; };
 		D182B3721FE06AE10004C2E3 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D182B3701FE06AE10004C2E3 /* libz.a */; };
 		D182B3771FE06AEC0004C2E3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D182B3731FE06AEC0004C2E3 /* libcrypto.a */; };
@@ -136,6 +137,7 @@
 		D167F30220F5D7C000639776 /* preemptive_methods.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = preemptive_methods.cpp; sourceTree = "<group>"; };
 		D167F30320F5D7C000639776 /* preemptive_methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = preemptive_methods.h; sourceTree = "<group>"; };
 		D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		D17A487122082D7600F884DB /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = a/libjsoncpp.a; sourceTree = "<group>"; };
 		D182B36F1FE06AE10004C2E3 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = a/libssl.a; sourceTree = "<group>"; };
 		D182B3701FE06AE10004C2E3 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = a/libz.a; sourceTree = "<group>"; };
 		D182B3731FE06AEC0004C2E3 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = a/libcrypto.a; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D17A487222082D7600F884DB /* libjsoncpp.a in Frameworks */,
 				D1CB0F1E219513D60037BE89 /* libnghttp2.a in Frameworks */,
 				D1CB0F1F219513D60037BE89 /* libunistring.a in Frameworks */,
 				D182B3781FE06AEC0004C2E3 /* libcurl.a in Frameworks */,
@@ -344,6 +347,7 @@
 		D1CB0F1B219513D50037BE89 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D17A487122082D7600F884DB /* libjsoncpp.a */,
 				D1CB0F1C219513D60037BE89 /* libnghttp2.a */,
 				D1CB0F1D219513D60037BE89 /* libunistring.a */,
 			);
@@ -670,7 +674,9 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DEVELOPMENT_TEAM = Y69CWUC25B;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -720,7 +726,9 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DEVELOPMENT_TEAM = Y69CWUC25B;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -770,6 +778,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				DEVELOPMENT_TEAM = Y69CWUC25B;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
