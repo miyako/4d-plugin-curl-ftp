@@ -15,6 +15,8 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
+[2.13-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.13-carbon)  
+
 [2.12-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.12-carbon) fix ``rm`` ``DELE``
 
 [2.9.1-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.9.1-carbon) missing sftp suuport on mac 
