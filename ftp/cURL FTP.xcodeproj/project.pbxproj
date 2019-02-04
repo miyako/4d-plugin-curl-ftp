@@ -68,6 +68,7 @@
 		D182B3A61FE08BFE0004C2E3 /* libiconv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D182B3A51FE08BFE0004C2E3 /* libiconv.a */; };
 		D1CB0F1E219513D60037BE89 /* libnghttp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CB0F1C219513D60037BE89 /* libnghttp2.a */; };
 		D1CB0F1F219513D60037BE89 /* libunistring.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CB0F1D219513D60037BE89 /* libunistring.a */; };
+		D1F10567220860BF0077D468 /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1F10566220860BF0077D468 /* libjsoncpp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -148,6 +149,7 @@
 		D182B3A51FE08BFE0004C2E3 /* libiconv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libiconv.a; path = a/libiconv.a; sourceTree = "<group>"; };
 		D1CB0F1C219513D60037BE89 /* libnghttp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnghttp2.a; path = a/libnghttp2.a; sourceTree = "<group>"; };
 		D1CB0F1D219513D60037BE89 /* libunistring.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libunistring.a; path = a/libunistring.a; sourceTree = "<group>"; };
+		D1F10566220860BF0077D468 /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = a/libjsoncpp.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1F10567220860BF0077D468 /* libjsoncpp.a in Frameworks */,
 				D1CB0F1E219513D60037BE89 /* libnghttp2.a in Frameworks */,
 				D1CB0F1F219513D60037BE89 /* libunistring.a in Frameworks */,
 				D182B3781FE06AEC0004C2E3 /* libcurl.a in Frameworks */,
@@ -344,6 +347,7 @@
 		D1CB0F1B219513D50037BE89 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D1F10566220860BF0077D468 /* libjsoncpp.a */,
 				D1CB0F1C219513D60037BE89 /* libnghttp2.a */,
 				D1CB0F1D219513D60037BE89 /* libunistring.a */,
 			);

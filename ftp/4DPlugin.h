@@ -14,19 +14,61 @@
 #include <mutex>
 
 #include "curl.h"
+
+#define YIELD_NO_CALLBACK 1
+#define LESS_CALLBACK 1
+
+#define USE_JSONCPP 1
+#define USE_PA_EXECUTE_METHOD_BY_ID 1
+
+
+#if USE_JSONCPP
+#include "json/json.h"
+void convertFromString(std::string &fromString, CUTF16String &toString);
+CURLoption json_get_curl_option_name(Json::Value::const_iterator n);
+long json_get_curl_option_value(Json::Value::const_iterator n);
+void json_get_curl_option_v(CURL *curl, CURLoption option, Json::Value::const_iterator n, struct curl_slist *list);
+#else
 #include "libjson.h"
-
-#include "preemptive_methods.h"
-
-void json_wconv(const wchar_t *value, CUTF16String *u16);
-void json_wconv(const wchar_t *value, CUTF8String *u8);
-void json_wconv(const char *value, std::wstring &u32);
 void json_push_back_s(JSONNODE *n, const char *value);
 void json_stringify(JSONNODE *json, CUTF16String &t, BOOL pretty);
 void json_set_s(JSONNODE *n, const char *value);
 void json_set_s_for_key(JSONNODE *n, json_char *key, const char *value);
 void json_set_b_for_key(JSONNODE *n, json_char *key, json_bool_t value);
 void json_set_i_for_key(JSONNODE *n, json_char *key, json_int_t value);
+CURLoption json_get_curl_option_name(JSONNODE *n);
+void json_get_curl_option_v(CURL *curl, CURLoption option, JSONNODE *n, struct curl_slist *list);
+void json_get_curl_option_m(CURL *curl, CURLoption option, JSONNODE *n);
+void json_get_curl_option_c(CURL *curl, CURLoption option, JSONNODE *n);
+void json_get_curl_option_i(CURL *curl, CURLoption option, JSONNODE *n);
+void json_get_curl_option_p(CURL *curl, CURLoption option, JSONNODE *n);
+void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n);
+void json_get_curl_option_k(CURL *curl, CURLoption option, JSONNODE *n);
+long json_get_curl_option_value(JSONNODE *n);
+#endif
+
+#include "proxy.h"
+
+#include "preemptive_methods.h"
+
+// --- FTP
+void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_GetDirList(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_Receive(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams);
+void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams);
+
+void json_wconv(const wchar_t *value, CUTF16String *u16);
+void json_wconv(const wchar_t *value, CUTF8String *u8);
+void json_wconv(const char *value, std::wstring &u32);
+
+#define CURLOPT_AUTOPROXY 8
+#define CURLOPT_ATOMIC 73
 
 #if VERSIONMAC
 #define CPathString CUTF8String
@@ -60,6 +102,28 @@ typedef wchar_t path_t;
 bool create_folder(path_t *absolute_path);
 void create_parent_folder(path_t *absolute_path);
 
+#define WITH_DEBUG_FUNCTION 1
+
+#if WITH_DEBUG_FUNCTION
+#if VERSIONMAC
+#define LOG_CURLINFO_TEXT           "CURLINFO_TEXT.log"
+#define LOG_CURLINFO_HEADER_IN      "CURLINFO_HEADER_IN.log"
+#define LOG_CURLINFO_HEADER_OUT     "CURLINFO_HEADER_OUT.log"
+#define LOG_CURLINFO_DATA_IN        "CURLINFO_DATA_IN.log"
+#define LOG_CURLINFO_DATA_OUT       "CURLINFO_DATA_OUT.log"
+#define LOG_CURLINFO_SSL_DATA_OUT   "CURLINFO_SSL_DATA_OUT.log"
+#define LOG_CURLINFO_SSL_DATA_IN    "CURLINFO_SSL_DATA_IN.log"
+#else
+#define LOG_CURLINFO_TEXT           L"CURLINFO_TEXT.log"
+#define LOG_CURLINFO_HEADER_IN      L"CURLINFO_HEADER_IN.log"
+#define LOG_CURLINFO_HEADER_OUT     L"CURLINFO_HEADER_OUT.log"
+#define LOG_CURLINFO_DATA_IN        L"CURLINFO_DATA_IN.log"
+#define LOG_CURLINFO_DATA_OUT       L"CURLINFO_DATA_OUT.log"
+#define LOG_CURLINFO_SSL_DATA_OUT   L"CURLINFO_SSL_DATA_OUT.log"
+#define LOG_CURLINFO_SSL_DATA_IN    L"CURLINFO_SSL_DATA_IN.log"
+#endif
+#endif
+
 typedef struct
 {
 	const path_t *path;
@@ -78,31 +142,31 @@ typedef enum
 	PROTOCOL_TYPE_UNKNOWN = -1
 }protocol_type_t;
 
+#if WITH_DEBUG_FUNCTION
+typedef struct
+{
+    const path_t *path;
+    
+    curl_off_t size_CURLINFO_TEXT;
+    curl_off_t size_CURLINFO_HEADER_IN;
+    curl_off_t size_CURLINFO_HEADER_OUT;
+    curl_off_t size_CURLINFO_DATA_IN;
+    curl_off_t size_CURLINFO_DATA_OUT;
+    curl_off_t size_CURLINFO_SSL_DATA_IN;
+    curl_off_t size_CURLINFO_SSL_DATA_OUT;
+    
+}http_debug_ctx;
+#endif
+
 CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo);
 
-CURLoption json_get_curl_option_name(JSONNODE *n);
-void json_get_curl_option_m(CURL *curl, CURLoption option, JSONNODE *n);
-void json_get_curl_option_c(CURL *curl, CURLoption option, JSONNODE *n);
-void json_get_curl_option_i(CURL *curl, CURLoption option, JSONNODE *n);
-void json_get_curl_option_p(CURL *curl, CURLoption option, JSONNODE *n);
-void json_get_curl_option_s(CURL *curl, CURLoption option, JSONNODE *n, BOOL removeFileName = FALSE);
-long json_get_curl_option_value(JSONNODE *n);
-protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path, BOOL removeFileName = FALSE);
-void curl_get_info(CURL *curl, CUTF16String& json);
+protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo,
+                                 CUTF8String& path,
+                                 BOOL removeFileName = FALSE);
 
 void last_path_component(CUTF8String& path);
 void remove_trailing_separator(CUTF8String& path);
 void remove_trailing_separator(CUTF16String& path);
 void curl_unescape_path(CURL *curl, CUTF8String& path);
 
-// --- FTP
-void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_GetDirList(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_Receive(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams);
-void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams);
+void curl_get_info(CURL *curl, CUTF16String& json);
