@@ -1063,7 +1063,7 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
     if(result == CURLE_OK)
     {
 #if USE_JSONCPP
-        info["size"] = fileSize.c_str();
+        info["size"] = (Json::LargestInt)atol((const char *)fileSize.c_str());
 #else
         json_set_s_for_key(info, L"size", (const char *)fileSize.c_str());
 #endif
