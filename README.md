@@ -19,7 +19,7 @@ use [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch fo
 
 ### Releases
 
-[2.14](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.14) fix GetFileInfo 
+[2.15](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.15) fix GetFileInfo 
 
 [2.13](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.13) use jsoncpp  
 
