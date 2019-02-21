@@ -1037,7 +1037,7 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
     
-    curl_set_options(curl, Param1, userInfo, path);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
@@ -1046,9 +1046,9 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
     curl_easy_setopt(curl, CURLOPT_FILETIME, 1L);
     
     /* header */
-    CUTF8String fileSize;
-    curl_easy_setopt(curl, CURLOPT_HEADERDATA, &fileSize);
-    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, curl_header_function_for_fileinfo);
+//    CUTF8String fileSize;
+//    curl_easy_setopt(curl, CURLOPT_HEADERDATA, &fileSize);
+//    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, curl_header_function_for_fileinfo);
     
     CURLcode result = curl_perform(mcurl, curl, Param3, userInfo);
     
@@ -1062,12 +1062,17 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
 
     if(result == CURLE_OK)
     {
+        curl_off_t fileSize = 0;
+        if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &fileSize))
+        {
+            
+        }
 #if USE_JSONCPP
-        info["size"] = (Json::LargestInt)atol((const char *)fileSize.c_str());
+        info["size"] = (Json::LargestInt)fileSize;
 #else
-        json_set_s_for_key(info, L"size", (const char *)fileSize.c_str());
+        json_set_i_for_key(info, L"size", fileSize);
 #endif
-        
+
         long _fileTime;
         if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_FILETIME, &_fileTime))
         {
