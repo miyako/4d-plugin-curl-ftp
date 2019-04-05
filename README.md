@@ -15,6 +15,8 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
+[2.16](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.15) added encoding support see below 
+
 [2.15](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.15) fix GetFileInfo 
 
 [2.13](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.13) use jsoncpp  
@@ -60,6 +62,39 @@ use [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch fo
 * callback method to monitor progress or abort if necessary
 
 although the API is optimsied for FTP, ``_Send`` and ``_Receive`` actually work with other protocols such as HTTP or TFTP.
+
+* Encoding support
+
+For servers that do not support ``OPTS UTF8 ON`` the plugin can convert non-unicode text. Any ``iconv`` charset can be specified.
+
+```
+C_OBJECT($options)
+
+$URL:="ftp://ftp.server.com/"
+
+OB SET($options;\
+"URL";$URL;\
+"ENCODING_OUT";"cp932";\
+"USERNAME";"user";\
+"PASSWORD";"pass")
+
+C_TEXT($list)
+
+$error:=cURL_FTP_PrintDir (JSON Stringify($options);$list)
+```
+
+Commands that support ``ENCODING_IN`` (outgoing text)
+
+* cURL_FTP_Delete
+* cURL_FTP_MakeDir
+* cURL_FTP_RemoveDir
+* cURL_FTP_Rename
+
+Commands that support ``ENCODING_OUT`` (incoming text)
+
+* cURL_FTP_System
+* cURL_FTP_PrintDir
+* cURL_FTP_GetDirList
 
 ### Note on FTPS
 
