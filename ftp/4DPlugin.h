@@ -71,6 +71,14 @@ void json_wconv(const char *value, std::wstring &u32);
 #define CURLOPT_AUTOPROXY 8
 #define CURLOPT_ATOMIC 73
 
+#define CURLOPT_ENCODING_IN 35
+#define CURLOPT_ENCODING_OUT 40
+
+#include <iconv.h>
+
+size_t apply_output_encoding(CUTF8String& src, CUTF8String& oe);
+size_t apply_input_encoding(CUTF8String& src, CUTF8String& ie);
+
 #if VERSIONMAC
 #define CPathString CUTF8String
 #define CPathOpen fopen
@@ -163,6 +171,8 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param3, C_TEXT& userInfo
 
 protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo,
                                  CUTF8String& path,
+                                 CUTF8String& ie,
+                                 CUTF8String& oe,
                                  BOOL removeFileName = FALSE);
 
 void last_path_component(CUTF8String& path);
