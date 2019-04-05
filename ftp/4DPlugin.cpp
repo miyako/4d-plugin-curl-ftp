@@ -369,8 +369,12 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, TRUE);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
+    
+    apply_input_encoding(ie, path);
     
     curl_unescape_path(curl, path);
     
@@ -435,8 +439,12 @@ void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
+    
+    apply_input_encoding(ie, path);
     
     curl_unescape_path(curl, path);
     
@@ -492,8 +500,12 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
+    
+    apply_input_encoding(ie, path);
     
     curl_unescape_path(curl, path);
     
@@ -551,8 +563,12 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
+    
+    apply_input_encoding(ie, path);
     
     curl_unescape_path(curl, path);
     
@@ -570,6 +586,8 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
     
     CUTF8String name;
     Param2.copyUTF8String(&name);
+    
+    apply_input_encoding(ie, name);
     
     CUTF8String quote;
     
@@ -738,9 +756,11 @@ void cURL_FTP_Receive(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    curl_set_options(curl, Param1, userInfo, path);
-    
+    curl_set_options(curl, Param1, userInfo, path, ie, oe);
+
     path_ctx ctx;
     ctx.f = NULL;
     ctx.useWildCard = FALSE;
@@ -837,8 +857,10 @@ void cURL_FTP_Send(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    curl_set_options(curl, Param1, userInfo, path);
+    curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     path_ctx ctx;
     ctx.pos = 0L;
@@ -921,8 +943,10 @@ void cURL_FTP_GetDirList(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    curl_set_options(curl, Param1, userInfo, path);
+    curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
@@ -939,11 +963,95 @@ void cURL_FTP_GetDirList(sLONG_PTR *pResult, PackagePtr pParams)
     curl_easy_cleanup(curl);
     //    curl_multi_cleanup(mcurl);
     
+    apply_output_encoding(dirlist, oe);
+    
     Param2.setUTF8String(&dirlist);
     Param2.toParamAtIndex(pParams, 2);
     Param3.toParamAtIndex(pParams, 3);
     
     returnValue.setReturn(pResult);
+}
+
+size_t apply_input_encoding(CUTF8String& src, CUTF8String& ie) {
+    
+    size_t iconv_value;
+    
+    if(ie.length() != 0) {
+        
+        //convert
+        const char *inEncoding = "utf-8";
+        const char *outEncoding = (const char *)ie.c_str();
+        
+        iconv_t conv = iconv_open(outEncoding, inEncoding);
+        
+        if (conv != (iconv_t)(-1)) {
+            
+            char *inData = (char *)src.c_str();
+            size_t inDataLen = (size_t)src.length();
+            size_t outDataLen = (size_t)(inDataLen * 4) + 4;
+            size_t outDataSize = outDataLen;
+            
+            char *outData = (char *)calloc(outDataLen, 1);
+            char *outDataPtr = outData;
+            
+            size_t iconv_value;
+            
+            iconv_value = iconv (conv, &inData, &inDataLen, &outData, &outDataLen);
+            
+            if (iconv_value)
+            {
+                /* errno */
+            }else{
+                src = CUTF8String((const uint8_t *)outDataPtr, outDataSize-outDataLen);
+            }
+            free(outDataPtr);
+            
+            iconv_close(conv);
+        }
+    }
+    
+    return iconv_value;
+}
+
+size_t apply_output_encoding(CUTF8String& src, CUTF8String& oe) {
+    
+    size_t iconv_value = 0;
+    
+    if(oe.length() != 0) {
+        
+        //convert
+        const char *inEncoding = (const char *)oe.c_str();
+        const char *outEncoding = "utf-8";
+        
+        iconv_t conv = iconv_open(outEncoding, inEncoding);
+        
+        if (conv != (iconv_t)(-1)) {
+            
+            char *inData = (char *)src.c_str();
+            size_t inDataLen = (size_t)src.length();
+            size_t outDataLen = (size_t)(inDataLen * 4) + 4;
+            size_t outDataSize = outDataLen;
+            
+            char *outData = (char *)calloc(outDataLen, 1);
+            char *outDataPtr = outData;
+            
+            size_t iconv_value;
+            
+            iconv_value = iconv (conv, &inData, &inDataLen, &outData, &outDataLen);
+            
+            if (iconv_value)
+            {
+                /* errno */
+            }else{
+                src = CUTF8String((const uint8_t *)outDataPtr, outDataSize-outDataLen);
+            }
+            free(outDataPtr);
+            
+            iconv_close(conv);
+        }
+    }
+    
+    return iconv_value;
 }
 
 void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams)
@@ -961,9 +1069,11 @@ void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    curl_set_options(curl, Param1, userInfo, path);
-    
+    curl_set_options(curl, Param1, userInfo, path, ie, oe);
+
     curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
@@ -977,6 +1087,8 @@ void cURL_FTP_PrintDir(sLONG_PTR *pResult, PackagePtr pParams)
     returnValue.setIntValue(curl_perform(mcurl, curl, Param3, userInfo));
     curl_easy_cleanup(curl);
     //    curl_multi_cleanup(mcurl);
+    
+     apply_output_encoding(dirlist, oe);
     
     Param2.setUTF8String(&dirlist);
     Param2.toParamAtIndex(pParams, 2);
@@ -1036,8 +1148,10 @@ void cURL_FTP_GetFileInfo(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path);
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
@@ -1162,8 +1276,10 @@ void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)
     
     C_TEXT userInfo; /* PRIVATE */
     CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
     
-    curl_set_options(curl, Param1, userInfo, path);
+    curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
@@ -1185,6 +1301,8 @@ void cURL_FTP_System(sLONG_PTR *pResult, PackagePtr pParams)
     
     curl_easy_cleanup(curl);
     //    curl_multi_cleanup(mcurl);
+    
+    apply_output_encoding(system, oe);
     
     Param2.setUTF8String(&system);
     Param2.toParamAtIndex(pParams, 2);
@@ -1511,6 +1629,10 @@ CURLoption json_get_curl_option_name(JSONNODE *n)
                 CHECK_CURLOPT("TLS13_CIPHERS",CURLOPT_TLS13_CIPHERS)
                 CHECK_CURLOPT("PROXY_TLS13_CIPHERS",CURLOPT_PROXY_TLS13_CIPHERS)
                 CHECK_CURLOPT("DOH_URL",CURLOPT_DOH_URL)
+                
+                /* encoding */
+                CHECK_CURLOPT("ENCODING_IN",CURLOPT_ENCODING_IN)
+                CHECK_CURLOPT("ENCODING_OUT",CURLOPT_ENCODING_OUT)
                 
                 /* path */
                 CHECK_CURLOPT("SSLCERT",CURLOPT_SSLCERT)
@@ -1993,7 +2115,13 @@ long json_get_curl_option_value(JSONNODE *n)
 
 #pragma mark -
 
-protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, CUTF8String& path, BOOL removeFileName)
+protocol_type_t curl_set_options(CURL *curl,
+                                 C_TEXT& Param1,
+                                 C_TEXT& userInfo,
+                                 CUTF8String& path,
+                                 CUTF8String& ie,
+                                 CUTF8String& oe,
+                                 BOOL removeFileName)
 {
     protocol_type_t protocol = PROTOCOL_TYPE_UNKNOWN;
     
@@ -2031,6 +2159,21 @@ protocol_type_t curl_set_options(CURL *curl, C_TEXT& Param1, C_TEXT& userInfo, C
                         userInfo.setUTF8String((const uint8_t *)value.c_str(), value.length());
                     }
                         break;
+                        
+                    case CURLOPT_ENCODING_IN:
+                    {
+                        JSONCPP_STRING value = it->asString();
+                        ie = CUTF8String((const uint8_t *)value.c_str(), value.length());
+                    }
+                        break;
+                        
+                    case CURLOPT_ENCODING_OUT:
+                    {
+                        JSONCPP_STRING value = it->asString();
+                        oe = CUTF8String((const uint8_t *)value.c_str(), value.length());
+                    }
+                        break;
+                        
                         /* string */
                     case CURLOPT_PROXY:
                     case CURLOPT_USERPWD:
