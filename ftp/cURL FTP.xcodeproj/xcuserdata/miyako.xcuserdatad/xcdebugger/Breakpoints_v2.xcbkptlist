@@ -2,4 +2,22 @@
 <Bucket
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "4DPlugin.cpp"
+            timestampString = "577031147.719326"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2248"
+            endingLineNumber = "2248"
+            landmarkName = "curl_set_options(CURL *curl, C_TEXT&amp; Param1, C_TEXT&amp; userInfo, CUTF8String&amp; path, CUTF8String&amp; ie, CUTF8String&amp; oe, BOOL removeFileName)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

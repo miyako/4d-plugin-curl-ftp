@@ -392,7 +392,9 @@ void cURL_FTP_Delete(sLONG_PTR *pResult, PackagePtr pParams)
     
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
-            quote = CUTF8String((const uint8_t *)"rm /").append(fullpath);/* rm takes an absolute path */
+            quote = CUTF8String((const uint8_t *)"rm \"/")
+            .append(fullpath)
+            .append((const uint8_t *)"\"");/* rm takes an absolute path */
             break;
             
         default:
@@ -463,7 +465,9 @@ void cURL_FTP_MakeDir(sLONG_PTR *pResult, PackagePtr pParams)
     
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
-            quote = CUTF8String((const uint8_t *)"mkdir ").append(path);
+            quote = CUTF8String((const uint8_t *)"mkdir \"/")
+            .append(path)
+            .append((const uint8_t *)"\"");
             h = curl_slist_append(h, (const char *)quote.c_str());
             break;
             
@@ -523,9 +527,10 @@ void cURL_FTP_RemoveDir(sLONG_PTR *pResult, PackagePtr pParams)
     
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
-            quote = CUTF8String((const uint8_t *)"rmdir ").append(fullpath + (const uint8_t *)"/");
+            quote = CUTF8String((const uint8_t *)"rmdir \"/")
+            .append(fullpath)
+            .append((const uint8_t *)"\"");
             h = curl_slist_append(h, (const char *)quote.c_str());
-            
             break;
             
         default:
@@ -593,10 +598,12 @@ void cURL_FTP_Rename(sLONG_PTR *pResult, PackagePtr pParams)
     
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
-            quote = CUTF8String((const uint8_t *)"rename ")
+            quote = CUTF8String((const uint8_t *)"rename \"/")
             .append(fullpath)
-            .append((const uint8_t *)" ")
-            .append(name);
+            .append((const uint8_t *)"\" ")
+            .append((const uint8_t *)"\"/")
+            .append(name)
+            .append((const uint8_t *)"\"");
             h = curl_slist_append(h, (const char *)quote.c_str());
             break;
             
@@ -2237,7 +2244,7 @@ protocol_type_t curl_set_options(CURL *curl,
                     {
                         JSONCPP_STRING value = it->asString();
                         JSONCPP_STRING url;
-                        JSONCPP_STRING path;
+                        
                         if(curl_option == CURLOPT_URL)
                         {
                             size_t pos = value.find((const char *)"://");
@@ -2250,7 +2257,7 @@ protocol_type_t curl_set_options(CURL *curl,
                             if(pos != std::string::npos)
                             {
                                 /* path: skip host */
-                                path = url.substr(pos + 1);
+                                path = CUTF8String((const uint8_t *)url.substr(pos + 1).c_str());
                             }
                             if(removeFileName)
                             {
