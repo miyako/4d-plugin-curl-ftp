@@ -364,7 +364,7 @@ OB SET($options;\
 "USERNAME";"user";\
 "PASSWORD";"pass")
 
-$name:="d"
+$name:="a/b/c/d" // must pass full path, not name
 
 $error:=cURL_FTP_Rename (JSON Stringify($options);$name)
 ```
