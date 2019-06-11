@@ -15,7 +15,7 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
-[2.17](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.17) fix sftp quotes
+[2.18](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.18) fix sftp quotes
 
 [2.16](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.16) added encoding support see below 
 
