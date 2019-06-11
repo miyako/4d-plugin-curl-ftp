@@ -15,15 +15,7 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
-[2.15-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.15-carbon) fix GetFileInfo  
-
-[2.13-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.13-carbon)  
-
-[2.12-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.12-carbon) fix ``rm`` ``DELE``
-
-[2.9.1-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.9.1-carbon) missing sftp suuport on mac 
- 
-[2.8-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.8-carbon) updated ``libcurl``
+[2.17-carbon](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.17-carbon) 
 
 ### List of 4D Internet Commands and replacements
 
