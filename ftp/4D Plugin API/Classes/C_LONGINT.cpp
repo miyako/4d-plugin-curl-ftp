@@ -17,7 +17,7 @@ void C_LONGINT::fromParamAtIndex(PackagePtr pParams, uint16_t index)
 void C_LONGINT::toParamAtIndex(PackagePtr pParams, uint16_t index)
 {
 	if(index)	
-		*(PA_long32 *)(pParams[index - 1]) = this->_intValue;
+		*(int *)(pParams[index - 1]) = this->_intValue;
 }
 
 void C_LONGINT::setReturn(sLONG_PTR *pResult)
