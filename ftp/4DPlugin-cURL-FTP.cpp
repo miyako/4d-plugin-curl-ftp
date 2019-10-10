@@ -122,13 +122,12 @@ void cURL_FTP_Delete(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
+    CUTF8String fullpath = path;
+    
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
     
     apply_input_encoding(ie, path);
-    
     curl_unescape_path(curl, path);
-    
-    CUTF8String fullpath = path;
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
@@ -136,7 +135,7 @@ void cURL_FTP_Delete(PA_PluginParameters params) {
     
     struct curl_slist *h = NULL;
     
-    last_path_component(path);/* because we use CURLOPT_POSTQUOTE */
+    //    last_path_component(path);/* already done by curl_set_options(,,,,,TRUE) */
     
     CUTF8String quote;
     
@@ -148,7 +147,8 @@ void cURL_FTP_Delete(PA_PluginParameters params) {
             break;
             
         default:
-            quote = CUTF8String((const uint8_t *)"DELE ").append(path);/* the file name has been removed from the url in curl_set_options */
+            quote = CUTF8String((const uint8_t *)"DELE ")
+            .append(path);/* DELE takes a relative path;quote are not allowed */
             break;
     }
     
@@ -508,13 +508,12 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
+    CUTF8String fullpath = path;
+    
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
     
     apply_input_encoding(ie, path);
-    
     curl_unescape_path(curl, path);
-    
-    CUTF8String fullpath = path;
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
@@ -522,7 +521,7 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     
     struct curl_slist *h = NULL;
     
-    last_path_component(path);/* because we CURLOPT_POSTQUOTE */
+    //    last_path_component(path);/* already done by curl_set_options(,,,,,TRUE) */
     
     CUTF8String quote;
     
@@ -1227,7 +1226,7 @@ protocol_type_t curl_set_options(CURL *curl,
                         if(it->isString())
                         {
                             JSONCPP_STRING value = it->asString();
-                            JSONCPP_STRING url;
+                            JSONCPP_STRING url, url_without_protocol;
                             
                             if(curl_option == CURLOPT_URL)
                             {
@@ -1235,16 +1234,18 @@ protocol_type_t curl_set_options(CURL *curl,
                                 if(pos != std::string::npos)
                                 {
                                     /* skip protocol */
-                                    url = value.substr(pos + 4);
+                                    url = value;
+                                    url_without_protocol = value.substr(pos + strlen("://"));
                                 }
-                                pos = url.find((const char *)"/");
+                                pos = url_without_protocol.find((const char *)"/");
                                 if(pos != std::string::npos)
                                 {
                                     /* path: skip host */
-                                    path = CUTF8String((const uint8_t *)url.substr(pos + 1).c_str());
+                                    path = CUTF8String((const uint8_t *)url_without_protocol.substr(pos + 1).c_str());
                                 }
                                 if(removeFileName)
                                 {
+                                    /* remove last path component */
                                     std::size_t pos = value.find_last_of((const char *)"/");
                                     if((pos < value.length()) && (pos != std::string::npos))
                                     {
@@ -1260,6 +1261,11 @@ protocol_type_t curl_set_options(CURL *curl,
                                 if(0 == value.find((const char *)"ftps:"))
                                 {
                                     protocol = PROTOCOL_TYPE_FTPS;
+                                }
+                                
+                                if(0 == value.find((const char *)"ftp:"))
+                                {
+                                    protocol = PROTOCOL_TYPE_FTP;
                                 }
                             }
                             curl_easy_setopt(curl, curl_option, value.c_str());

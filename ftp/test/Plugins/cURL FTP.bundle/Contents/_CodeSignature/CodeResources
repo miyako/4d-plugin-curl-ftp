@@ -8,7 +8,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			qIN9GvaWUrWdE1HT3eBrIyqX7RM=
+			IxjPFHekAz8IaLcZjCxkPC2bMEo=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -35,11 +35,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			qIN9GvaWUrWdE1HT3eBrIyqX7RM=
+			IxjPFHekAz8IaLcZjCxkPC2bMEo=
 			</data>
 			<key>hash2</key>
 			<data>
-			w9bO0poLiTABYK5HO3IV2p6wNESbkymUreCkRkZsfhU=
+			EVHBJOCgH7sJmIjahWtPZB2ARfU14YCaCvaFWUz9TjQ=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -59,66 +59,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			hL9gqzB1pAgChKZ1uj+Jqt43yxs=
+			ijTj/09pvqqI6LXOLBAMrfJD4Ks=
 			</data>
 			<key>hash2</key>
 			<data>
-			ZCCEqtPmUM+2iJDxTvuZrd5mchV7dH5Z4RZvNF7YQT0=
+			qz3yr66eVUdyIFRvP1yiPkjcqSgpsv7t4hj/UmdgV7c=
 			</data>
 		</dict>
 		<key>Windows64/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			TnBKa8U0qR0ljlXZXOPTEQPBVeY=
+			gyqqtorF3oATjBomzA5vL6yeA1U=
 			</data>
 			<key>hash2</key>
 			<data>
-			p9KnnlAk2P2rZJr+kEATX/ZU+gd8RPI9OX1dHuEl/rE=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.exp</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			wdPFxW6CzxyWdsqv6iHXUIdztrc=
-			</data>
-			<key>hash2</key>
-			<data>
-			l14nbN6aLSIx52S36OAEz+HJQsfKnsR4bTb4G5yfOSg=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.iobj</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			lPjd+ARVVukLA3Qs+vx7aF5dEzA=
-			</data>
-			<key>hash2</key>
-			<data>
-			D1mZCzF9ECnB2288LoP4d9xlqfm1WB3k/e8pPdJ4LUw=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.ipdb</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			JcjA+EDsieXjryhYPQSsIwudif4=
-			</data>
-			<key>hash2</key>
-			<data>
-			mhV3hpQEGhgTqmZZtGcr70YMRuX5W0KKrSSBDpJDfTM=
-			</data>
-		</dict>
-		<key>Windows64/cURL FTP.lib</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Y1CWGTI/rEJj4LqvmKzwOwnekJU=
-			</data>
-			<key>hash2</key>
-			<data>
-			XKpdeFc0UpjH+oCuggTRHDxI9TNCYsLRRSV/RucH9vc=
+			psVjy+dIogADMmar+QIHOQwKyzRD4FyG2XbJgKr4j2M=
 			</data>
 		</dict>
 		<key>manifest.json</key>
