@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
+   uuid = "4F8062FA-1E66-4746-A973-05726763F355"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "223A0E27-A387-45AE-9A96-4A7680A7AA05"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -15,7 +17,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "537"
             endingLineNumber = "537"
-            landmarkName = "cURL_FTP_RemoveDir(PA_PluginParameters params)"
+            landmarkName = "cURL_FTP_RemoveDir(params)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
