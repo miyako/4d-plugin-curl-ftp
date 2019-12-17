@@ -15,6 +15,8 @@ HTTP client based on libcurl-7.62.0
 
 ### Releases
 
+[3.4](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/3.4) added ``DEBUG`` option (pass folder path to create log files)
+
 [3.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/3.1) 
 
 [2.18](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.18) fix sftp quotes
