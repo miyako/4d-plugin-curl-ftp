@@ -653,6 +653,33 @@ void cURL_FTP_Send(PA_PluginParameters params) {
     CUTF8String path;
     CUTF8String ie;
     CUTF8String oe;
+
+    http_debug_ctx debug_ctx;
+
+    debug_ctx.size_CURLINFO_TEXT = 0L;
+    debug_ctx.size_CURLINFO_HEADER_IN = 0L;
+    debug_ctx.size_CURLINFO_HEADER_OUT = 0L;
+    debug_ctx.size_CURLINFO_DATA_IN = 0L;
+    debug_ctx.size_CURLINFO_DATA_OUT = 0L;
+    debug_ctx.size_CURLINFO_SSL_DATA_IN = 0L;
+    debug_ctx.size_CURLINFO_SSL_DATA_OUT = 0L;
+    
+    CPathString debug_folder_path;
+
+    if(curl_set_debug_option(curl,
+                             Param1 /* options */,
+                             debug_folder_path))
+    {
+#if VERSIONMAC
+        debug_ctx.path = (const char *)debug_folder_path.c_str();
+#else
+        debug_ctx.path = (const wchar_t *)debug_folder_path.c_str();
+#endif
+        
+//        curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &debug_ctx);
+//        curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug_function);
+//        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+    }
     
     curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
@@ -695,6 +722,7 @@ void cURL_FTP_Send(PA_PluginParameters params) {
         
         curl_easy_setopt(curl, CURLOPT_READDATA, &ctx);
         curl_easy_setopt(curl, CURLOPT_READFUNCTION, curl_read_function_for_path);
+//        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
         
         returnValue.setIntValue(curl_perform(mcurl, curl, Param4, userInfo));
     }
@@ -756,6 +784,72 @@ void cURL_FTP_System(PA_PluginParameters params) {
     Param3.toParamAtIndex(pParams, 3);
     
     returnValue.setReturn(pResult);
+}
+
+#pragma mark debug
+
+BOOL curl_set_debug_option(CURL *curl,
+                           C_TEXT& Param1,
+                           CPathString& debug_folder_path) {
+    
+    BOOL isDebugEnabled = FALSE;
+    CUTF8String Param1_u8;
+    Param1.copyUTF8String(&Param1_u8);
+
+    Json::Value root;
+    Json::CharReaderBuilder builder;
+    std::string errors;
+    
+    Json::CharReader *reader = builder.newCharReader();
+    bool parse = reader->parse((const char *)Param1_u8.c_str(),
+                               (const char *)Param1_u8.c_str() + Param1_u8.size(),
+                               &root,
+                               &errors);
+    delete reader;
+    
+    if(parse)
+    {
+        if(root.isObject())
+        {
+            for(Json::Value::const_iterator it = root.begin() ; it != root.end() ; it++)
+            {
+                Json::Value key = it.key();
+                JSONCPP_STRING name = it.name();
+                
+                if(name == "DEBUG")
+                {
+                    if(it->isString())
+                    {
+                        std::string path;
+                        path = it->asString();
+                        
+                        if(path.length())
+                        {
+                            C_TEXT t;
+                            t.setUTF8String((const uint8_t *)path.c_str(), path.length());
+#if VERSIONMAC
+                            CUTF8String _path;
+                            t.copyPath(&_path);
+                            debug_folder_path = (const uint8_t *)_path.c_str();
+                            if(debug_folder_path.at(debug_folder_path.size() - 1) != '/') debug_folder_path += '/';
+#else
+                            CUTF16String _path;
+                            t.copyUTF16String(&_path);
+                            debug_folder_path = (const PA_Unichar *)_path.c_str();
+                            if(debug_folder_path.at(debug_folder_path.size() - 1) != L'\\') debug_folder_path += L'\\';
+#endif
+                            
+                            create_folder((path_t *)debug_folder_path.c_str());
+                            isDebugEnabled = TRUE;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    return isDebugEnabled;
 }
 
 #pragma mark iconv
@@ -1442,11 +1536,11 @@ protocol_type_t curl_set_options(CURL *curl,
                     case CURLOPT_PROXYTYPE:
                     case CURLOPT_FTPSSLAUTH:
                     case CURLOPT_HEADEROPT:
-                        if(it->isNumeric())
-                        {
-                            curl_easy_setopt(curl, curl_option, json_get_curl_option_value(it));
-                        }
+                    {
+                        curl_easy_setopt(curl, curl_option, json_get_curl_option_value(it));
+                    }
                         break;
+                        
                         /* array string */
                     case CURLOPT_CONNECT_TO:
 
@@ -1492,82 +1586,88 @@ long json_get_curl_option_value(Json::Value::const_iterator n) {
     
     long v = 0;
     
-    JSONCPP_STRING s = n->asString();
+    if(n->isString()) {
     
-    if(s.length())
-    {
+            JSONCPP_STRING s = n->asString();
+            
+            if(s.length())
+            {
 
-#define CHECK_CURLOPT_VALUE(__a,__b) if(s==__a){v=(CURLoption)__b;goto json_get_curl_option_value_exit;}
+        #define CHECK_CURLOPT_VALUE(__a,__b) if(s==__a){v=(CURLoption)__b;goto json_get_curl_option_value_exit;}
+                
+                    /* USE_SSL */
+                    CHECK_CURLOPT_VALUE("USESSL_NONE",CURLUSESSL_NONE)
+                    CHECK_CURLOPT_VALUE("USESSL_TRY",CURLUSESSL_TRY)
+                    CHECK_CURLOPT_VALUE("USESSL_CONTROL",CURLUSESSL_CONTROL)
+                    CHECK_CURLOPT_VALUE("USESSL_ALL",CURLUSESSL_ALL)
+                    
+                    /* SSLVERSION, PROXY_SSLVERSION */
+                    CHECK_CURLOPT_VALUE("SSLVERSION_DEFAULT",CURL_SSLVERSION_DEFAULT)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1",CURL_SSLVERSION_TLSv1)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_SSLv2",CURL_SSLVERSION_SSLv2)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_SSLv3",CURL_SSLVERSION_SSLv3)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_0",CURL_SSLVERSION_TLSv1_0)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_1",CURL_SSLVERSION_TLSv1_1)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_2",CURL_SSLVERSION_TLSv1_2)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_3",CURL_SSLVERSION_TLSv1_3)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_MAX_DEFAULT",CURL_SSLVERSION_MAX_DEFAULT)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_0",CURL_SSLVERSION_MAX_TLSv1_0)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_1",CURL_SSLVERSION_MAX_TLSv1_1)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_2",CURL_SSLVERSION_MAX_TLSv1_2)
+                    CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_3",CURL_SSLVERSION_MAX_TLSv1_3)
+                    
+                    /* HEADEROPT */
+                    CHECK_CURLOPT_VALUE("HEADER_UNIFIED",CURLHEADER_UNIFIED)
+                    CHECK_CURLOPT_VALUE("HEADER_SEPARATE",CURLHEADER_SEPARATE)
+                    
+                    /* HTTP_VERSION */
+                    CHECK_CURLOPT_VALUE("HTTP_VERSION_NONE",CURL_HTTP_VERSION_NONE)
+                    CHECK_CURLOPT_VALUE("HTTP_VERSION_1_0",CURL_HTTP_VERSION_1_0)
+                    CHECK_CURLOPT_VALUE("HTTP_VERSION_1_1",CURL_HTTP_VERSION_1_1)
+                    CHECK_CURLOPT_VALUE("HTTP_VERSION_2",CURL_HTTP_VERSION_2)
+                    CHECK_CURLOPT_VALUE("HTTP_VERSION_2TLS",CURL_HTTP_VERSION_2TLS)
+                    CHECK_CURLOPT_VALUE("HTTP_VERSION_2_PRIOR_KNOWLEDGE",CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE)
+                    
+                    /* TIMECONDITION */
+                    CHECK_CURLOPT_VALUE("TIMECOND_IFMODSINCE",CURL_TIMECOND_IFMODSINCE)
+                    CHECK_CURLOPT_VALUE("TIMECOND_IFUNMODSINCE",CURL_TIMECOND_IFUNMODSINCE)
+                    CHECK_CURLOPT_VALUE("TIMECOND_LASTMOD",CURL_TIMECOND_LASTMOD)
+                    
+                    /* PROXYTYPE */
+                    CHECK_CURLOPT_VALUE("PROXY_HTTPS",CURLPROXY_HTTPS)
+                    CHECK_CURLOPT_VALUE("PROXY_SOCKS4",CURLPROXY_SOCKS4)
+                    CHECK_CURLOPT_VALUE("PROXY_SOCKS4A",CURLPROXY_SOCKS4A)
+                    CHECK_CURLOPT_VALUE("PROXY_SOCKS5",CURLPROXY_SOCKS5)
+                    
+                    /* FTPSSLAUTH */
+                    CHECK_CURLOPT_VALUE("FTPAUTH_SSL",CURLFTPAUTH_SSL)
+                    CHECK_CURLOPT_VALUE("FTPAUTH_TLS",CURLFTPAUTH_TLS)
+                    
+                    /* compatibility */
+                    CHECK_CURLOPT_VALUE("MULTICWD",CURLFTPMETHOD_MULTICWD)
+                    CHECK_CURLOPT_VALUE("NOCWD",CURLFTPMETHOD_NOCWD)
+                    CHECK_CURLOPT_VALUE("SINGLECWD",CURLFTPMETHOD_SINGLECWD)
+                    CHECK_CURLOPT_VALUE("AUTH_DEFAULT",CURLFTPAUTH_DEFAULT)
+                    CHECK_CURLOPT_VALUE("AUTH_SSL",CURLFTPAUTH_SSL)
+                    CHECK_CURLOPT_VALUE("AUTH_TLS",CURLFTPAUTH_TLS)
+                    CHECK_CURLOPT_VALUE("CCC_NONE",CURLFTPSSL_CCC_NONE)
+                    CHECK_CURLOPT_VALUE("CCC_PASSIVE",CURLFTPSSL_CCC_PASSIVE)
+                    CHECK_CURLOPT_VALUE("CCC_ACTIVE",CURLFTPSSL_CCC_ACTIVE)
+                    CHECK_CURLOPT_VALUE("USESSL_NONE",CURLUSESSL_NONE)
+                    CHECK_CURLOPT_VALUE("USESSL_TRY",CURLUSESSL_TRY)
+                    CHECK_CURLOPT_VALUE("USESSL_CONTROL",CURLUSESSL_CONTROL)
+                    CHECK_CURLOPT_VALUE("USESSL_ALL",CURLUSESSL_ALL)
+                    
+                json_get_curl_option_value_exit:
+
+                    (void)0;
+
+                }
         
-            /* USE_SSL */
-            CHECK_CURLOPT_VALUE("USESSL_NONE",CURLUSESSL_NONE)
-            CHECK_CURLOPT_VALUE("USESSL_TRY",CURLUSESSL_TRY)
-            CHECK_CURLOPT_VALUE("USESSL_CONTROL",CURLUSESSL_CONTROL)
-            CHECK_CURLOPT_VALUE("USESSL_ALL",CURLUSESSL_ALL)
-            
-            /* SSLVERSION, PROXY_SSLVERSION */
-            CHECK_CURLOPT_VALUE("SSLVERSION_DEFAULT",CURL_SSLVERSION_DEFAULT)
-            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1",CURL_SSLVERSION_TLSv1)
-            CHECK_CURLOPT_VALUE("SSLVERSION_SSLv2",CURL_SSLVERSION_SSLv2)
-            CHECK_CURLOPT_VALUE("SSLVERSION_SSLv3",CURL_SSLVERSION_SSLv3)
-            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_0",CURL_SSLVERSION_TLSv1_0)
-            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_1",CURL_SSLVERSION_TLSv1_1)
-            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_2",CURL_SSLVERSION_TLSv1_2)
-            CHECK_CURLOPT_VALUE("SSLVERSION_TLSv1_3",CURL_SSLVERSION_TLSv1_3)
-            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_DEFAULT",CURL_SSLVERSION_MAX_DEFAULT)
-            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_0",CURL_SSLVERSION_MAX_TLSv1_0)
-            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_1",CURL_SSLVERSION_MAX_TLSv1_1)
-            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_2",CURL_SSLVERSION_MAX_TLSv1_2)
-            CHECK_CURLOPT_VALUE("SSLVERSION_MAX_TLSv1_3",CURL_SSLVERSION_MAX_TLSv1_3)
-            
-            /* HEADEROPT */
-            CHECK_CURLOPT_VALUE("HEADER_UNIFIED",CURLHEADER_UNIFIED)
-            CHECK_CURLOPT_VALUE("HEADER_SEPARATE",CURLHEADER_SEPARATE)
-            
-            /* HTTP_VERSION */
-            CHECK_CURLOPT_VALUE("HTTP_VERSION_NONE",CURL_HTTP_VERSION_NONE)
-            CHECK_CURLOPT_VALUE("HTTP_VERSION_1_0",CURL_HTTP_VERSION_1_0)
-            CHECK_CURLOPT_VALUE("HTTP_VERSION_1_1",CURL_HTTP_VERSION_1_1)
-            CHECK_CURLOPT_VALUE("HTTP_VERSION_2",CURL_HTTP_VERSION_2)
-            CHECK_CURLOPT_VALUE("HTTP_VERSION_2TLS",CURL_HTTP_VERSION_2TLS)
-            CHECK_CURLOPT_VALUE("HTTP_VERSION_2_PRIOR_KNOWLEDGE",CURL_HTTP_VERSION_2_PRIOR_KNOWLEDGE)
-            
-            /* TIMECONDITION */
-            CHECK_CURLOPT_VALUE("TIMECOND_IFMODSINCE",CURL_TIMECOND_IFMODSINCE)
-            CHECK_CURLOPT_VALUE("TIMECOND_IFUNMODSINCE",CURL_TIMECOND_IFUNMODSINCE)
-            CHECK_CURLOPT_VALUE("TIMECOND_LASTMOD",CURL_TIMECOND_LASTMOD)
-            
-            /* PROXYTYPE */
-            CHECK_CURLOPT_VALUE("PROXY_HTTPS",CURLPROXY_HTTPS)
-            CHECK_CURLOPT_VALUE("PROXY_SOCKS4",CURLPROXY_SOCKS4)
-            CHECK_CURLOPT_VALUE("PROXY_SOCKS4A",CURLPROXY_SOCKS4A)
-            CHECK_CURLOPT_VALUE("PROXY_SOCKS5",CURLPROXY_SOCKS5)
-            
-            /* FTPSSLAUTH */
-            CHECK_CURLOPT_VALUE("FTPAUTH_SSL",CURLFTPAUTH_SSL)
-            CHECK_CURLOPT_VALUE("FTPAUTH_TLS",CURLFTPAUTH_TLS)
-            
-            /* compatibility */
-            CHECK_CURLOPT_VALUE("MULTICWD",CURLFTPMETHOD_MULTICWD)
-            CHECK_CURLOPT_VALUE("NOCWD",CURLFTPMETHOD_NOCWD)
-            CHECK_CURLOPT_VALUE("SINGLECWD",CURLFTPMETHOD_SINGLECWD)
-            CHECK_CURLOPT_VALUE("AUTH_DEFAULT",CURLFTPAUTH_DEFAULT)
-            CHECK_CURLOPT_VALUE("AUTH_SSL",CURLFTPAUTH_SSL)
-            CHECK_CURLOPT_VALUE("AUTH_TLS",CURLFTPAUTH_TLS)
-            CHECK_CURLOPT_VALUE("CCC_NONE",CURLFTPSSL_CCC_NONE)
-            CHECK_CURLOPT_VALUE("CCC_PASSIVE",CURLFTPSSL_CCC_PASSIVE)
-            CHECK_CURLOPT_VALUE("CCC_ACTIVE",CURLFTPSSL_CCC_ACTIVE)
-            CHECK_CURLOPT_VALUE("USESSL_NONE",CURLUSESSL_NONE)
-            CHECK_CURLOPT_VALUE("USESSL_TRY",CURLUSESSL_TRY)
-            CHECK_CURLOPT_VALUE("USESSL_CONTROL",CURLUSESSL_CONTROL)
-            CHECK_CURLOPT_VALUE("USESSL_ALL",CURLUSESSL_ALL)
-            
-        json_get_curl_option_value_exit:
-
-            (void)0;
-
-        }
-    
+    }else if(n->isNumeric()) {
+        v = n->asInt();
+    }
+        
     return v;
 }
 
@@ -1589,7 +1689,7 @@ CURLoption json_get_curl_option_name(Json::Value::const_iterator n) {
                 CHECK_CURLOPT("AUTOPROXY",CURLOPT_AUTOPROXY)
                 CHECK_CURLOPT("PRIVATE",CURLOPT_PRIVATE)
                 CHECK_CURLOPT("ATOMIC",CURLOPT_ATOMIC)
-                CHECK_CURLOPT("DEBUG",CURLOPT_VERBOSE)
+//                CHECK_CURLOPT("DEBUG",CURLOPT_VERBOSE)
                 
                 /* string */
                 CHECK_CURLOPT("PROXY",CURLOPT_PROXY)
@@ -1798,7 +1898,7 @@ CURLoption json_get_curl_option_name(Json::Value::const_iterator n) {
                 CHECK_CURLOPT("TELNETOPTIONS",CURLOPT_TELNETOPTIONS)
                 
                 /* compatibility */
-                CHECK_CURLOPT("VERBOSE",CURLOPT_VERBOSE)
+//                CHECK_CURLOPT("VERBOSE",CURLOPT_VERBOSE)
                 CHECK_CURLOPT("USE_SSL",CURLOPT_USE_SSL)
                 CHECK_CURLOPT("URL",CURLOPT_URL)
                 CHECK_CURLOPT("USERNAME",CURLOPT_USERNAME)
@@ -2196,6 +2296,68 @@ size_t curl_header_function_for_fileinfo(void *buffer,
     }
     
     return len;
+}
+
+size_t curl_debug_function(CURL *curl,
+                           curl_infotype type,
+                           char *data,
+                           size_t size,
+                           http_debug_ctx *ctx) {
+   
+#if VERSIONMAC
+    std::string path;
+    path = (const char *)ctx->path;
+#else
+    std::wstring path;
+    path = (const wchar_t *)ctx->path;
+#endif
+    
+    curl_off_t  *f_size = NULL;
+
+    switch (type)
+    {
+        case CURLINFO_TEXT:
+            path += LOG_CURLINFO_TEXT;
+            f_size = &ctx->size_CURLINFO_TEXT;
+            break;
+        case CURLINFO_HEADER_IN:
+            path += LOG_CURLINFO_HEADER_IN;
+            f_size = &ctx->size_CURLINFO_HEADER_IN;
+            break;
+        case CURLINFO_HEADER_OUT:
+            path += LOG_CURLINFO_HEADER_OUT;
+            f_size = &ctx->size_CURLINFO_HEADER_OUT;
+            break;
+        case CURLINFO_DATA_IN:
+            path += LOG_CURLINFO_DATA_IN;
+            f_size = &ctx->size_CURLINFO_DATA_IN;
+            break;
+        case CURLINFO_DATA_OUT:
+            path += LOG_CURLINFO_DATA_OUT;
+            f_size = &ctx->size_CURLINFO_DATA_OUT;
+            break;
+        case CURLINFO_SSL_DATA_OUT:
+            path += LOG_CURLINFO_SSL_DATA_IN;
+            f_size = &ctx->size_CURLINFO_SSL_DATA_IN;
+            break;
+        case CURLINFO_SSL_DATA_IN:
+            path += LOG_CURLINFO_SSL_DATA_OUT;
+            f_size = &ctx->size_CURLINFO_SSL_DATA_OUT;
+            break;
+    }
+
+    create_parent_folder((path_t *)path.c_str());
+     
+    FILE *f = CPathOpen ((path_t *)path.c_str(), *f_size ? CPathAppend : CPathCreate);
+    
+    if(f)
+    {
+        *f_size += size;
+        fwrite(data, size, sizeof(char), f);
+        fclose(f);
+    }
+
+    return 0;
 }
 
 size_t curl_write_function_for_text(void *buffer,

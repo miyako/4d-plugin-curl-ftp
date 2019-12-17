@@ -178,6 +178,16 @@ size_t curl_chunk_bgn_function(struct curl_fileinfo *finfo,
                                path_ctx *ctx,
                                int remains);
 
+size_t curl_debug_function(CURL *curl,
+                           curl_infotype type,
+                           char *data,
+                           size_t size,
+                           http_debug_ctx *ctx);
+
+BOOL curl_set_debug_option(CURL *curl,
+                           C_TEXT& Param1,
+                           CPathString& debug_folder_path);
+
 size_t curl_chunk_end_function(path_ctx *ctx);
 
 #define USE_PA_EXECUTE_METHOD_BY_ID 1
