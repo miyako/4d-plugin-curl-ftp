@@ -7,23 +7,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "223A0E27-A387-45AE-9A96-4A7680A7AA05"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "4DPlugin-cURL-FTP.cpp"
-            timestampString = "592382886.221594"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "537"
-            endingLineNumber = "537"
-            landmarkName = "cURL_FTP_RemoveDir(params)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "B5289BCB-9E8F-4565-AA28-4E0DC7B18D08"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -31,8 +14,8 @@
             filePath = "4DPlugin-cURL-FTP.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1387"
-            endingLineNumber = "1387"
+            startingLineNumber = "1393"
+            endingLineNumber = "1393"
             landmarkName = "curl_set_options(curl, Param1, userInfo, path, ie, oe, removeFileName)"
             landmarkType = "9">
          </BreakpointContent>
@@ -47,8 +30,8 @@
             filePath = "4DPlugin-cURL-FTP.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1542"
-            endingLineNumber = "1542"
+            startingLineNumber = "1548"
+            endingLineNumber = "1548"
             landmarkName = "curl_set_options(curl, Param1, userInfo, path, ie, oe, removeFileName)"
             landmarkType = "9">
          </BreakpointContent>

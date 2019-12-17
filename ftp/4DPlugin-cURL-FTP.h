@@ -105,10 +105,16 @@ void create_parent_folder(path_t *absolute_path);
 #define LOG_CURLINFO_SSL_DATA_IN    L"CURLINFO_SSL_DATA_IN.log"
 #endif
 
+#define MAX_LENGTH_FOR_PATH 1024
+
 typedef struct
 {
-    const path_t *path;
-    const path_t *dir;
+//    const path_t *path;
+//    const path_t *dir;
+    
+    path_t path[MAX_LENGTH_FOR_PATH];
+    path_t dir[MAX_LENGTH_FOR_PATH];
+    
     size_t pos;
     FILE *f;
     BOOL useWildCard;
@@ -125,7 +131,7 @@ typedef enum
 
 typedef struct
 {
-    const path_t *path;
+    path_t path[MAX_LENGTH_FOR_PATH];
     
     curl_off_t size_CURLINFO_TEXT;
     curl_off_t size_CURLINFO_HEADER_IN;
@@ -189,6 +195,8 @@ BOOL curl_set_debug_option(CURL *curl,
                            CPathString& debug_folder_path);
 
 size_t curl_chunk_end_function(path_ctx *ctx);
+
+void curl_set_debug(CURL *curl, C_TEXT& Param1, http_debug_ctx *debug_ctx);
 
 #define USE_PA_EXECUTE_METHOD_BY_ID 1
 

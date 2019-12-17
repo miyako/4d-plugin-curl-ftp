@@ -122,6 +122,10 @@ void cURL_FTP_Delete(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
+    
     CUTF8String fullpath = path;
     
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
@@ -195,6 +199,10 @@ void cURL_FTP_GetDirList(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
+    
     curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
@@ -240,6 +248,10 @@ void cURL_FTP_GetFileInfo(PA_PluginParameters params) {
     CUTF8String path;
     CUTF8String ie;
     CUTF8String oe;
+    
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
     
     /* protocol_type_t protocol = */ curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
@@ -319,6 +331,10 @@ void cURL_FTP_MakeDir(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
+    
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     apply_input_encoding(ie, path);
@@ -385,6 +401,10 @@ void cURL_FTP_PrintDir(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
+    
     curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
@@ -434,26 +454,33 @@ void cURL_FTP_Receive(PA_PluginParameters params) {
     CUTF8String ie;
     CUTF8String oe;
     
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
+    
     curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     path_ctx ctx;
     ctx.f = NULL;
     ctx.useWildCard = FALSE;
     ctx.shouldAppend = FALSE;
-    ctx.path = NULL;
-    ctx.dir = NULL;
+//    ctx.path = NULL;
+//    ctx.dir = NULL;
     
     CPathString local_path;
     
 #if VERSIONMAC
     Param2.copyPath(&local_path);
     remove_trailing_separator(local_path);
-    ctx.path = (const char *)local_path.c_str();
+//    ctx.path = (const char *)local_path.c_str();
 #else
     local_path = Param2.getUTF16StringPtr();
     remove_trailing_separator(local_path);
-    ctx.path = (const wchar_t *)local_path.c_str();
+//    ctx.path = (const wchar_t *)local_path.c_str();
 #endif
+    
+    memset(ctx.path, 0x00, MAX_LENGTH_FOR_PATH * sizeof(path_t));
+    memcpy(ctx.path, local_path.c_str(), local_path.length() * sizeof(path_t));
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
@@ -468,11 +495,14 @@ void cURL_FTP_Receive(PA_PluginParameters params) {
         curl_easy_setopt(curl, CURLOPT_CHUNK_DATA, &ctx);
 #if VERSIONMAC
         local_path += folder_separator;
-        ctx.dir = (const char *)local_path.c_str();
+//        ctx.dir = (const char *)local_path.c_str();
 #else
         local_path += folder_separator;
-        ctx.dir = (const wchar_t *)local_path.c_str();
+//        ctx.dir = (const wchar_t *)local_path.c_str();
 #endif
+        
+        memset(ctx.dir, 0x00, MAX_LENGTH_FOR_PATH * sizeof(path_t));
+        memcpy(ctx.dir, local_path.c_str(), local_path.length() * sizeof(path_t));
     }
     
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ctx);
@@ -507,6 +537,10 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     CUTF8String path;
     CUTF8String ie;
     CUTF8String oe;
+    
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
     
     CUTF8String fullpath = path;
     
@@ -572,6 +606,10 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
     CUTF8String path;
     CUTF8String ie;
     CUTF8String oe;
+    
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
     
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
@@ -656,31 +694,8 @@ void cURL_FTP_Send(PA_PluginParameters params) {
 
     http_debug_ctx debug_ctx;
 
-    debug_ctx.size_CURLINFO_TEXT = 0L;
-    debug_ctx.size_CURLINFO_HEADER_IN = 0L;
-    debug_ctx.size_CURLINFO_HEADER_OUT = 0L;
-    debug_ctx.size_CURLINFO_DATA_IN = 0L;
-    debug_ctx.size_CURLINFO_DATA_OUT = 0L;
-    debug_ctx.size_CURLINFO_SSL_DATA_IN = 0L;
-    debug_ctx.size_CURLINFO_SSL_DATA_OUT = 0L;
-    
-    CPathString debug_folder_path;
-
-    if(curl_set_debug_option(curl,
-                             Param1 /* options */,
-                             debug_folder_path))
-    {
-#if VERSIONMAC
-        debug_ctx.path = (const char *)debug_folder_path.c_str();
-#else
-        debug_ctx.path = (const wchar_t *)debug_folder_path.c_str();
-#endif
+    curl_set_debug(curl, Param1, &debug_ctx);
         
-//        curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &debug_ctx);
-//        curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug_function);
-//        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-    }
-    
     curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     path_ctx ctx;
@@ -689,11 +704,14 @@ void cURL_FTP_Send(PA_PluginParameters params) {
     CPathString local_path;
 #if VERSIONMAC
     Param2.copyPath(&local_path);
-    ctx.path = (const char *)local_path.c_str();
+//    ctx.path = (const char *)local_path.c_str();
 #else
     local_path = Param2.getUTF16StringPtr();
-    ctx.path = (const wchar_t *)local_path.c_str();
+//    ctx.path = (const wchar_t *)local_path.c_str();
 #endif
+    
+    memset(ctx.path, 0x00, MAX_LENGTH_FOR_PATH * sizeof(path_t));
+    memcpy(ctx.path, local_path.c_str(), local_path.length() * sizeof(path_t));
     
     /* file size */
     curl_off_t fileSize = 0L;
@@ -722,7 +740,6 @@ void cURL_FTP_Send(PA_PluginParameters params) {
         
         curl_easy_setopt(curl, CURLOPT_READDATA, &ctx);
         curl_easy_setopt(curl, CURLOPT_READFUNCTION, curl_read_function_for_path);
-//        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
         
         returnValue.setIntValue(curl_perform(mcurl, curl, Param4, userInfo));
     }
@@ -754,6 +771,10 @@ void cURL_FTP_System(PA_PluginParameters params) {
     CUTF8String path;
     CUTF8String ie;
     CUTF8String oe;
+    
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
     
     curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
@@ -787,6 +808,32 @@ void cURL_FTP_System(PA_PluginParameters params) {
 }
 
 #pragma mark debug
+
+void curl_set_debug(CURL *curl, C_TEXT& Param1, http_debug_ctx *debug_ctx) {
+    
+    debug_ctx->size_CURLINFO_TEXT = 0L;
+    debug_ctx->size_CURLINFO_HEADER_IN = 0L;
+    debug_ctx->size_CURLINFO_HEADER_OUT = 0L;
+    debug_ctx->size_CURLINFO_DATA_IN = 0L;
+    debug_ctx->size_CURLINFO_DATA_OUT = 0L;
+    debug_ctx->size_CURLINFO_SSL_DATA_IN = 0L;
+    debug_ctx->size_CURLINFO_SSL_DATA_OUT = 0L;
+    
+    CPathString debug_folder_path;
+
+    if(curl_set_debug_option(curl,
+                             Param1 /* options */,
+                             debug_folder_path))
+    {
+        if(debug_folder_path.length() < MAX_LENGTH_FOR_PATH) {
+            memset(debug_ctx->path, 0x00, MAX_LENGTH_FOR_PATH * sizeof(path_t));
+            memcpy(debug_ctx->path, debug_folder_path.c_str(), debug_folder_path.length() * sizeof(path_t));
+            curl_easy_setopt(curl, CURLOPT_DEBUGDATA, debug_ctx);
+            curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug_function);
+            curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+        }
+    }
+}
 
 BOOL curl_set_debug_option(CURL *curl,
                            C_TEXT& Param1,
@@ -839,7 +886,7 @@ BOOL curl_set_debug_option(CURL *curl,
                             if(debug_folder_path.at(debug_folder_path.size() - 1) != L'\\') debug_folder_path += L'\\';
 #endif
                             
-                            create_folder((path_t *)debug_folder_path.c_str());
+//                            create_folder((path_t *)debug_folder_path.c_str());
                             isDebugEnabled = TRUE;
                         }
                     }
@@ -1689,7 +1736,6 @@ CURLoption json_get_curl_option_name(Json::Value::const_iterator n) {
                 CHECK_CURLOPT("AUTOPROXY",CURLOPT_AUTOPROXY)
                 CHECK_CURLOPT("PRIVATE",CURLOPT_PRIVATE)
                 CHECK_CURLOPT("ATOMIC",CURLOPT_ATOMIC)
-//                CHECK_CURLOPT("DEBUG",CURLOPT_VERBOSE)
                 
                 /* string */
                 CHECK_CURLOPT("PROXY",CURLOPT_PROXY)
@@ -1898,7 +1944,6 @@ CURLoption json_get_curl_option_name(Json::Value::const_iterator n) {
                 CHECK_CURLOPT("TELNETOPTIONS",CURLOPT_TELNETOPTIONS)
                 
                 /* compatibility */
-//                CHECK_CURLOPT("VERBOSE",CURLOPT_VERBOSE)
                 CHECK_CURLOPT("USE_SSL",CURLOPT_USE_SSL)
                 CHECK_CURLOPT("URL",CURLOPT_URL)
                 CHECK_CURLOPT("USERNAME",CURLOPT_USERNAME)
@@ -2303,13 +2348,13 @@ size_t curl_debug_function(CURL *curl,
                            char *data,
                            size_t size,
                            http_debug_ctx *ctx) {
-   
+       
 #if VERSIONMAC
     std::string path;
-    path = (const char *)ctx->path;
+    path = std::string(ctx->path);
 #else
     std::wstring path;
-    path = (const wchar_t *)ctx->path;
+    path = std::wstring(ctx->path);
 #endif
     
     curl_off_t  *f_size = NULL;
@@ -2343,6 +2388,8 @@ size_t curl_debug_function(CURL *curl,
         case CURLINFO_SSL_DATA_IN:
             path += LOG_CURLINFO_SSL_DATA_OUT;
             f_size = &ctx->size_CURLINFO_SSL_DATA_OUT;
+            break;
+        default:
             break;
     }
 
@@ -2446,7 +2493,13 @@ size_t curl_chunk_bgn_function(struct curl_fileinfo *finfo,
     
     if((finfo->filetype) == CURLFILETYPE_FILE)
     {
-        ctx->path = path.append(filename).c_str();
+        
+//        ctx->path = path.append(filename).c_str();
+        path.append(filename);
+        
+        memset(ctx->path, 0x00, MAX_LENGTH_FOR_PATH * sizeof(path_t));
+        memcpy(ctx->path, path.c_str(), path.length() * sizeof(path_t));
+        
         create_parent_folder((path_t *)ctx->path);
         ctx->f = CPathOpen (ctx->path, CPathCreate);
         if(!ctx->f)

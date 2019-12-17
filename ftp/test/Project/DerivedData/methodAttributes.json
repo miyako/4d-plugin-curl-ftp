@@ -44,9 +44,6 @@
 				"preemptive": "capable"
 			}
 		},
-		"TEST_1": {
-			"timeStamp": "2019-12-17T00:10:48.829Z"
-		},
 		"generate_project_plugin_stub": {
 			"timeStamp": "2019-12-16T00:38:54.000Z",
 			"attributes": {
