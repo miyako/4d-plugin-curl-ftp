@@ -2,6 +2,47 @@
 	"editors": [
 		{
 			"type": "explorer"
+		},
+		{
+			"type": "method",
+			"id": 2147483636,
+			"codeDescriptor": {
+				"type": 1,
+				"methodName": "cb"
+			}
+		},
+		{
+			"type": "method",
+			"id": 2147483641,
+			"codeDescriptor": {
+				"type": 1,
+				"methodName": "callbackMethod"
+			}
+		},
+		{
+			"type": "form",
+			"id": 132,
+			"formName": "TEST"
+		},
+		{
+			"type": "method",
+			"id": 2147483632,
+			"codeDescriptor": {
+				"type": 2,
+				"formName": "TEST",
+				"objectName": "Button",
+				"methodPath": "/SOURCES/Forms/TEST/ObjectMethods/Button.4dm"
+			}
+		},
+		{
+			"type": "method",
+			"id": 2147483633,
+			"codeDescriptor": {
+				"type": 2,
+				"formName": "TEST",
+				"objectName": "curlInfo",
+				"methodPath": "/SOURCES/Forms/TEST/ObjectMethods/curlInfo.4dm"
+			}
 		}
 	]
 }

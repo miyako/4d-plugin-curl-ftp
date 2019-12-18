@@ -1,0 +1,66 @@
+﻿{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"rightMargin": 20,
+	"bottomMargin": 20,
+	"events": [
+		"onLoad",
+		"onPageChange",
+		"onValidate",
+		"onClick",
+		"onDoubleClick",
+		"onOutsideCall",
+		"onBeginDragOver",
+		"onDragOver",
+		"onDrop",
+		"onAfterKeystroke",
+		"onMenuSelect",
+		"onPluginArea",
+		"onAfterEdit",
+		"onTimer",
+		"onBoundVariableChange"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"curlInfo": {
+					"type": "input",
+					"left": 20,
+					"top": 60,
+					"width": 430,
+					"height": 449,
+					"dataSourceTypeHint": "object",
+					"dataSource": "Form:C1466.curlInfo",
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"method": "ObjectMethods/curlInfo.4dm"
+				},
+				"Button": {
+					"type": "button",
+					"text": "Button",
+					"top": 27,
+					"left": 46,
+					"width": 98,
+					"height": 22,
+					"events": [
+						"onClick"
+					],
+					"method": "ObjectMethods/Button.4dm"
+				}
+			}
+		}
+	]
+}

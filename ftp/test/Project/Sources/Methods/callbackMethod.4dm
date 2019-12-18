@@ -1,0 +1,1 @@
+﻿//%attributes = {"invisible":true}C_TEXT:C284($1;$curlInfo;$2;$userInfo)$curlInfo:=$1$userInfo:=$2C_OBJECT:C1216($ctx)$ctx:=JSON Parse:C1218($userInfo;Is object:K8:27)CALL FORM:C1391($ctx.window;$ctx.method;JSON Parse:C1218($curlInfo;Is object:K8:27))C_BOOLEAN:C305($0)  //$0:=True to abort

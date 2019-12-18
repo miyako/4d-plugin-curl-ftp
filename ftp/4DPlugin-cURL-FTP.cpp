@@ -2128,63 +2128,55 @@ CURLcode curl_perform(CURLM *mcurl, CURL *curl, C_TEXT& Param4, C_TEXT& userInfo
                     /* callback method */
                 }
             {
-                
-                time_t now = time(0);
-                time_t elapsedTime = abs(startTime - now);
-                
-                if(elapsedTime > 0)
+                                    
+                if(isCallbackSet)
                 {
-                    startTime = now;
                     
-                    if(isCallbackSet)
+                    time_t now = time(0);
+                    time_t elapsedTime = abs(startTime - now);
+                    if(elapsedTime > 0)
                     {
+                        startTime = now;
                         
-                        time_t now = time(0);
-                        time_t elapsedTime = abs(startTime - now);
-                        if(elapsedTime > 0)
+                        if(1)
                         {
-                            startTime = now;
+                            std::lock_guard<std::mutex> lock(mutexMcurl);
                             
-                            if(1)
+                            curl_get_info(curl, info);
+                        }
+                        if(method_id)
+                        {
+                            PA_SetUnistring((&(cbparams[0].uValue.fString)),
+                                            (PA_Unichar *)info.c_str());
+                            
+                            PA_Variable statusCode = PA_ExecuteMethodByID(method_id, cbparams, 2);
+                            if(PA_GetVariableKind(statusCode) == eVK_Boolean)
                             {
-                                std::lock_guard<std::mutex> lock(mutexMcurl);
-                                
-                                curl_get_info(curl, info);
-                            }
-                            if(method_id)
-                            {
-                                PA_SetUnistring((&(cbparams[0].uValue.fString)),
-                                                (PA_Unichar *)info.c_str());
-                                
-                                PA_Variable statusCode = PA_ExecuteMethodByID(method_id, cbparams, 2);
-                                if(PA_GetVariableKind(statusCode) == eVK_Boolean)
-                                {
-                                    if(PA_GetBooleanVariable(statusCode))
-                                    {
-                                        /* abort */
-                                        result = CURLE_ABORTED_BY_CALLBACK;
-                                        goto curl_abort_transfer;
-                                    }
-                                }
-                            }else
-                            {
-                                PA_SetUnistring((&(cbparams[2].uValue.fString)),
-                                                (PA_Unichar *)info.c_str());
-                                
-                                PA_SetBooleanVariable(&cbparams[1], false);
-                                PA_ExecuteCommandByID(1007, cbparams, 4);
-                                if(PA_GetBooleanVariable(cbparams[1]))
+                                if(PA_GetBooleanVariable(statusCode))
                                 {
                                     /* abort */
                                     result = CURLE_ABORTED_BY_CALLBACK;
                                     goto curl_abort_transfer;
                                 }
                             }
+                        }else
+                        {
+                            PA_SetUnistring((&(cbparams[2].uValue.fString)),
+                                            (PA_Unichar *)info.c_str());
+                            
+                            PA_SetBooleanVariable(&cbparams[1], false);
+                            PA_ExecuteCommandByID(1007, cbparams, 4);
+                            if(PA_GetBooleanVariable(cbparams[1]))
+                            {
+                                /* abort */
+                                result = CURLE_ABORTED_BY_CALLBACK;
+                                goto curl_abort_transfer;
+                            }
                         }
-                    }else
-                    {
-                        PA_YieldAbsolute();
                     }
+                }else
+                {
+                    PA_YieldAbsolute();
                 }
                 
                 PA_Variable params;

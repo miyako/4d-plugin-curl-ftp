@@ -166,5 +166,41 @@
 		"top": 333,
 		"width": 850,
 		"height": 745
+	},
+	"Sources/Methods/callbackMethod.4dm": {
+		"left": 122,
+		"top": 604,
+		"width": 1094,
+		"height": 825
+	},
+	"Trash/Methods/(CALLBACK_TEST).4dm": {
+		"left": 296,
+		"top": 567,
+		"width": 1094,
+		"height": 825
+	},
+	"Sources/Forms/TEST/ObjectMethods/Button.4dm": {
+		"left": 480,
+		"top": 265,
+		"width": 877,
+		"height": 922
+	},
+	"Sources/Methods/cb.4dm": {
+		"left": 296,
+		"top": 565,
+		"width": 1094,
+		"height": 825
+	},
+	"Sources/Forms/TEST/ObjectMethods/curlInfo.4dm": {
+		"left": 296,
+		"top": 565,
+		"width": 1094,
+		"height": 825
+	},
+	"Sources/Methods/TEST_CB.4dm": {
+		"left": 122,
+		"top": 604,
+		"width": 1094,
+		"height": 825
 	}
 }
