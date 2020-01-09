@@ -112,6 +112,8 @@ use the option ``CAINFO`` for server ceritificate verification
 
 to skip verification, set ``SSL_VERIFYPEER`` to ``0``
 
+see also [forums.4d.com](https://forums.4d.com/Post/FR/31497545/1/33294227#33294227) for dicussion on SFTP.
+
 ---
 
 ## Syntax
