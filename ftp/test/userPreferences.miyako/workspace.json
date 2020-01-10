@@ -1,17 +1,6 @@
 ﻿{
 	"editors": [
 		{
-			"type": "explorer"
-		},
-		{
-			"type": "method",
-			"id": 2147483636,
-			"codeDescriptor": {
-				"type": 1,
-				"methodName": "cb"
-			}
-		},
-		{
 			"type": "method",
 			"id": 2147483641,
 			"codeDescriptor": {
@@ -21,12 +10,12 @@
 		},
 		{
 			"type": "form",
-			"id": 132,
+			"id": 1,
 			"formName": "TEST"
 		},
 		{
 			"type": "method",
-			"id": 2147483632,
+			"id": 2147483631,
 			"codeDescriptor": {
 				"type": 2,
 				"formName": "TEST",
@@ -36,7 +25,7 @@
 		},
 		{
 			"type": "method",
-			"id": 2147483633,
+			"id": 2147483632,
 			"codeDescriptor": {
 				"type": 2,
 				"formName": "TEST",

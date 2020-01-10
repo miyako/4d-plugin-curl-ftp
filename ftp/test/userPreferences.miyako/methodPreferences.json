@@ -198,13 +198,13 @@
 		"stamp": "2019-09-12T05:46:06.000Z"
 	},
 	"Sources/Methods/callbackMethod.4dm": {
-		"startSelection": 14,
-		"endSelection": 14,
-		"firstSelectedLine": 5,
-		"lastSelectedLine": 5,
+		"startSelection": 0,
+		"endSelection": 0,
+		"firstSelectedLine": 0,
+		"lastSelectedLine": 0,
 		"folding": [],
 		"bookmarks": [],
-		"stamp": "2019-12-18T03:39:19.173Z"
+		"stamp": "2019-12-18T03:39:19.000Z"
 	},
 	"Trash/Methods/(CALLBACK_TEST).4dm": {
 		"startSelection": 0,
@@ -216,22 +216,22 @@
 		"stamp": "2019-12-18T03:32:45.112Z"
 	},
 	"Sources/Forms/TEST/ObjectMethods/Button.4dm": {
-		"startSelection": 40,
-		"endSelection": 40,
-		"firstSelectedLine": 2,
-		"lastSelectedLine": 2,
+		"startSelection": 0,
+		"endSelection": 0,
+		"firstSelectedLine": 0,
+		"lastSelectedLine": 0,
 		"folding": [],
 		"bookmarks": [],
-		"stamp": "2019-12-18T03:38:14.360Z"
+		"stamp": "2019-12-18T03:38:14.000Z"
 	},
 	"Sources/Methods/cb.4dm": {
-		"startSelection": 24,
-		"endSelection": 24,
-		"firstSelectedLine": 4,
-		"lastSelectedLine": 4,
+		"startSelection": 0,
+		"endSelection": 0,
+		"firstSelectedLine": 0,
+		"lastSelectedLine": 0,
 		"folding": [],
 		"bookmarks": [],
-		"stamp": "2019-12-18T03:39:25.122Z"
+		"stamp": "2019-12-18T03:39:25.000Z"
 	},
 	"Sources/Forms/TEST/ObjectMethods/curlInfo.4dm": {
 		"startSelection": 0,
@@ -240,7 +240,7 @@
 		"lastSelectedLine": 0,
 		"folding": [],
 		"bookmarks": [],
-		"stamp": "2019-12-18T03:35:42.633Z"
+		"stamp": "2019-12-18T03:35:42.000Z"
 	},
 	"Sources/Methods/TEST_CB.4dm": {
 		"startSelection": 27,
@@ -250,5 +250,14 @@
 		"folding": [],
 		"bookmarks": [],
 		"stamp": "2019-12-18T03:39:38.699Z"
+	},
+	"Sources/Methods/TEST_20.4dm": {
+		"startSelection": 0,
+		"endSelection": 0,
+		"firstSelectedLine": 0,
+		"lastSelectedLine": 0,
+		"folding": [],
+		"bookmarks": [],
+		"stamp": "2020-01-04T02:10:24.187Z"
 	}
 }
