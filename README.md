@@ -7,37 +7,9 @@ HTTP client based on libcurl-7.62.0
 |:------:|:-----:|:---------:|:---------:|
 ||<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|
 
-```
-spctl -a -vv -t install cURL FTP.bundle: accepted
-source=Notarized Developer ID
-origin=Developer ID Application: keisuke miyako (Y69CWUC25B)
-```
-
 ### Version
 
-<img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" /> <img src="https://user-images.githubusercontent.com/1725068/41266195-ddf767b2-6e30-11e8-9d6b-2adf6a9f57a5.png" width="32" height="32" />
-
-![preemption xx](https://user-images.githubusercontent.com/1725068/41327179-4e839948-6efd-11e8-982b-a670d511e04f.png)
-
-### Releases
-
-[3.4](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/3.4) added ``DEBUG`` option (pass folder path to create log files)
-
-[3.1](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/3.1) 
-
-[2.18](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.18) fix sftp quotes
-
-[2.16](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.16) added encoding support see below 
-
-[2.15](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.15) fix GetFileInfo 
-
-[2.13](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.13) use jsoncpp  
-
-[2.12](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.12) fix ``rm`` ``DELE``
-
-[2.9](https://github.com/miyako/4d-plugin-curl-ftp/releases/tag/2.9) updated ``libcurl``
-
-use [carbon](https://github.com/miyako/4d-plugin-curl-ftp/tree/carbon) branch for 32-bit support
+<img width="32" height="32" src="https://user-images.githubusercontent.com/1725068/73986501-15964580-4981-11ea-9ac1-73c5cee50aae.png"> <img src="https://user-images.githubusercontent.com/1725068/73987971-db2ea780-4984-11ea-8ada-e25fb9c3cf4e.png" width="32" height="32" />
 
 ### List of 4D Internet Commands and replacements
 
