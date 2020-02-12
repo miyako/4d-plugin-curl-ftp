@@ -1,37 +1,3 @@
 ﻿{
-	"editors": [
-		{
-			"type": "method",
-			"id": 2147483641,
-			"codeDescriptor": {
-				"type": 1,
-				"methodName": "callbackMethod"
-			}
-		},
-		{
-			"type": "form",
-			"id": 1,
-			"formName": "TEST"
-		},
-		{
-			"type": "method",
-			"id": 2147483631,
-			"codeDescriptor": {
-				"type": 2,
-				"formName": "TEST",
-				"objectName": "Button",
-				"methodPath": "/SOURCES/Forms/TEST/ObjectMethods/Button.4dm"
-			}
-		},
-		{
-			"type": "method",
-			"id": 2147483632,
-			"codeDescriptor": {
-				"type": 2,
-				"formName": "TEST",
-				"objectName": "curlInfo",
-				"methodPath": "/SOURCES/Forms/TEST/ObjectMethods/curlInfo.4dm"
-			}
-		}
-	]
+	"editors": []
 }

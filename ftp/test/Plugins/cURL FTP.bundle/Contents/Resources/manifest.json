@@ -1,0 +1,56 @@
+{
+    "name": "cURL FTP",
+    "id": 20000,
+    "commands": [
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_Delete(&T;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_GetDirList(&T;&T;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_GetFileInfo(&T;&T;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_MakeDir(&T;&L;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_PrintDir(&T;&T;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_Receive(&T;&T;&L;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_RemoveDir(&T;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_Rename(&T;&T;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_Send(&T;&T;&L;&T):L",
+                 "threadSafe": true
+                 },
+                 {
+                 "theme": "FTP",
+                 "syntax": "cURL_FTP_System(&T;&T;&T):L",
+                 "threadSafe": true
+                 }
+                 ]
+}

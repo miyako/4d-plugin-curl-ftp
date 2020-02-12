@@ -8,7 +8,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			YWIAvQNv/jbyJOzb6KLIGcvzs0A=
+			6iuDYWsupqMstlD69EiSGyjAIrg=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -16,6 +16,10 @@
 		<key>Resources/constants.xlf</key>
 		<data>
 		2YbQivs8FSwp5SFv1PVHweb4xJk=
+		</data>
+		<key>Resources/manifest.json</key>
+		<data>
+		Vn5ZR/572G2kJ4aIbOuwQu5zEtQ=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -35,11 +39,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			YWIAvQNv/jbyJOzb6KLIGcvzs0A=
+			6iuDYWsupqMstlD69EiSGyjAIrg=
 			</data>
 			<key>hash2</key>
 			<data>
-			FapsEtyUakTPMP7NuHlcBRtwtMPclhNzl8xWCt+OVFo=
+			NUYFrg8+nYLQUmxfwcm75EPG6eu423rjZilvsQrXmY8=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -55,36 +59,38 @@
 			097RweLkMhnaoKyNzp76l+O255oFzkr4UeTd1OKcmbE=
 			</data>
 		</dict>
+		<key>Resources/manifest.json</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Vn5ZR/572G2kJ4aIbOuwQu5zEtQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			1GJCvioo8c/unPbp/Tyzsu06ayLcmWEM+MukPchM00g=
+			</data>
+		</dict>
 		<key>Windows/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ai1mx5RLLJLM/Y4GLZEy7LV3A1M=
+			eABkIbzomX4o3SOdg23RYM/MOzM=
 			</data>
 			<key>hash2</key>
 			<data>
-			bo/S9RjATlkkm7NJHGTbL/2Y99K4hsLry1kMaQabfMU=
+			X+irzURgEQpgX3WCyNiHUy0ImCB5NVC2k6yfGnZP4vo=
 			</data>
 		</dict>
 		<key>Windows64/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Qoj4BDaH01l7x9Rc3UGc7gkuo6U=
+			FVTZn9KiYXAvJ7FAwUuBq0MhDmY=
 			</data>
 			<key>hash2</key>
 			<data>
-			h1RNflkQtZ/TwmjAmfjGunxVEutXIVxs1LFchs5lfZo=
+			3GyDxa4+ZB+lO3sA+6nMlMYQ/aajdpgOn7Xef97diWM=
 			</data>
-		</dict>
-		<key>manifest.json</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			a6gfb74RPmbxqJunm2sg+ciEn+o=
-			</data>
-			<key>requirement</key>
-			<string>identifier manifest and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = Y69CWUC25B</string>
 		</dict>
 	</dict>
 	<key>rules</key>

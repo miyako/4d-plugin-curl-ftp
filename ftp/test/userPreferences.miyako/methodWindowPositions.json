@@ -168,10 +168,10 @@
 		"height": 745
 	},
 	"Sources/Methods/callbackMethod.4dm": {
-		"left": 122,
-		"top": 604,
-		"width": 1094,
-		"height": 825
+		"left": 678,
+		"top": 707,
+		"width": 744,
+		"height": 350
 	},
 	"Trash/Methods/(CALLBACK_TEST).4dm": {
 		"left": 296,
@@ -192,8 +192,8 @@
 		"height": 825
 	},
 	"Sources/Forms/TEST/ObjectMethods/curlInfo.4dm": {
-		"left": 296,
-		"top": 565,
+		"left": 284,
+		"top": 295,
 		"width": 1094,
 		"height": 825
 	},
@@ -203,9 +203,9 @@
 		"width": 1094,
 		"height": 825
 	},
-	"Sources/Methods/TEST_20.4dm": {
-		"left": 704,
-		"top": 173,
+	"Sources/Methods/TEST_delete_ftp.4dm": {
+		"left": 590,
+		"top": 570,
 		"width": 1094,
 		"height": 825
 	}

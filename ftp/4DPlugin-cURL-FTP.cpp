@@ -102,82 +102,6 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
 
 #pragma mark -
 
-void cURL_FTP_Delete(PA_PluginParameters params) {
-
-    sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
-    PackagePtr pParams = (PackagePtr)params->fParameters;
-    
-    C_TEXT Param1;
-    C_TEXT Param2;
-    C_LONGINT returnValue;
-    
-    Param1.fromParamAtIndex(pParams, 1);
-    Param2.fromParamAtIndex(pParams, 2);
-    
-    CURL *curl = curl_easy_init();
-    CURLM *mcurl = gmcurl;//curl_multi_init();
-    
-    C_TEXT userInfo; /* PRIVATE */
-    CUTF8String path;
-    CUTF8String ie;
-    CUTF8String oe;
-    
-    http_debug_ctx debug_ctx;
-
-    curl_set_debug(curl, Param1, &debug_ctx);
-    
-    CUTF8String fullpath = path;
-    
-    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
-    
-    apply_input_encoding(ie, path);
-    curl_unescape_path(curl, path);
-    
-    curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
-    curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
-    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
-    
-    struct curl_slist *h = NULL;
-    
-    //    last_path_component(path);/* already done by curl_set_options(,,,,,TRUE) */
-    
-    CUTF8String quote;
-    
-    switch (protocol) {
-        case PROTOCOL_TYPE_SFTP:
-            quote = CUTF8String((const uint8_t *)"rm \"/")
-            .append(fullpath)
-            .append((const uint8_t *)"\"");/* rm takes an absolute path */
-            break;
-            
-        default:
-            quote = CUTF8String((const uint8_t *)"DELE ")
-            .append(path);/* DELE takes a relative path;quote are not allowed */
-            break;
-    }
-    
-    h = curl_slist_append(h, (const char *)quote.c_str());
-    
-    switch (protocol) {
-        case PROTOCOL_TYPE_SFTP:
-            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
-            break;
-            
-        default:
-            curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
-            break;
-    }
-    
-    returnValue.setIntValue(curl_perform(mcurl, curl, Param2, userInfo));
-    
-    curl_slist_free_all(h);
-    
-    curl_easy_cleanup(curl);
-    
-    Param2.toParamAtIndex(pParams, 2);
-    returnValue.setReturn(pResult);
-}
-
 void cURL_FTP_GetDirList(PA_PluginParameters params) {
 
     sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
@@ -518,6 +442,82 @@ void cURL_FTP_Receive(PA_PluginParameters params) {
     
 }
 
+void cURL_FTP_Delete(PA_PluginParameters params) {
+
+    sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
+    PackagePtr pParams = (PackagePtr)params->fParameters;
+    
+    C_TEXT Param1;
+    C_TEXT Param2;
+    C_LONGINT returnValue;
+    
+    Param1.fromParamAtIndex(pParams, 1);
+    Param2.fromParamAtIndex(pParams, 2);
+    
+    CURL *curl = curl_easy_init();
+    CURLM *mcurl = gmcurl;//curl_multi_init();
+    
+    C_TEXT userInfo; /* PRIVATE */
+    CUTF8String path;
+    CUTF8String ie;
+    CUTF8String oe;
+    
+    http_debug_ctx debug_ctx;
+
+    curl_set_debug(curl, Param1, &debug_ctx);
+    
+    CUTF8String fullpath = path;
+    
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
+ 
+    CUTF8String name = path;
+    
+    apply_input_encoding(ie, path);
+    curl_unescape_path(curl, path);
+    
+    curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+    curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+    
+    struct curl_slist *h = NULL;
+    
+    CUTF8String quote;
+    
+    switch (protocol) {
+        case PROTOCOL_TYPE_SFTP:
+            quote = CUTF8String((const uint8_t *)"rm \"/")
+            .append(fullpath)
+            .append((const uint8_t *)"\"");/* rm takes an absolute path */
+            break;
+            
+        default:
+            quote = CUTF8String((const uint8_t *)"DELE /")
+            .append(name);/* DELE takes a relative path;quote are not allowed */
+            break;
+    }
+    
+    h = curl_slist_append(h, (const char *)quote.c_str());
+    
+    switch (protocol) {
+        case PROTOCOL_TYPE_SFTP:
+            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
+            break;
+            
+        default:
+            curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+            break;
+    }
+    
+    returnValue.setIntValue(curl_perform(mcurl, curl, Param2, userInfo));
+    
+    curl_slist_free_all(h);
+    
+    curl_easy_cleanup(curl);
+    
+    Param2.toParamAtIndex(pParams, 2);
+    returnValue.setReturn(pResult);
+}
+
 void cURL_FTP_RemoveDir(PA_PluginParameters params) {
 
     sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
@@ -546,6 +546,8 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
     
+    CUTF8String name = path;
+    
     apply_input_encoding(ie, path);
     curl_unescape_path(curl, path);
     
@@ -555,25 +557,32 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     
     struct curl_slist *h = NULL;
     
-    //    last_path_component(path);/* already done by curl_set_options(,,,,,TRUE) */
-    
     CUTF8String quote;
     
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
             quote = CUTF8String((const uint8_t *)"rmdir \"/")
             .append(fullpath)
-            .append((const uint8_t *)"\"");
-            h = curl_slist_append(h, (const char *)quote.c_str());
+            .append((const uint8_t *)"\"");/* rm takes an absolute path */
             break;
             
         default:
-            quote = CUTF8String((const uint8_t *)"RMD ").append(path);
-            h = curl_slist_append(h, (const char *)quote.c_str());
+            quote = CUTF8String((const uint8_t *)"RMD /")
+            .append(name);
             break;
     }
     
-    curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+    h = curl_slist_append(h, (const char *)quote.c_str());
+    
+    switch (protocol) {
+        case PROTOCOL_TYPE_SFTP:
+            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
+            break;
+            
+        default:
+            curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+            break;
+    }
     
     returnValue.setIntValue(curl_perform(mcurl, curl, Param2, userInfo));
     
@@ -611,28 +620,24 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
 
     curl_set_debug(curl, Param1, &debug_ctx);
     
+    CUTF8String fullpath = path;
+    
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
+    CUTF8String name = path;
+    
     apply_input_encoding(ie, path);
-    
     curl_unescape_path(curl, path);
-    
-    CUTF8String fullpath = path;
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 0L);
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     
     struct curl_slist *h = NULL;
-    
-    last_path_component(path);
-    
-    remove_trailing_separator(path);
-    
-    CUTF8String name;
-    Param2.copyUTF8String(&name);
-    
-    apply_input_encoding(ie, name);
+        
+    CUTF8String newName;
+    Param2.copyUTF8String(&newName);
+    apply_input_encoding(ie, newName);
     
     CUTF8String quote;
     
@@ -641,22 +646,32 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
             quote = CUTF8String((const uint8_t *)"rename \"/")
             .append(fullpath)
             .append((const uint8_t *)"\" ")
-            .append((const uint8_t *)"\"/")
-            .append(name)
+//            .append((const uint8_t *)"\"/")
+            .append((const uint8_t *)"\"")
+            .append(newName)
             .append((const uint8_t *)"\"");
-            h = curl_slist_append(h, (const char *)quote.c_str());
             break;
             
         default:
-            quote = CUTF8String((const uint8_t *)"RNFR ").append(path);
+            quote = CUTF8String((const uint8_t *)"RNFR /").append(name);
             h = curl_slist_append(h, (const char *)quote.c_str());
-            
-            quote = CUTF8String((const uint8_t *)"RNTO ").append(name);
-            h = curl_slist_append(h, (const char *)quote.c_str());
+            quote = CUTF8String((const uint8_t *)"RNTO ").append(newName);
             break;
     }
     
-    curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+    h = curl_slist_append(h, (const char *)quote.c_str());
+    
+    switch (protocol) {
+        case PROTOCOL_TYPE_SFTP:
+            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
+            break;
+            
+        default:
+            curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
+            break;
+    }
+    
+//    curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
     
     returnValue.setIntValue(curl_perform(mcurl, curl, Param3, userInfo));
     
@@ -1028,7 +1043,7 @@ void last_path_component(CUTF8String& path) {
     {
         if((path.compare(i, 1, (const uint8_t *)"/") == 0) && (i == end))
         {
-            pos--;len--;continue;
+            pos--;continue;
         }
         if(path.compare(i, 1, (const uint8_t *)"/") != 0)
         {
@@ -1036,7 +1051,7 @@ void last_path_component(CUTF8String& path) {
         }
         len++;break;
     }
-    
+        
     path = path.substr(pos + 1, len - pos);
 }
 

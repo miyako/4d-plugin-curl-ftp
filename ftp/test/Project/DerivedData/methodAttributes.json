@@ -1,5 +1,8 @@
 ﻿{
 	"methods": {
+		"TEST_delete_ftp": {
+			"timeStamp": "2020-02-12T03:30:28.490Z"
+		},
 		"generate_file_from_template": {
 			"timeStamp": "2019-12-16T00:38:54.000Z",
 			"attributes": {
@@ -42,9 +45,6 @@
 		},
 		"TEST_CB": {
 			"timeStamp": "2019-12-18T03:39:38.000Z"
-		},
-		"TEST_20": {
-			"timeStamp": "2020-01-04T02:10:24.187Z"
 		},
 		"generate_project": {
 			"timeStamp": "2019-12-16T00:38:54.000Z"
