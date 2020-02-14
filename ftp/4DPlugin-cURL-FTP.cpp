@@ -465,13 +465,9 @@ void cURL_FTP_Delete(PA_PluginParameters params) {
     http_debug_ctx debug_ctx;
 
     curl_set_debug(curl, Param1, &debug_ctx);
-    
-    CUTF8String fullpath = path;
-    
+        
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
- 
-    CUTF8String name = path;
-    
+     
     apply_input_encoding(ie, path);
     curl_unescape_path(curl, path);
     
@@ -486,13 +482,13 @@ void cURL_FTP_Delete(PA_PluginParameters params) {
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
             quote = CUTF8String((const uint8_t *)"rm \"/")
-            .append(fullpath)
+            .append(path)
             .append((const uint8_t *)"\"");/* rm takes an absolute path */
             break;
             
         default:
             quote = CUTF8String((const uint8_t *)"DELE /")
-            .append(name);/* DELE takes a relative path;quote are not allowed */
+            .append(path);/* DELE takes a relative path;quote are not allowed */
             break;
     }
     
@@ -541,13 +537,9 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     http_debug_ctx debug_ctx;
 
     curl_set_debug(curl, Param1, &debug_ctx);
-    
-    CUTF8String fullpath = path;
-    
+        
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe, TRUE);
-    
-    CUTF8String name = path;
-    
+        
     apply_input_encoding(ie, path);
     curl_unescape_path(curl, path);
     
@@ -562,13 +554,13 @@ void cURL_FTP_RemoveDir(PA_PluginParameters params) {
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
             quote = CUTF8String((const uint8_t *)"rmdir \"/")
-            .append(fullpath)
+            .append(path)
             .append((const uint8_t *)"\"");/* rm takes an absolute path */
             break;
             
         default:
             quote = CUTF8String((const uint8_t *)"RMD /")
-            .append(name);
+            .append(path);
             break;
     }
     
@@ -619,13 +611,9 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
     http_debug_ctx debug_ctx;
 
     curl_set_debug(curl, Param1, &debug_ctx);
-    
-    CUTF8String fullpath = path;
-    
+        
     protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
-    
-    CUTF8String name = path;
-    
+        
     apply_input_encoding(ie, path);
     curl_unescape_path(curl, path);
     
@@ -635,27 +623,26 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
     
     struct curl_slist *h = NULL;
         
-    CUTF8String newName;
-    Param2.copyUTF8String(&newName);
-    apply_input_encoding(ie, newName);
+    CUTF8String name;
+    Param2.copyUTF8String(&name);
+    apply_input_encoding(ie, name);
     
     CUTF8String quote;
-    
+        
     switch (protocol) {
         case PROTOCOL_TYPE_SFTP:
             quote = CUTF8String((const uint8_t *)"rename \"/")
-            .append(fullpath)
+            .append(path)
             .append((const uint8_t *)"\" ")
-//            .append((const uint8_t *)"\"/")
             .append((const uint8_t *)"\"")
-            .append(newName)
+            .append(name)
             .append((const uint8_t *)"\"");
             break;
             
         default:
-            quote = CUTF8String((const uint8_t *)"RNFR /").append(name);
+            quote = CUTF8String((const uint8_t *)"RNFR /").append(path);
             h = curl_slist_append(h, (const char *)quote.c_str());
-            quote = CUTF8String((const uint8_t *)"RNTO ").append(newName);
+            quote = CUTF8String((const uint8_t *)"RNTO ").append(name);
             break;
     }
     
@@ -670,9 +657,7 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
             curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
             break;
     }
-    
-//    curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
-    
+        
     returnValue.setIntValue(curl_perform(mcurl, curl, Param3, userInfo));
     
     curl_slist_free_all(h);
@@ -1031,28 +1016,6 @@ void remove_trailing_separator(CUTF8String& path) {
         path = path.substr(0, pos);
     }
     
-}
-
-void last_path_component(CUTF8String& path) {
-    
-    size_t pos = path.length() -1;
-    size_t end = pos;
-    size_t len = pos - 1;
-    
-    for(size_t i = pos; i > 0; --i)
-    {
-        if((path.compare(i, 1, (const uint8_t *)"/") == 0) && (i == end))
-        {
-            pos--;continue;
-        }
-        if(path.compare(i, 1, (const uint8_t *)"/") != 0)
-        {
-            pos--;continue;
-        }
-        len++;break;
-    }
-        
-    path = path.substr(pos + 1, len - pos);
 }
 
 #pragma mark info

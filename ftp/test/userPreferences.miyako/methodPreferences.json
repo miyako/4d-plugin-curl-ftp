@@ -252,12 +252,21 @@
 		"stamp": "2019-12-18T03:39:38.699Z"
 	},
 	"Sources/Methods/TEST_delete_ftp.4dm": {
-		"startSelection": 78,
-		"endSelection": 78,
-		"firstSelectedLine": 13,
-		"lastSelectedLine": 13,
+		"startSelection": 0,
+		"endSelection": 0,
+		"firstSelectedLine": 0,
+		"lastSelectedLine": 0,
 		"folding": [],
 		"bookmarks": [],
-		"stamp": "2020-02-12T03:30:28.490Z"
+		"stamp": "2020-02-14T03:36:05.606Z"
+	},
+	"Sources/Methods/TEST_sftp.4dm": {
+		"startSelection": 0,
+		"endSelection": 0,
+		"firstSelectedLine": 0,
+		"lastSelectedLine": 0,
+		"folding": [],
+		"bookmarks": [],
+		"stamp": "2020-02-14T03:36:06.267Z"
 	}
 }
