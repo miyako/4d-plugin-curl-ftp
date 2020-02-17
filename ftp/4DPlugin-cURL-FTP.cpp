@@ -648,15 +648,15 @@ void cURL_FTP_Rename(PA_PluginParameters params) {
     
     h = curl_slist_append(h, (const char *)quote.c_str());
     
-    switch (protocol) {
-        case PROTOCOL_TYPE_SFTP:
-            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
-            break;
-            
-        default:
+//    switch (protocol) {
+//        case PROTOCOL_TYPE_SFTP:
+//            curl_easy_setopt(curl, CURLOPT_QUOTE, h);
+//            break;
+//            
+//        default:
             curl_easy_setopt(curl, CURLOPT_POSTQUOTE, h);
-            break;
-    }
+//            break;
+//    }
         
     returnValue.setIntValue(curl_perform(mcurl, curl, Param3, userInfo));
     
