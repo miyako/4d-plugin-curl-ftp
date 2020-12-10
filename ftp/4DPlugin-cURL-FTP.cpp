@@ -1310,7 +1310,6 @@ protocol_type_t curl_set_options(CURL *curl,
                     case CURLOPT_PROXYUSERNAME:
                     case CURLOPT_PROXYPASSWORD:
                     case CURLOPT_NOPROXY:
-                    case CURLOPT_SSH_KNOWNHOSTS:
                     case CURLOPT_RTSP_SESSION_ID:
                     case CURLOPT_RTSP_STREAM_URI:
                     case CURLOPT_RTSP_TRANSPORT:
@@ -1392,6 +1391,7 @@ protocol_type_t curl_set_options(CURL *curl,
                         break;
                         /* path */
                     case CURLOPT_SSLCERT:
+                    case CURLOPT_SSH_KNOWNHOSTS:
                     case CURLOPT_COOKIEFILE:
                     case CURLOPT_CAINFO:
                     case CURLOPT_COOKIEJAR:
