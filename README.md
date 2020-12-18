@@ -4,7 +4,9 @@
 ![downloads](https://img.shields.io/github/downloads/miyako/4d-plugin-curl-ftp/total)
 
 # 4d-plugin-curl-ftp
-HTTP client based on libcurl-7.62.0
+HTTP client based on ~~libcurl-7.62.0~~ 7.74.0 on Mac, 7.65.2 on Windows.
+
+To use on v16 or v17, move manifest.json to contents.
 
 ### List of 4D Internet Commands and replacements
 
