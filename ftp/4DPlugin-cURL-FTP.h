@@ -50,6 +50,8 @@ void cURL_FTP_Rename(PA_PluginParameters params);
 void cURL_FTP_Send(PA_PluginParameters params);
 void cURL_FTP_System(PA_PluginParameters params);
 
+void cURL_FTP_VersionInfo(PA_PluginParameters params);
+
 typedef CUTF8String generic_string_t;
 
 size_t apply_output_encoding(generic_string_t& src, generic_string_t& oe);
