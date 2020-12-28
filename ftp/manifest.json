@@ -51,11 +51,6 @@
                  "theme": "FTP",
                  "syntax": "cURL_FTP_System(&T;&T;&T):L",
                  "threadSafe": true
-                 },
-                 {
-                 "theme": "FTP",
-                 "syntax": "cURL_FTP_VersionInfo:T",
-                 "threadSafe": true
                  }
                  ]
 }

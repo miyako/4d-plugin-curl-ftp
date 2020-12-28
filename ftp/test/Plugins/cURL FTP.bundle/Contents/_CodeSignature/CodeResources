@@ -8,7 +8,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			+ad6jgxg1Ek7wCFJZnv9G7Ih/Zo=
+			2tk/JH9Yiclhl4xwSyNL0UlwgPQ=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -19,7 +19,7 @@
 		</data>
 		<key>Resources/manifest.json</key>
 		<data>
-		KO8GIIJqmOYJsJFHJQf7+VH0Mzc=
+		Vn5ZR/572G2kJ4aIbOuwQu5zEtQ=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -39,11 +39,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			+ad6jgxg1Ek7wCFJZnv9G7Ih/Zo=
+			2tk/JH9Yiclhl4xwSyNL0UlwgPQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			oy1JUXsSndFd2IJSmc4xw7sQ56WpmOGJfzS46KB3T6g=
+			SATOTfVCK/sL4I2vOtwJyTIs9VCPS/D7H9S5OTugy+I=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -63,33 +63,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			KO8GIIJqmOYJsJFHJQf7+VH0Mzc=
+			Vn5ZR/572G2kJ4aIbOuwQu5zEtQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			5eYFOw+5q3ptiUfHzTtDSz1mymF/k07tizhF6OZSte8=
+			1GJCvioo8c/unPbp/Tyzsu06ayLcmWEM+MukPchM00g=
 			</data>
 		</dict>
 		<key>Windows/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			XZped6BM12gFRYhkGFBA5X1rPAc=
+			x461thysI3i3wr92MBfSKvHgAZ0=
 			</data>
 			<key>hash2</key>
 			<data>
-			1R/BAi/naEJl0HxpMm62+oVoGkvQ/WB/cbTX8ECqAYE=
+			HcqNJZdbbcnu0Q5lePhTdI1U4lvTFWQi2WPwitXcbX4=
 			</data>
 		</dict>
 		<key>Windows64/cURL FTP.4DX</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			C37h/zTwl0Zqm1w0M/2dQveaAt0=
+			JTEnMRSjSw3gIUgarg8uv4qR4lY=
 			</data>
 			<key>hash2</key>
 			<data>
-			qTlKUAaBW8N1+6SjMApDRs6NQYUL40wCfbhtycKXfrw=
+			oq3WrmibYNqEyBBdCd/jE6rWhBKOAA5hALTis0pxDI0=
 			</data>
 		</dict>
 	</dict>

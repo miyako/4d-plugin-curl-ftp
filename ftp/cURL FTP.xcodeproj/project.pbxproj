@@ -33,18 +33,7 @@
 		D1A9C3AD2329EE5F00E6D2BB /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A9C3A42329EE5F00E6D2BB /* libssh2.a */; };
 		D1A9C3AE2329EE5F00E6D2BB /* libnghttp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A9C3A52329EE5F00E6D2BB /* libnghttp2.a */; };
 		D1A9C3AF2329EE5F00E6D2BB /* libidn2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A9C3A62329EE5F00E6D2BB /* libidn2.a */; };
-		D1DED27E258CFDA3006A8340 /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED27C258CFDA3006A8340 /* libbrotlidec-static.a */; };
-		D1DED27F258CFDA3006A8340 /* libbrotlienc-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED27D258CFDA3006A8340 /* libbrotlienc-static.a */; };
-		D1DED283258CFDCF006A8340 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED282258CFDCF006A8340 /* Security.framework */; };
-		D1DED285258CFE06006A8340 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED284258CFE06006A8340 /* librtmp.a */; };
-		D1DED287258CFE9C006A8340 /* GSS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED286258CFE9C006A8340 /* GSS.framework */; };
-		D1DED289258CFED5006A8340 /* libzstd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED288258CFED5006A8340 /* libzstd.a */; };
-		D1DED28B258CFEF6006A8340 /* libbrotlicommon-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED28A258CFEF6006A8340 /* libbrotlicommon-static.a */; };
-		D1DED28D258CFF62006A8340 /* libldap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED28C258CFF62006A8340 /* libldap.a */; };
-		D1DED28F258CFF79006A8340 /* liblber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED28E258CFF79006A8340 /* liblber.a */; };
-		D1DED292258CFFC2006A8340 /* libgssapi_krb5.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED290258CFFC2006A8340 /* libgssapi_krb5.tbd */; };
-		D1DED293258CFFC2006A8340 /* libboringssl.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED291258CFFC2006A8340 /* libboringssl.tbd */; };
-		D1DED295258CFFD5006A8340 /* libsasl2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DED294258CFFD5006A8340 /* libsasl2.tbd */; };
+		D1A9C3B12329EEF300E6D2BB /* LDAP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A9C3B02329EEF300E6D2BB /* LDAP.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -91,19 +80,6 @@
 		D1A9C3A52329EE5F00E6D2BB /* libnghttp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnghttp2.a; path = a/libnghttp2.a; sourceTree = "<group>"; };
 		D1A9C3A62329EE5F00E6D2BB /* libidn2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libidn2.a; path = a/libidn2.a; sourceTree = "<group>"; };
 		D1A9C3B02329EEF300E6D2BB /* LDAP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LDAP.framework; path = System/Library/Frameworks/LDAP.framework; sourceTree = SDKROOT; };
-		D1DED27C258CFDA3006A8340 /* libbrotlidec-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlidec-static.a"; path = "a/libbrotlidec-static.a"; sourceTree = "<group>"; };
-		D1DED27D258CFDA3006A8340 /* libbrotlienc-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlienc-static.a"; path = "a/libbrotlienc-static.a"; sourceTree = "<group>"; };
-		D1DED280258CFDB6006A8340 /* libldap.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libldap.tbd; path = usr/lib/libldap.tbd; sourceTree = SDKROOT; };
-		D1DED282258CFDCF006A8340 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		D1DED284258CFE06006A8340 /* librtmp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtmp.a; path = a/librtmp.a; sourceTree = "<group>"; };
-		D1DED286258CFE9C006A8340 /* GSS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GSS.framework; path = System/Library/Frameworks/GSS.framework; sourceTree = SDKROOT; };
-		D1DED288258CFED5006A8340 /* libzstd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libzstd.a; path = a/libzstd.a; sourceTree = "<group>"; };
-		D1DED28A258CFEF6006A8340 /* libbrotlicommon-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlicommon-static.a"; path = "a/libbrotlicommon-static.a"; sourceTree = "<group>"; };
-		D1DED28C258CFF62006A8340 /* libldap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libldap.a; path = a/libldap.a; sourceTree = "<group>"; };
-		D1DED28E258CFF79006A8340 /* liblber.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblber.a; path = a/liblber.a; sourceTree = "<group>"; };
-		D1DED290258CFFC2006A8340 /* libgssapi_krb5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libgssapi_krb5.tbd; path = usr/lib/libgssapi_krb5.tbd; sourceTree = SDKROOT; };
-		D1DED291258CFFC2006A8340 /* libboringssl.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libboringssl.tbd; path = usr/lib/libboringssl.tbd; sourceTree = SDKROOT; };
-		D1DED294258CFFD5006A8340 /* libsasl2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsasl2.tbd; path = usr/lib/libsasl2.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,19 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1DED295258CFFD5006A8340 /* libsasl2.tbd in Frameworks */,
-				D1DED292258CFFC2006A8340 /* libgssapi_krb5.tbd in Frameworks */,
-				D1DED293258CFFC2006A8340 /* libboringssl.tbd in Frameworks */,
-				D1DED28B258CFEF6006A8340 /* libbrotlicommon-static.a in Frameworks */,
-				D1DED289258CFED5006A8340 /* libzstd.a in Frameworks */,
-				D1DED28F258CFF79006A8340 /* liblber.a in Frameworks */,
-				D1DED28D258CFF62006A8340 /* libldap.a in Frameworks */,
-				D130064F12F02D9700702C0E /* Cocoa.framework in Frameworks */,
-				D1DED283258CFDCF006A8340 /* Security.framework in Frameworks */,
-				D1DED287258CFE9C006A8340 /* GSS.framework in Frameworks */,
-				D1DED285258CFE06006A8340 /* librtmp.a in Frameworks */,
-				D1DED27E258CFDA3006A8340 /* libbrotlidec-static.a in Frameworks */,
-				D1DED27F258CFDA3006A8340 /* libbrotlienc-static.a in Frameworks */,
+				D1A9C3B12329EEF300E6D2BB /* LDAP.framework in Frameworks */,
 				D1A9C3A72329EE5F00E6D2BB /* libz.a in Frameworks */,
 				D1A9C3A82329EE5F00E6D2BB /* libssl.a in Frameworks */,
 				D1A9C3A92329EE5F00E6D2BB /* libcrypto.a in Frameworks */,
@@ -134,6 +98,7 @@
 				D1A9C3AE2329EE5F00E6D2BB /* libnghttp2.a in Frameworks */,
 				D1A9C3AF2329EE5F00E6D2BB /* libidn2.a in Frameworks */,
 				D1A9C39D2329EB8C00E6D2BB /* libiconv.a in Frameworks */,
+				D130064F12F02D9700702C0E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,19 +180,6 @@
 		D16FBB3C22A4C07E008F0416 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D1DED294258CFFD5006A8340 /* libsasl2.tbd */,
-				D1DED291258CFFC2006A8340 /* libboringssl.tbd */,
-				D1DED290258CFFC2006A8340 /* libgssapi_krb5.tbd */,
-				D1DED28E258CFF79006A8340 /* liblber.a */,
-				D1DED28C258CFF62006A8340 /* libldap.a */,
-				D1DED28A258CFEF6006A8340 /* libbrotlicommon-static.a */,
-				D1DED288258CFED5006A8340 /* libzstd.a */,
-				D1DED286258CFE9C006A8340 /* GSS.framework */,
-				D1DED284258CFE06006A8340 /* librtmp.a */,
-				D1DED282258CFDCF006A8340 /* Security.framework */,
-				D1DED280258CFDB6006A8340 /* libldap.tbd */,
-				D1DED27C258CFDA3006A8340 /* libbrotlidec-static.a */,
-				D1DED27D258CFDA3006A8340 /* libbrotlienc-static.a */,
 				D1A9C3B02329EEF300E6D2BB /* LDAP.framework */,
 				D1A9C3A02329EE5E00E6D2BB /* libcrypto.a */,
 				D1A9C3A12329EE5E00E6D2BB /* libcurl.a */,
@@ -439,7 +391,7 @@
 					"$(PROJECT_DIR)/a",
 				);
 				LIBRARY_STYLE = Bundle;
-				MARKETING_VERSION = 3.10.0;
+				MARKETING_VERSION = 3.9.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -491,7 +443,7 @@
 					"$(PROJECT_DIR)/a",
 				);
 				LIBRARY_STYLE = Bundle;
-				MARKETING_VERSION = 3.10.0;
+				MARKETING_VERSION = 3.9.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -541,7 +493,7 @@
 					"$(PROJECT_DIR)/a",
 				);
 				LIBRARY_STYLE = Bundle;
-				MARKETING_VERSION = 3.10.0;
+				MARKETING_VERSION = 3.9.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";

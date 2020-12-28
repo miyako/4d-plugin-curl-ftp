@@ -55,7 +55,6 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
                 break;
                 
             case kDeinitPlugin :
-            case kServerDeinitPlugin :
                 OnExit();
                 break;
                 
@@ -91,10 +90,7 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
 			case 10 :
 				cURL_FTP_System(params);
 				break;
-            case 11 :
-                cURL_FTP_VersionInfo(params);
-                break;
-                
+
         }
 
 	}
@@ -2498,75 +2494,3 @@ size_t curl_chunk_end_function(path_ctx *ctx) {
     return CURL_CHUNK_END_FUNC_OK;
 }
 
-void cURL_FTP_VersionInfo(PA_PluginParameters params)
-{
-    C_TEXT returnValue;
-    CUTF16String json;
-    
-    curl_version_info_data *d = curl_version_info(CURLVERSION_NOW);
-    
-    Json::Value info;
-    
-    if(d->age >= 0)
-    {
-        info["version"] = d->version;
-        info["version_num"] = d->version_num;
-        info["host"] = d->host;
-        info["features"] = d->features;
-        info["ssl_version"] = d->ssl_version;
-        info["ssl_version_num"] = (Json::Int)d->ssl_version_num;
-        info["libz_version"] = d->libz_version;
-
-        Json::Value protocols;
-        Json::ArrayIndex i = 0;
-        
-        if(d->protocols)
-        {
-            size_t n = 0;
-            size_t nproto = 0;
-            while(d->protocols[nproto])
-            {
-                const char *protocol = d->protocols[nproto];
-                size_t len = strlen(protocol);
-                if(len)
-                {
-                    protocols[i++] = protocol;
-                    
-                    n += len;
-                    n += ++nproto;
-                }
-            }
-        }
-        info["protocols"] = protocols;
-    }
-    if(d->age >= 1)
-    {
-
-    }
-    if(d->age >= 2)
-    {
-        if(d->libidn)
-        {
-            info["libidn"] = d->libidn;
-        }
-    }
-    if(d->age >= 3)
-    {
-        if(d->libssh_version)
-        {
-            info["libssh_version"] = d->libssh_version;
-        }
-    }
-    if(d->age >= 4)
-    {
-
-    }
-    
-    Json::StyledWriter writer;
-    std::string options = writer.write(info);
-    convertFromString(options, json);
-    
-    sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
-    returnValue.setUTF16String(&json);
-    returnValue.setReturn(pResult);
-}
