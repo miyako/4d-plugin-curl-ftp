@@ -1,83 +1,83 @@
-﻿{
+{
 	"methods": {
-		"callbackMethod": {
-			"timeStamp": "2019-12-18T03:39:19.000Z",
+		"TEST_delete_ftp": {
+			"timeStamp": "2022-01-24T17:38:46.335Z"
+		},
+		"generate_file_from_template": {
+			"timeStamp": "2022-01-24T17:38:46.335Z",
 			"attributes": {
-				"invisible": true
+				"invisible": true,
+				"preemptive": "capable"
 			}
 		},
-		"cb": {
-			"timeStamp": "2019-12-18T03:39:25.000Z",
+		"generate_project_infoplist": {
+			"timeStamp": "2022-01-24T17:38:46.335Z",
 			"attributes": {
-				"invisible": true
+				"invisible": true,
+				"preemptive": "capable"
 			}
 		},
 		"generate_constants_xlf": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
-			"attributes": {
-				"invisible": true,
-				"preemptive": "capable"
-			}
-		},
-		"generate_file_from_template": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
-			"attributes": {
-				"invisible": true,
-				"preemptive": "capable"
-			}
-		},
-		"generate_project": {
-			"timeStamp": "2019-12-16T00:38:54.000Z"
-		},
-		"generate_project_infoplist": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
-			"attributes": {
-				"invisible": true,
-				"preemptive": "capable"
-			}
-		},
-		"generate_project_plugin_stub": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
-			"attributes": {
-				"invisible": true,
-				"preemptive": "capable"
-			}
-		},
-		"generate_project_source": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
-			"attributes": {
-				"invisible": true,
-				"preemptive": "capable"
-			}
-		},
-		"generate_project_vs": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
-			"attributes": {
-				"invisible": true,
-				"preemptive": "capable"
-			}
-		},
-		"generate_project_xcode": {
-			"timeStamp": "2019-12-16T00:38:54.000Z",
+			"timeStamp": "2022-01-24T17:38:46.335Z",
 			"attributes": {
 				"invisible": true,
 				"preemptive": "capable"
 			}
 		},
 		"SFTP": {
-			"timeStamp": "2019-12-16T00:38:54.000Z"
+			"timeStamp": "2022-01-24T17:38:46.335Z"
+		},
+		"generate_project_xcode": {
+			"timeStamp": "2022-01-24T17:38:46.336Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
 		},
 		"TEST": {
-			"timeStamp": "2019-12-16T00:38:54.000Z"
+			"timeStamp": "2022-01-24T17:38:46.335Z"
+		},
+		"callbackMethod": {
+			"timeStamp": "2022-01-24T17:38:46.335Z",
+			"attributes": {
+				"invisible": true
+			}
 		},
 		"TEST_CB": {
-			"timeStamp": "2019-12-18T03:39:38.000Z"
+			"timeStamp": "2022-01-24T17:38:46.335Z"
 		},
-		"TEST_delete_ftp": {
-			"timeStamp": "2020-02-14T03:36:05.000Z"
+		"generate_project": {
+			"timeStamp": "2022-01-24T17:38:46.335Z"
+		},
+		"generate_project_vs": {
+			"timeStamp": "2022-01-24T17:38:46.336Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
 		},
 		"TEST_sftp": {
-			"timeStamp": "2020-12-02T12:43:53.000Z"
+			"timeStamp": "2022-01-24T17:38:46.335Z"
+		},
+		"generate_project_plugin_stub": {
+			"timeStamp": "2022-01-24T17:38:46.335Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"cb": {
+			"timeStamp": "2022-01-24T17:38:46.335Z",
+			"attributes": {
+				"invisible": true
+			}
+		},
+		"generate_project_source": {
+			"timeStamp": "2022-01-24T17:38:46.335Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
 		}
 	}
 }
