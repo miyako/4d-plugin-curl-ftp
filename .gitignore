@@ -3,3 +3,9 @@ ftp/build/*
 ftp/test/userPreferences.*
 ftp/cURL FTP.xcodeproj/project.xcworkspace/*
 ftp/cURL FTP.xcodeproj/xcuserdata/*
+ftp/.vs/cURL FTP/v17*
+ftp/Objs/*
+ftp/cURL FTP.vcxproj.user
+ftp/.vs/*
+ftp/test/Plugins/cURL FTP.bundle/Contents/Windows64/cURL FTP.lib
+ftp/test/Plugins/cURL FTP.bundle/Contents/Windows64/cURL FTP.exp
