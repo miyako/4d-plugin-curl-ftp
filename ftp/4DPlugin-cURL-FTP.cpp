@@ -177,7 +177,8 @@ void cURL_FTP_GetFileInfo(PA_PluginParameters params) {
 
     curl_set_debug(curl, Param1, &debug_ctx);
     
-    /* protocol_type_t protocol = */ curl_set_options(curl, Param1, userInfo, path, ie, oe);
+    // CHANGED: Uncommented the protocol assignment to know if we are using SFTP
+    protocol_type_t protocol = curl_set_options(curl, Param1, userInfo, path, ie, oe);
     
     curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
@@ -201,7 +202,11 @@ void cURL_FTP_GetFileInfo(PA_PluginParameters params) {
         curl_off_t fileSize = 0;
         if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &fileSize))
         {
-            
+            // CHANGED: Handle libcurl returning -1 for 0-byte SFTP files
+            if(fileSize == -1 && protocol == PROTOCOL_TYPE_SFTP)
+            {
+                fileSize = 0;
+            }
         }
 
         info["size"] = (Json::LargestInt)fileSize;
@@ -1075,8 +1080,22 @@ void curl_get_info(CURL *curl, CUTF16String& json) {
         info["contentLengthUpload"] = (Json::Int64)contentLengthUploadT;
     
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &contentLengthDownloadT))
+    {
+        // CHANGED: Ensure consistency for 0-byte files queried via SFTP
+        if(contentLengthDownloadT == -1)
+        {
+            char *url = NULL;
+            if((CURLE_OK == curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url)) && url)
+            {
+                if(strncmp(url, "sftp://", 7) == 0)
+                {
+                    contentLengthDownloadT = 0;
+                }
+            }
+        }
         info["contentLengthDownload"] = (Json::Int64)contentLengthDownloadT;
-    
+    }
+
     if(CURLE_OK == curl_easy_getinfo(curl, CURLINFO_SPEED_UPLOAD_T, &speedUploadT))
         info["speedUpload"] = (Json::UInt64)speedUploadT;
     
