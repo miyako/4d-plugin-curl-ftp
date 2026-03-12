@@ -1,3 +1,5 @@
 ftp/test/Project/DerivedData/*
 ftp/build/*
 ftp/test/userPreferences.*
+ftp/cURL FTP.xcodeproj/project.xcworkspace/*
+ftp/cURL FTP.xcodeproj/xcuserdata/*
